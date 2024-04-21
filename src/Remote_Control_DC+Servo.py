@@ -7,7 +7,7 @@ from readchar import readkey, key
 
 Board.setPWMServoPulse(1, 1500, 10) #Turn to 90 degree
 # 'Arm' the ESC
-Board.setPWMServoPulse(5, 1500, 100) 
+Board.setPWMServoPulse(6, 1500, 100) 
 time.sleep(6)
 print("Ready\n")
 
@@ -60,6 +60,6 @@ if __name__ == '__main__':
             print(f"speed down: {b}")
         #bldc
         pw = int(11.1*s+500)
-        Board.setPWMServoPulse(5, b, 100) 
+        Board.setPWMServoPulse(6, b, 100) 
         Board.setPWMServoPulse(1, pw, 1000)
         time.sleep(0.01)
