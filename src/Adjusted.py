@@ -8,8 +8,7 @@ from readchar import readkey, key
 
 def pwm(degree):
 	return round(degree*11.1 + 500)
-mid = 80
-max_turn_degree = 32
+mid = 70
 Board.setPWMServoPulse(1, pwm(mid), 10) #Turn to 90 degree
 # 'Arm' the ESC
 Board.setPWMServoPulse(6, 1500, 100) 
@@ -28,15 +27,13 @@ if __name__ == '__main__':
             Board.setPWMServoPulse(5, 1500, 100) 
             Board.setPWMServoPulse(1, pwm(mid), 1000)
             time.sleep(0.01)
-            Board.setPWMServoPulse(1, 0, 1000)
-            time.sleep(0.01)
             print("stop")
             break
         elif k == 'a':
-            s = mid+max_turn_degree
+            s = mid+45
             print("left")
         elif k == 'd':
-            s = mid-max_turn_degree
+            s = mid-45
             print("right")
         elif k == 'w':
             b = 1550
@@ -68,7 +65,7 @@ if __name__ == '__main__':
                     b = 1500
             print(f"speed down: {b}")
         #bldc
-        pw = pwm(s)
+        #pw = pwm(s)
         Board.setPWMServoPulse(6, b, 100) 
-        Board.setPWMServoPulse(1, pw, 1000)
+        Board.setPWMServoPulse(1, round(s*1.1)+500, 1000)
         time.sleep(0.01)
