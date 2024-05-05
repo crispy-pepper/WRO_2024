@@ -97,7 +97,7 @@ while True:
         s = mid-max_turn_degree - 10
     elif leftArea < 300:
         print("no wall to the left")
-        s = mid+max_turn_degree -10
+        s = mid+max_turn_degree+10
     else:
         difference = leftArea - rightArea
         print ("current difference: " + str(difference))
