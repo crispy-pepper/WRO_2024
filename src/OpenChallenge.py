@@ -9,8 +9,9 @@ import HiwonderSDK.Board as Board
 # used to record the time when we processed last frame
 prev_frame_time = 0
 mid = 80
-max_turn_degree = 32
-
+max_turn_degree = 33
+sharpturn = False
+sharpturncounter = 10
 # used to record the time at which we processed current frame
 new_frame_time = 0
 picam2 = Picamera2()
@@ -22,17 +23,16 @@ picam2.configure("preview")
 picam2.start()
 def pwm(degree):
 	return round(degree*11.1 + 500)
-ROI1 = [20, 310, 240, 350]
-ROI2 = [400, 310, 620, 350]
-PG = 0.000001
+ROI1 = [0, 300, 220, 360]
+ROI2 = [380, 300, 640, 360]
+PG = 0.0002
 points = [(115,200), (525,200), (640,370), (0,370)]
 
 Board.setPWMServoPulse(1, pwm(mid), 10) #Turn to 90 degree
 # 'Arm' the ESC
 Board.setPWMServoPulse(6, 1500, 100)
-
+s = 0
 while True:
-    s = 0
     im= picam2.capture_array()
     width = 640
     height = 480
@@ -47,7 +47,7 @@ while True:
         
         # black mask
     lower_black = np.array([0, 0, 0])
-    upper_black = np.array([220, 255, 65])
+    upper_black = np.array([210, 255, 75])
     
     lower_blue = np.array([50, 50, 50])
     upper_blue = np.array([180, 180, 255])
@@ -91,26 +91,40 @@ while True:
         
   
             
+    if (sharpturn and sharpturncounter > 0):
         
-    if rightArea < 300:
-        print("no wall to the right")
-        s = mid-max_turn_degree - 10
-    elif leftArea < 300:
-        print("no wall to the left")
-        s = mid+max_turn_degree+10
+        sharpturncounter -=1
+        
     else:
-        difference = leftArea - rightArea
-        print ("current difference: " + str(difference))
-        if (leftArea > rightArea):
-            print ("left bigger")
-            s = (mid-max_turn_degree) * difference * PG
-
-            
+        if rightArea < 200:
+            print("no wall to the right")
+            sharpturn = True
+            sharpturncounter = 10
+            s = mid-max_turn_degree
+        elif leftArea < 200:
+            print("no wall to the left")
+            sharpturn = True
+            sharpturncounter = 10
+            s = mid+max_turn_degree
         else:
-            print ("right bigger")
-            s = (mid+max_turn_degree) * difference * PG
+            difference = leftArea - rightArea
+            print ("current difference: " + str(difference))
+            if (leftArea > rightArea):
+                print ("left bigger")
+                s = (mid-max_turn_degree) * abs(difference) * PG
+                print ((mid-max_turn_degree) * abs(difference) * PG)
+                
 
-    b = 1340
+
+
+                
+            else:
+                print ("right bigger")
+                s = (mid+max_turn_degree) * abs(difference) * PG
+                print ((mid+max_turn_degree) * abs(difference) * PG)
+                
+
+    b = 1360
     image = cv2.line(im, (ROI1[0], ROI1[1]), (ROI1[2], ROI1[1]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI1[0], ROI1[1]), (ROI1[0], ROI1[3]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI1[2], ROI1[3]), (ROI1[2], ROI1[1]), (0, 255, 255), 4)
@@ -121,6 +135,13 @@ while True:
     image = cv2.line(im, (ROI2[2], ROI2[3]), (ROI2[2], ROI2[1]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI2[2], ROI2[3]), (ROI2[0], ROI2[3]), (0, 255, 255), 4)   
     cv2.imshow("Camera", im)
+    if (s < mid - max_turn_degree):
+        s = mid - max_turn_degree
+        
+    elif (s > mid + max_turn_degree):
+        s = mid + max_turn_degree
+        
+        
     pw = pwm(s)
     Board.setPWMServoPulse(6, b, 100) 
     Board.setPWMServoPulse(1, pw, 1000)
