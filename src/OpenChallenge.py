@@ -111,8 +111,8 @@ while True:
             print ("current difference: " + str(difference))
             if (leftArea > rightArea):
                 print ("left bigger")
-                s = (mid-max_turn_degree) * abs(difference) * PG
-                print ((mid-max_turn_degree) * abs(difference) * PG)
+                s = difference * PG
+                print ("turning: " + s)
                 
 
 
@@ -120,8 +120,8 @@ while True:
                 
             else:
                 print ("right bigger")
-                s = (mid+max_turn_degree) * abs(difference) * PG
-                print ((mid+max_turn_degree) * abs(difference) * PG)
+                s = difference * PG
+                print ("turning: " + s)
                 
 
     b = 1360
@@ -135,13 +135,13 @@ while True:
     image = cv2.line(im, (ROI2[2], ROI2[3]), (ROI2[2], ROI2[1]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI2[2], ROI2[3]), (ROI2[0], ROI2[3]), (0, 255, 255), 4)   
     cv2.imshow("Camera", im)
-    if (s < mid - max_turn_degree):
-        s = mid - max_turn_degree
+    if (s  < -1):
+        s = -1
         
-    elif (s > mid + max_turn_degree):
-        s = mid + max_turn_degree
-        
-        
+    elif (s > 1):
+        s = 1
+
+    steering = mid - (s * (max_turning_degree))
     pw = pwm(s)
     Board.setPWMServoPulse(6, b, 100) 
     Board.setPWMServoPulse(1, pw, 1000)
