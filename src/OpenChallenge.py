@@ -9,29 +9,43 @@ import HiwonderSDK.Board as Board
 # used to record the time when we processed last frame
 prev_frame_time = 0
 mid = 80
-max_turn_degree = 33
+max_turn_degree = 32
 sharpturn = False
-sharpturncounter = 10
+sharpturncounter = 120
+totalturn = 0
+actioncounter = 0
 # used to record the time at which we processed current frame
 new_frame_time = 0
 picam2 = Picamera2()
 picam2.preview_configuration.main.size = (640,480)
 picam2.preview_configuration.main.format = "RGB888"
-picam2.preview_configuration.controls.FrameRate = 30
+picam2.preview_configuration.controls.FrameRate = 35
 picam2.preview_configuration.align()
 picam2.configure("preview")
 picam2.start()
 def pwm(degree):
 	return round(degree*11.1 + 500)
-ROI1 = [0, 300, 220, 360]
-ROI2 = [380, 300, 640, 360]
-PG = 0.0002
+ROI1 = [0, 295, 190, 340]
+ROI2 = [430, 295, 640, 340]
+PD = 0.0016
+PG = 0.0075
 points = [(115,200), (525,200), (640,370), (0,370)]
-
+lastdifference = 0
+difference = 0
 Board.setPWMServoPulse(1, pwm(mid), 10) #Turn to 90 degree
 # 'Arm' the ESC
 Board.setPWMServoPulse(6, 1500, 100)
 s = 0
+print("---------------------------- running")
+print("---------------------------- running")
+
+print("---------------------------- running")
+
+print("---------------------------- running")
+
+print("---------------------------- running")
+
+
 while True:
     im= picam2.capture_array()
     width = 640
@@ -47,7 +61,7 @@ while True:
         
         # black mask
     lower_black = np.array([0, 0, 0])
-    upper_black = np.array([210, 255, 75])
+    upper_black = np.array([180, 255, 55])
     
     lower_blue = np.array([50, 50, 50])
     upper_blue = np.array([180, 180, 255])
@@ -65,12 +79,14 @@ while True:
     for i in range(len(leftContours)):
         cnt = leftContours[i]
         area = cv2.contourArea(cnt)
-        if (area > 100):
-            print(area)
+        
         leftArea = max(area, leftArea)
         
         
-            
+    
+    
+    
+    
     for i in range(len(rightContours)):
         cnt = rightContours[i]
         area = cv2.contourArea(cnt)
@@ -90,41 +106,66 @@ while True:
         
         
   
-            
+    if (sharpturncounter == 0):
+        sharpturn = False    
     if (sharpturn and sharpturncounter > 0):
-        
         sharpturncounter -=1
-        
+    
     else:
-        if rightArea < 200:
+        if rightArea < 100 and leftArea < 100:
+            print ("no walls")
+            b = 1400
+
+        
+        elif rightArea < 100:
             print("no wall to the right")
             sharpturn = True
-            sharpturncounter = 10
+            sharpturncounter = 120
             s = mid-max_turn_degree
-        elif leftArea < 200:
+            b = 1380
+            totalturn+=1
+            print(str(totalturn) + "th turn")
+        elif leftArea < 100:
             print("no wall to the left")
             sharpturn = True
-            sharpturncounter = 10
+            sharpturncounter = 120
             s = mid+max_turn_degree
+            b = 1380
+            totalturn+=1
+            print(str(totalturn) + "th turn")
+
+
         else:
             difference = leftArea - rightArea
             print ("current difference: " + str(difference))
             if (leftArea > rightArea):
                 print ("left bigger")
-                s = difference * PG
-                print ("turning: " + s)
-                
-
-
-
-                
             else:
                 print ("right bigger")
-                s = difference * PG
-                print ("turning: " + s)
+
+            s = mid - (difference * PG + (difference-lastdifference) * PD)
+            print (mid - (difference * PG + (difference-lastdifference) * PD))
                 
 
-    b = 1360
+
+# 
+    if totalturn == 12:
+        actioncounter += 1
+        
+        
+    if (actioncounter >= 155):
+        time.sleep(0.02)
+        Board.setPWMServoPulse(6, 1500, 100) 
+        Board.setPWMServoPulse(1, pwm(mid), 1000)
+        print("stop")
+        break
+        
+    
+            
+        
+    lastdifference= difference
+                
+    b = 1342
     image = cv2.line(im, (ROI1[0], ROI1[1]), (ROI1[2], ROI1[1]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI1[0], ROI1[1]), (ROI1[0], ROI1[3]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI1[2], ROI1[3]), (ROI1[2], ROI1[1]), (0, 255, 255), 4)
@@ -135,13 +176,14 @@ while True:
     image = cv2.line(im, (ROI2[2], ROI2[3]), (ROI2[2], ROI2[1]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI2[2], ROI2[3]), (ROI2[0], ROI2[3]), (0, 255, 255), 4)   
     cv2.imshow("Camera", im)
-    if (s  < -1):
-        s = -1
+    if (s < mid - max_turn_degree):
+        s = mid - max_turn_degree
         
-    elif (s > 1):
-        s = 1
-
-    steering = mid - (s * (max_turning_degree))
+    elif (s > mid + max_turn_degree):
+        s = mid + max_turn_degree
+        
+    print ("turning " + str(s))
+    
     pw = pwm(s)
     Board.setPWMServoPulse(6, b, 100) 
     Board.setPWMServoPulse(1, pw, 1000)
