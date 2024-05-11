@@ -1,21 +1,40 @@
+#libraries
 import sys
-
 import cv2
 import numpy as np
 import time
 sys.path.append('/home/pi/TurboPi/')
 from picamera2 import Picamera2
 import HiwonderSDK.Board as Board
-# used to record the time when we processed last frame
-prev_frame_time = 0
-mid = 80
-max_turn_degree = 32
+
+# constant variables
+MID_SERVO = 80
+MAX_TURN_DEGREE = 32
+ROI_LEFT = [0, 295, 190, 340]
+ROI_RIGHT = [430, 295, 640, 340]
+PD = 0.0016
+PG = 0.0075
+WIDTH = 640
+HEIGHT = 480
+POINTS = [(115,200), (525,200), (640,370), (0,370)]
+LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
+UPPER_BLACK_THRESHOLD = np.array([180, 255, 55])
+DC_STRAIGHT_SPEED = 1342
+DC_TURN_SPEED = 1360
+MAX_TURNS = 12
+ACTIONS_TO_STRAIGHT = 155
+SHARP_TURN_ACTIONS = 120
+
+#dynamic variables
+sharpturncounter = SHARP_TURN_ACTIONS
 sharpturn = False
-sharpturncounter = 120
 totalturn = 0
 actioncounter = 0
-# used to record the time at which we processed current frame
-new_frame_time = 0
+lastdifference = 0
+difference = 0
+
+
+# camera setup
 picam2 = Picamera2()
 picam2.preview_configuration.main.size = (640,480)
 picam2.preview_configuration.main.format = "RGB888"
@@ -23,79 +42,61 @@ picam2.preview_configuration.controls.FrameRate = 35
 picam2.preview_configuration.align()
 picam2.configure("preview")
 picam2.start()
+
+# utility function for pwm angle calculation
 def pwm(degree):
 	return round(degree*11.1 + 500)
-ROI1 = [0, 295, 190, 340]
-ROI2 = [430, 295, 640, 340]
-PD = 0.0016
-PG = 0.0075
-points = [(115,200), (525,200), (640,370), (0,370)]
-lastdifference = 0
-difference = 0
-Board.setPWMServoPulse(1, pwm(mid), 10) #Turn to 90 degree
-# 'Arm' the ESC
-Board.setPWMServoPulse(6, 1500, 100)
-s = 0
-print("---------------------------- running")
-print("---------------------------- running")
 
-print("---------------------------- running")
+    
 
-print("---------------------------- running")
+Board.setPWMServoPulse(1, pwm(MID_SERVO), 10) #turn servo to mid
+Board.setPWMServoPulse(6, 1500, 100) # arm the esc motor
 
-print("---------------------------- running")
+print("---------------------------- running--------------------------")
+
 
 
 while True:
+    # setup camera frame
     im= picam2.capture_array()
-    width = 640
-    height = 480
-    input = np.float32(points)
-    output = np.float32([(0,0), (width-1,0), (width-1,height-1), (0,height-1)])
-    # compute perspective matrix
-    
-  
-    #grayscaling
-    #thresholding
+    input = np.float32(POINTS)
+    output = np.float32([(0,0), (WIDTH-1,0), (WIDTH-1,HEIGHT-1), (0,HEIGHT-1)])
+
+    # convert to hsv
     img_hsv = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
         
-        # black mask
-    lower_black = np.array([0, 0, 0])
-    upper_black = np.array([180, 255, 55])
+     # find black thresholds
+    img_thresh = cv2.inRange(img_hsv, LOWER_BLACK_THRESHOLD, UPPER_BLACK_THRESHOLD)
     
-    lower_blue = np.array([50, 50, 50])
-    upper_blue = np.array([180, 180, 255])
-        
-    imgThresh = cv2.inRange(img_hsv, lower_black, upper_black)
-    
-    
-    leftContours, hierarchy = cv2.findContours(imgThresh[ROI1[1]:ROI1[3], ROI1[0]:ROI1[2]],
+    # define functions for right and left contours in respective ROIs
+    leftContours, hierarchy = cv2.findContours(img_thresh[ROI_LEFT[1]:ROI_LEFT[3], ROI_LEFT[0]:ROI_LEFT[2]],
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    rightContours, hierarchy = cv2.findContours(imgThresh[ROI2[1]:ROI2[3], ROI2[0]:ROI2[2]],
+    rightContours, hierarchy = cv2.findContours(img_thresh[ROI_RIGHT[1]:ROI_RIGHT[3], ROI_RIGHT[0]:ROI_RIGHT[2]],
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    contours, hierarchy = cv2.findContours(imgThresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    
+    # find all contours for debug utility
+    contours, hierarchy = cv2.findContours(img_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    
+    # define variables for left and right ROI contour areas
     leftArea = 0
     rightArea = 0
+    
+    # loop to find largest contours
     for i in range(len(leftContours)):
         cnt = leftContours[i]
         area = cv2.contourArea(cnt)
-        
         leftArea = max(area, leftArea)
         
         
-    
-    
-    
     
     for i in range(len(rightContours)):
         cnt = rightContours[i]
         area = cv2.contourArea(cnt)
         
-        #if (area > 100):
-            #print(area)
-        
         rightArea = max(area, rightArea)
         
+        
+    # draw all relatively large contours for debug utility
     for i in range(len(contours)):
             cnt = contours[i]
             area = cv2.contourArea(cnt)
@@ -104,93 +105,113 @@ while True:
                 approx=cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt,True),True)
                 x,y,w,h=cv2.boundingRect(approx)
         
-        
-  
+    
+    # set default DC motor speed as straight section speed
+    
+    dcspeed = DC_STRAIGHT_SPEED
+    
+    # if in a sharp turn, keep all movement variables intact for a given amount of iterations
+    
     if (sharpturncounter == 0):
         sharpturn = False    
-    if (sharpturn and sharpturncounter > 0):
+    elif (sharpturn and sharpturncounter > 0):
         sharpturncounter -=1
     
+    
+    
+    
     else:
-        if rightArea < 100 and leftArea < 100:
-            print ("no walls")
-            b = 1400
-
         
-        elif rightArea < 100:
-            print("no wall to the right")
+        
+        if rightArea < 100:
+            print("no wall to the right") 
+            
+            # set all movement variables to turn sharply right
+            
+            
             sharpturn = True
-            sharpturncounter = 120
-            s = mid-max_turn_degree
-            b = 1380
+            sharpturncounter = SHARP_TURN_ACTIONS
+            s = MID_SERVO-MAX_TURN_DEGREE
+            dcspeed = DC_TURN_SPEED
             totalturn+=1
-            print(str(totalturn) + "th turn")
+            
+            print(str(totalturn) + "th turn") 
+            
         elif leftArea < 100:
             print("no wall to the left")
+            
+            # set all movement variables to turn sharply left
+            
             sharpturn = True
-            sharpturncounter = 120
-            s = mid+max_turn_degree
-            b = 1380
+            sharpturncounter = SHARP_TURN_ACTIONS
+            s = MID_SERVO+MAX_TURN_DEGREE
+            dcspeed = DC_TURN_SPEED
             totalturn+=1
+            
+            
             print(str(totalturn) + "th turn")
 
 
         else:
+            # if in the straight section, calculate the difference between the contours in the left and right area
             difference = leftArea - rightArea
             print ("current difference: " + str(difference))
             if (leftArea > rightArea):
                 print ("left bigger")
             else:
                 print ("right bigger")
-
-            s = mid - (difference * PG + (difference-lastdifference) * PD)
-            print (mid - (difference * PG + (difference-lastdifference) * PD))
+            #calculate steering amount using preportional-derivative steering
+            # multiply the difference by a constant variable and add the projected error multiplied by another constand
+            s = MID_SERVO - (difference * PG + (difference-lastdifference) * PD)
+            print (MID_SERVO - (difference * PG + (difference-lastdifference) * PD))
                 
 
 
-# 
-    if totalturn == 12:
+#   #if the total turns has surpassed the amount required, increment the action counter by 1
+    if totalturn == MAX_TURNS:
         actioncounter += 1
         
-        
-    if (actioncounter >= 155):
-        time.sleep(0.02)
-        Board.setPWMServoPulse(6, 1500, 100) 
-        Board.setPWMServoPulse(1, pwm(mid), 1000)
-        print("stop")
-        break
-        
-    
-            
-        
+    # set the last difference equal to the current difference for derivative steering
     lastdifference= difference
-                
-    b = 1342
-    image = cv2.line(im, (ROI1[0], ROI1[1]), (ROI1[2], ROI1[1]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI1[0], ROI1[1]), (ROI1[0], ROI1[3]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI1[2], ROI1[3]), (ROI1[2], ROI1[1]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI1[2], ROI1[3]), (ROI1[0], ROI1[3]), (0, 255, 255), 4)
     
-    image = cv2.line(im, (ROI2[0], ROI2[1]), (ROI2[2], ROI2[1]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI2[0], ROI2[1]), (ROI2[0], ROI2[3]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI2[2], ROI2[3]), (ROI2[2], ROI2[1]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI2[2], ROI2[3]), (ROI2[0], ROI2[3]), (0, 255, 255), 4)   
-    cv2.imshow("Camera", im)
-    if (s < mid - max_turn_degree):
-        s = mid - max_turn_degree
+    # if the steering variable is higher than the max turn degree for the servo, set it to the max turn degree
+    if (s < MID_SERVO - MAX_TURN_DEGREE):
+        s = MID_SERVO - MAX_TURN_DEGREE
         
-    elif (s > mid + max_turn_degree):
-        s = mid + max_turn_degree
+    elif (s > MID_SERVO + MAX_TURN_DEGREE):
+        s = MID_SERVO + MAX_TURN_DEGREE
+       
         
     print ("turning " + str(s))
     
+    
+    # move the motors using the variables
     pw = pwm(s)
-    Board.setPWMServoPulse(6, b, 100) 
+    Board.setPWMServoPulse(6, dcspeed, 100) 
     Board.setPWMServoPulse(1, pw, 1000)
-    if cv2.waitKey(1)==ord("q"):#wait until key ‘q’ pressed
+      
+               
+    #draw the ROI
+    image = cv2.line(im, (ROI_LEFT[0], ROI_LEFT[1]), (ROI_LEFT[2], ROI_LEFT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT[0], ROI_LEFT[1]), (ROI_LEFT[0], ROI_LEFT[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT[2], ROI_LEFT[3]), (ROI_LEFT[2], ROI_LEFT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT[2], ROI_LEFT[3]), (ROI_LEFT[0], ROI_LEFT[3]), (0, 255, 255), 4)
+    
+    image = cv2.line(im, (ROI_RIGHT[0], ROI_RIGHT[1]), (ROI_RIGHT[2], ROI_RIGHT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT[0], ROI_RIGHT[1]), (ROI_RIGHT[0], ROI_RIGHT[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT[2], ROI_RIGHT[3]), (ROI_RIGHT[2], ROI_RIGHT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT[2], ROI_RIGHT[3]), (ROI_RIGHT[0], ROI_RIGHT[3]), (0, 255, 255), 4)   
+    
+    
+    # display the camera
+    cv2.imshow("Camera", im)
+    
+    
+    # if the number of actions to the straight section has been met, stop the car
+    if (cv2.waitKey(1)==ord("q") or actioncounter >= ACTIONS_TO_STRAIGHT):#
         time.sleep(0.02)
         Board.setPWMServoPulse(6, 1500, 100) 
-        Board.setPWMServoPulse(1, pwm(mid), 1000)
+        Board.setPWMServoPulse(1, pwm(MID_SERVO), 1000)
         print("stop")
         
         break
