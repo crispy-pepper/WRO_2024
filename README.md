@@ -1,6 +1,16 @@
 # Engineering materials
 
 This repository contains engineering materials of a self-driven vehicle's model participating in the WRO Future Engineers competition in the season 2022.
+Materials
+* Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car
+* Komodo Motor
+* Hitec HS-5055MG Servo
+* Furitek Lizard Pro ESC
+* Gens Ace 2S1P 1300mAh 7.4V battery
+* Rasberry PI 4 Model B
+* random rasberry pi hat from sweatshop in china
+* Rasberry PI fan
+* 3d printed base
 
 ## Content
 
