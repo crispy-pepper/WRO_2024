@@ -24,6 +24,7 @@ DC_TURN_SPEED = 1346
 MAX_TURNS = 12
 ACTIONS_TO_STRAIGHT = 245
 WALL_THRESHOLD = 300
+NO_WALL_THRESHOLD = 100
 
 sharp_turn_left = False
 sharp_turn_right = False
@@ -126,7 +127,7 @@ while True:
         sharp_turn_left = False
         sharp_turn_right = False
         
-        if right_area < 100:
+        if right_area < NO_WALL_THRESHOLD:
             print("no wall to the right") 
             
             # set all movement variables to turn sharply right
@@ -139,7 +140,7 @@ while True:
             
             print(str(total_turn) + "th turn") 
             
-        elif left_area < 100:
+        elif left_area < NO_WALL_THRESHOLD:
             print("no wall to the left")
             
             # set all movement variables to turn sharply left
