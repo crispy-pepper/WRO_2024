@@ -10,24 +10,24 @@ import HiwonderSDK.Board as Board
 # constant variables
 MID_SERVO = 80
 MAX_TURN_DEGREE = 32
-ROI_LEFT = [0, 295, 190, 340]
-ROI_RIGHT = [430, 295, 640, 340]
-PD = 0.0016
-PG = 0.0075
+ROI_LEFT = [0, 300, 150, 335]
+ROI_RIGHT = [490, 300, 640, 335]
+PD = 0.0036
+PG = 0.008
 WIDTH = 640
 HEIGHT = 480
 POINTS = [(115,200), (525,200), (640,370), (0,370)]
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
 UPPER_BLACK_THRESHOLD = np.array([180, 255, 55])
 DC_STRAIGHT_SPEED = 1342
-DC_TURN_SPEED = 1360
+DC_TURN_SPEED = 1346
 MAX_TURNS = 12
-ACTIONS_TO_STRAIGHT = 155
-SHARP_TURN_ACTIONS = 120
+ACTIONS_TO_STRAIGHT = 145
+SHARP_TURN_ACTIONS = 200
 
 #dynamic variables
-sharpturncounter = SHARP_TURN_ACTIONS
-sharpturn = False
+sharpturnleft = False
+sharpturnright = False
 totalturn = 0
 actioncounter = 0
 lastdifference = 0
@@ -51,7 +51,7 @@ def pwm(degree):
 
 Board.setPWMServoPulse(1, pwm(MID_SERVO), 10) #turn servo to mid
 Board.setPWMServoPulse(6, 1500, 100) # arm the esc motor
-
+time.sleep(2)
 print("---------------------------- running--------------------------")
 
 
@@ -110,18 +110,22 @@ while True:
     
     dcspeed = DC_STRAIGHT_SPEED
     
-    # if in a sharp turn, keep all movement variables intact for a given amount of iterations
     
-    if (sharpturncounter == 0):
-        sharpturn = False    
-    elif (sharpturn and sharpturncounter > 0):
-        sharpturncounter -=1
+    if (sharpturnright and rightArea< 300):
+            s = MID_SERVO-MAX_TURN_DEGREE
+            dcspeed = DC_TURN_SPEED
+            
+    elif (sharpturnleft and leftArea< 300):
+            s = MID_SERVO+MAX_TURN_DEGREE
+            dcspeed = DC_TURN_SPEED
+    
     
     
     
     
     else:
-        
+        sharpturnleft = False
+        sharpturnright = False
         
         if rightArea < 100:
             print("no wall to the right") 
@@ -129,10 +133,9 @@ while True:
             # set all movement variables to turn sharply right
             
             
-            sharpturn = True
-            sharpturncounter = SHARP_TURN_ACTIONS
-            s = MID_SERVO-MAX_TURN_DEGREE
-            dcspeed = DC_TURN_SPEED
+            sharpturnright = True
+            
+            
             totalturn+=1
             
             print(str(totalturn) + "th turn") 
@@ -142,10 +145,9 @@ while True:
             
             # set all movement variables to turn sharply left
             
-            sharpturn = True
-            sharpturncounter = SHARP_TURN_ACTIONS
-            s = MID_SERVO+MAX_TURN_DEGREE
-            dcspeed = DC_TURN_SPEED
+            sharpturnleft = True
+            
+          
             totalturn+=1
             
             
