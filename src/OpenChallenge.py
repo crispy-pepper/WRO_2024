@@ -26,6 +26,7 @@ ACTIONS_TO_STRAIGHT = 245
 WALL_THRESHOLD = 300
 NO_WALL_THRESHOLD = 100
 
+#dynamic variables
 sharp_turn_left = False
 sharp_turn_right = False
 total_turn = 0
@@ -193,7 +194,7 @@ while True:
     Board.setPWMServoPulse(1, pw, 1000)
       
                
-    #draw the ROI
+    #draw the ROIs
     image = cv2.line(im, (ROI_LEFT[0], ROI_LEFT[1]), (ROI_LEFT[2], ROI_LEFT[1]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI_LEFT[0], ROI_LEFT[1]), (ROI_LEFT[0], ROI_LEFT[3]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI_LEFT[2], ROI_LEFT[3]), (ROI_LEFT[2], ROI_LEFT[1]), (0, 255, 255), 4)
