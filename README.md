@@ -8,7 +8,7 @@ Materials
 * Furitek Lizard Pro ESC
 * Gens Ace 2S1P 1300mAh 7.4V battery
 * Rasberry PI 4 Model B
-* random rasberry pi hat from sweatshop in china
+* Raspberry Pi Multi-function Expansion Board 
 * Rasberry PI fan
 * 3d printed base
 
