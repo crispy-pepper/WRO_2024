@@ -26,12 +26,12 @@ ACTIONS_TO_STRAIGHT = 145
 SHARP_TURN_ACTIONS = 200
 
 #dynamic variables
-sharpturnleft = False
-sharpturnright = False
-totalturn = 0
-actioncounter = 0
-lastdifference = 0
-difference = 0
+sharp_turn_left = False
+sharp_turn_right = False
+total_turn = 0
+action_counter = 0
+last_difference = 0
+current_difference = 0
 
 
 # camera setup
@@ -69,31 +69,31 @@ while True:
     img_thresh = cv2.inRange(img_hsv, LOWER_BLACK_THRESHOLD, UPPER_BLACK_THRESHOLD)
     
     # define functions for right and left contours in respective ROIs
-    leftContours, hierarchy = cv2.findContours(img_thresh[ROI_LEFT[1]:ROI_LEFT[3], ROI_LEFT[0]:ROI_LEFT[2]],
+    left_contours, hierarchy = cv2.findContours(img_thresh[ROI_LEFT[1]:ROI_LEFT[3], ROI_LEFT[0]:ROI_LEFT[2]],
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    rightContours, hierarchy = cv2.findContours(img_thresh[ROI_RIGHT[1]:ROI_RIGHT[3], ROI_RIGHT[0]:ROI_RIGHT[2]],
+    right_contours, hierarchy = cv2.findContours(img_thresh[ROI_RIGHT[1]:ROI_RIGHT[3], ROI_RIGHT[0]:ROI_RIGHT[2]],
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     
     # find all contours for debug utility
     contours, hierarchy = cv2.findContours(img_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     
     # define variables for left and right ROI contour areas
-    leftArea = 0
-    rightArea = 0
+    left_area = 0
+    right_area = 0
     
     # loop to find largest contours
-    for i in range(len(leftContours)):
-        cnt = leftContours[i]
+    for i in range(len(left_contours)):
+        cnt = left_contours[i]
         area = cv2.contourArea(cnt)
-        leftArea = max(area, leftArea)
+        left_area = max(area, left_area)
         
         
     
-    for i in range(len(rightContours)):
-        cnt = rightContours[i]
+    for i in range(len(right_contours)):
+        cnt = right_contours[i]
         area = cv2.contourArea(cnt)
         
-        rightArea = max(area, rightArea)
+        right_area = max(area, right_area)
         
         
     # draw all relatively large contours for debug utility
@@ -108,88 +108,88 @@ while True:
     
     # set default DC motor speed as straight section speed
     
-    dcspeed = DC_STRAIGHT_SPEED
+    dc_speed = DC_STRAIGHT_SPEED
     
     
-    if (sharpturnright and rightArea< 300):
-            s = MID_SERVO-MAX_TURN_DEGREE
-            dcspeed = DC_TURN_SPEED
+    if (sharp_turn_right and right_area< 300):
+            servo_angle = MID_SERVO-MAX_TURN_DEGREE
+            dc_speed = DC_TURN_SPEED
             
-    elif (sharpturnleft and leftArea< 300):
-            s = MID_SERVO+MAX_TURN_DEGREE
-            dcspeed = DC_TURN_SPEED
+    elif (sharp_turn_left and left_area< 300):
+            servo_angle = MID_SERVO+MAX_TURN_DEGREE
+            dc_speed = DC_TURN_SPEED
     
     
     
     
     
     else:
-        sharpturnleft = False
-        sharpturnright = False
+        sharp_turn_left = False
+        sharp_turn_right = False
         
-        if rightArea < 100:
+        if right_area < 100:
             print("no wall to the right") 
             
             # set all movement variables to turn sharply right
             
             
-            sharpturnright = True
+            sharp_turn_right = True
             
             
-            totalturn+=1
+            total_turn+=1
             
-            print(str(totalturn) + "th turn") 
+            print(str(total_turn) + "th turn") 
             
-        elif leftArea < 100:
+        elif left_area < 100:
             print("no wall to the left")
             
             # set all movement variables to turn sharply left
             
-            sharpturnleft = True
+            sharp_turn_left = True
             
           
-            totalturn+=1
+            total_turn+=1
             
             
-            print(str(totalturn) + "th turn")
+            print(str(total_turn) + "th turn")
 
 
         else:
-            # if in the straight section, calculate the difference between the contours in the left and right area
-            difference = leftArea - rightArea
-            print ("current difference: " + str(difference))
-            if (leftArea > rightArea):
+            # if in the straight section, calculate the current_difference between the contours in the left and right area
+            current_difference = left_area - right_area
+            print ("current current_difference: " + str(current_difference))
+            if (left_area > right_area):
                 print ("left bigger")
             else:
                 print ("right bigger")
             #calculate steering amount using preportional-derivative steering
-            # multiply the difference by a constant variable and add the projected error multiplied by another constand
-            s = MID_SERVO - (difference * PG + (difference-lastdifference) * PD)
-            print (MID_SERVO - (difference * PG + (difference-lastdifference) * PD))
+            # multiply the current_difference by a constant variable and add the projected error multiplied by another constand
+            servo_angle = MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD)
+            print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
                 
 
 
 #   #if the total turns has surpassed the amount required, increment the action counter by 1
-    if totalturn == MAX_TURNS:
-        actioncounter += 1
+    if total_turn == MAX_TURNS:
+        action_counter += 1
         
-    # set the last difference equal to the current difference for derivative steering
-    lastdifference= difference
+    # set the last current_difference equal to the current current_difference for derivative steering
+    last_difference= current_difference
     
     # if the steering variable is higher than the max turn degree for the servo, set it to the max turn degree
-    if (s < MID_SERVO - MAX_TURN_DEGREE):
-        s = MID_SERVO - MAX_TURN_DEGREE
+    if (servo_angle < MID_SERVO - MAX_TURN_DEGREE):
+        servo_angle = MID_SERVO - MAX_TURN_DEGREE
         
-    elif (s > MID_SERVO + MAX_TURN_DEGREE):
-        s = MID_SERVO + MAX_TURN_DEGREE
+    elif (servo_angle > MID_SERVO + MAX_TURN_DEGREE):
+        servo_angle = MID_SERVO + MAX_TURN_DEGREE
        
         
-    print ("turning " + str(s))
+    print ("turning " + str(servo_angle))
     
     
     # move the motors using the variables
-    pw = pwm(s)
-    Board.setPWMServoPulse(6, dcspeed, 100) 
+    pw = pwm(servo_angle)
+    Board.setPWMServoPulse(6, dc_speed, 100) 
     Board.setPWMServoPulse(1, pw, 1000)
       
                
@@ -210,7 +210,7 @@ while True:
     
     
     # if the number of actions to the straight section has been met, stop the car
-    if (cv2.waitKey(1)==ord("q") or actioncounter >= ACTIONS_TO_STRAIGHT):#
+    if (cv2.waitKey(1)==ord("q") or action_counter >= ACTIONS_TO_STRAIGHT):#
         time.sleep(0.02)
         Board.setPWMServoPulse(6, 1500, 100) 
         Board.setPWMServoPulse(1, pwm(MID_SERVO), 1000)
