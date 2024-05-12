@@ -22,9 +22,9 @@ UPPER_BLACK_THRESHOLD = np.array([180, 255, 55])
 DC_STRAIGHT_SPEED = 1342
 DC_TURN_SPEED = 1346
 MAX_TURNS = 12
-ACTIONS_TO_STRAIGHT = 145
+ACTIONS_TO_STRAIGHT = 245
+WALL_THRESHOLD = 300
 
-#dynamic variables
 sharp_turn_left = False
 sharp_turn_right = False
 total_turn = 0
@@ -110,11 +110,11 @@ while True:
     dc_speed = DC_STRAIGHT_SPEED
     
     
-    if (sharp_turn_right and right_area< 300):
+    if (sharp_turn_right and right_area< WALL_THRESHOLD):
             servo_angle = MID_SERVO-MAX_TURN_DEGREE
             dc_speed = DC_TURN_SPEED
             
-    elif (sharp_turn_left and left_area< 300):
+    elif (sharp_turn_left and left_area< WALL_THRESHOLD):
             servo_angle = MID_SERVO+MAX_TURN_DEGREE
             dc_speed = DC_TURN_SPEED
     
