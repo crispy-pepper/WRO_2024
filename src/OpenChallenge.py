@@ -23,7 +23,6 @@ DC_STRAIGHT_SPEED = 1342
 DC_TURN_SPEED = 1346
 MAX_TURNS = 12
 ACTIONS_TO_STRAIGHT = 145
-SHARP_TURN_ACTIONS = 200
 
 #dynamic variables
 sharp_turn_left = False
