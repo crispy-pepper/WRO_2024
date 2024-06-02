@@ -9,22 +9,25 @@ import HiwonderSDK.Board as Board
 
 # constant variables
 MID_SERVO = 80
-MAX_TURN_DEGREE = 32
-ROI_LEFT = [0, 300, 150, 335]
-ROI_RIGHT = [490, 300, 640, 335]
+MAX_TURN_DEGREE = 50
+ROI_LEFT_BOT = [0, 290, 100, 330]
+ROI_RIGHT_BOT = [540, 290, 640, 330]
+
+ROI_LEFT_TOP = [0, 270, 50, 290]
+ROI_RIGHT_TOP = [590, 270, 640, 290]
 PD = 0.0036
-PG = 0.008
+PG = 0.009
 WIDTH = 640
 HEIGHT = 480
 POINTS = [(115,200), (525,200), (640,370), (0,370)]
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
-UPPER_BLACK_THRESHOLD = np.array([180, 255, 55])
-DC_STRAIGHT_SPEED = 1342
-DC_TURN_SPEED = 1346
+UPPER_BLACK_THRESHOLD = np.array([180, 255, 70])
+DC_STRAIGHT_SPEED = 1350
+DC_TURN_SPEED = 1364
 MAX_TURNS = 12
-ACTIONS_TO_STRAIGHT = 245
-WALL_THRESHOLD = 300
-NO_WALL_THRESHOLD = 600
+ACTIONS_TO_STRAIGHT = 400
+WALL_THRESHOLD = 600
+NO_WALL_THRESHOLD = 50
 
 #dynamic variables
 sharp_turn_left = False
@@ -33,7 +36,9 @@ total_turn = 0
 action_counter = 0
 last_difference = 0
 current_difference = 0
+servo_angle=0 
 
+turning_iter = 0
 
 # camera setup
 picam2 = Picamera2()
@@ -70,33 +75,57 @@ while True:
     img_thresh = cv2.inRange(img_hsv, LOWER_BLACK_THRESHOLD, UPPER_BLACK_THRESHOLD)
     
     # define functions for right and left contours in respective ROIs
-    left_contours, hierarchy = cv2.findContours(img_thresh[ROI_LEFT[1]:ROI_LEFT[3], ROI_LEFT[0]:ROI_LEFT[2]],
+    left_contours_top, hierarchy = cv2.findContours(img_thresh[ROI_LEFT_TOP[1]:ROI_LEFT_TOP[3], ROI_LEFT_TOP[0]:ROI_LEFT_TOP[2]],
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    right_contours, hierarchy = cv2.findContours(img_thresh[ROI_RIGHT[1]:ROI_RIGHT[3], ROI_RIGHT[0]:ROI_RIGHT[2]],
+    right_contours_top, hierarchy = cv2.findContours(img_thresh[ROI_RIGHT_TOP[1]:ROI_RIGHT_TOP[3], ROI_RIGHT_TOP[0]:ROI_RIGHT_TOP[2]],
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    left_contours_bot, hierarchy = cv2.findContours(img_thresh[ROI_LEFT_BOT[1]:ROI_LEFT_BOT[3], ROI_LEFT_BOT[0]:ROI_LEFT_BOT[2]],
+        cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    right_contours_bot, hierarchy = cv2.findContours(img_thresh[ROI_RIGHT_BOT[1]:ROI_RIGHT_BOT[3], ROI_RIGHT_BOT[0]:ROI_RIGHT_BOT[2]],
+        cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    
+    #left_contours = np.concatenate((left_contours_top,left_contours_bot))
+    #right_contours =  np.concatenate((right_contours_top,right_contours_bot))
     
     # find all contours for debug utility
     contours, hierarchy = cv2.findContours(img_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     
     # define variables for left and right ROI contour areas
-    left_area = 0
-    right_area = 0
+    left_area_top = 0
+    left_area_bot = 0
+
+    right_area_top = 0
+    right_area_bot = 0
     
     # loop to find largest contours
-    for i in range(len(left_contours)):
-        cnt = left_contours[i]
+    for i in range(len(left_contours_top)):
+        cnt = left_contours_top[i]
         area = cv2.contourArea(cnt)
-        left_area = max(area, left_area)
+        left_area_top = max(area, left_area_top)
+    
+    for i in range(len(left_contours_bot)):
+        cnt = left_contours_bot[i]
+        area = cv2.contourArea(cnt)
+        left_area_bot = max(area, left_area_bot)
         
         
     
-    for i in range(len(right_contours)):
-        cnt = right_contours[i]
+    for i in range(len(right_contours_top)):
+        cnt = right_contours_top[i]
+
         area = cv2.contourArea(cnt)
         
-        right_area = max(area, right_area)
+        right_area_top = max(area, right_area_top)
+    
+    for i in range(len(right_contours_bot)):
+        cnt = right_contours_bot[i]
+
+        area = cv2.contourArea(cnt)
         
+        right_area_bot = max(area, right_area_bot)
         
+    right_area = right_area_bot+right_area_top
+    left_area = left_area_bot+left_area_top
     # draw all relatively large contours for debug utility
     for i in range(len(contours)):
             cnt = contours[i]
@@ -112,13 +141,15 @@ while True:
     dc_speed = DC_STRAIGHT_SPEED
     
     
-    if (sharp_turn_right and right_area< WALL_THRESHOLD):
-            servo_angle = MID_SERVO-MAX_TURN_DEGREE
-            dc_speed = DC_TURN_SPEED
+    if ((sharp_turn_right and right_area< WALL_THRESHOLD) or 1 <= turning_iter<=200):
+        servo_angle = MID_SERVO-MAX_TURN_DEGREE
+        dc_speed = DC_TURN_SPEED
+        turning_iter += 1
             
-    elif (sharp_turn_left and left_area< WALL_THRESHOLD):
-            servo_angle = MID_SERVO+MAX_TURN_DEGREE
-            dc_speed = DC_TURN_SPEED
+    elif ((sharp_turn_left and left_area< WALL_THRESHOLD)or 1 <= turning_iter <= 200):
+        servo_angle = MID_SERVO+MAX_TURN_DEGREE
+        dc_speed = DC_TURN_SPEED
+        turning_iter += 1
     
     
     
@@ -127,46 +158,47 @@ while True:
     else:
         sharp_turn_left = False
         sharp_turn_right = False
-        
+        turning_iter = 0
         if right_area < NO_WALL_THRESHOLD:
-            print("no wall to the right") 
+            #print("no wall to the right") 
             
             # set all movement variables to turn sharply right
-            
-            
-            sharp_turn_right = True
-            
-            
             total_turn+=1
             
             print(str(total_turn) + "th turn") 
+            turning_iter += 1
+            sharp_turn_right = True
+            
+
             
         elif left_area < NO_WALL_THRESHOLD:
-            print("no wall to the left")
+            #print("no wall to the left")
             
             # set all movement variables to turn sharply left
-            
             sharp_turn_left = True
-            
-          
             total_turn+=1
             
-            
-            print(str(total_turn) + "th turn")
+            print(str(total_turn) + "th turn") 
+            turning_iter += 1
 
 
         else:
             # if in the straight section, calculate the current_difference between the contours in the left and right area
             current_difference = left_area - right_area
-            print ("current current_difference: " + str(current_difference))
+            #print ("current current_difference: " + str(current_difference))
             if (left_area > right_area):
-                print ("left bigger")
+                #print ("left bigger")
+                pass
             else:
-                print ("right bigger")
+                #print ("right bigger")
+                pass
             #calculate steering amount using preportional-derivative steering
             # multiply the current_difference by a constant variable and add the projected error multiplied by another constand
             servo_angle = MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD)
-            print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
+            #print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
+        
+    
+            
                 
 
 
@@ -185,7 +217,7 @@ while True:
         servo_angle = MID_SERVO + MAX_TURN_DEGREE
        
         
-    print ("turning " + str(servo_angle))
+    #print ("turning " + str(servo_angle))
     
     
     # move the motors using the variables
@@ -195,15 +227,26 @@ while True:
       
                
     #draw the ROIs
-    image = cv2.line(im, (ROI_LEFT[0], ROI_LEFT[1]), (ROI_LEFT[2], ROI_LEFT[1]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI_LEFT[0], ROI_LEFT[1]), (ROI_LEFT[0], ROI_LEFT[3]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI_LEFT[2], ROI_LEFT[3]), (ROI_LEFT[2], ROI_LEFT[1]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI_LEFT[2], ROI_LEFT[3]), (ROI_LEFT[0], ROI_LEFT[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_TOP[0], ROI_LEFT_TOP[1]), (ROI_LEFT_TOP[2], ROI_LEFT_TOP[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_TOP[0], ROI_LEFT_TOP[1]), (ROI_LEFT_TOP[0], ROI_LEFT_TOP[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_TOP[2], ROI_LEFT_TOP[3]), (ROI_LEFT_TOP[2], ROI_LEFT_TOP[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_TOP[2], ROI_LEFT_TOP[3]), (ROI_LEFT_TOP[0], ROI_LEFT_TOP[3]), (0, 255, 255), 4)
     
-    image = cv2.line(im, (ROI_RIGHT[0], ROI_RIGHT[1]), (ROI_RIGHT[2], ROI_RIGHT[1]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI_RIGHT[0], ROI_RIGHT[1]), (ROI_RIGHT[0], ROI_RIGHT[3]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI_RIGHT[2], ROI_RIGHT[3]), (ROI_RIGHT[2], ROI_RIGHT[1]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI_RIGHT[2], ROI_RIGHT[3]), (ROI_RIGHT[0], ROI_RIGHT[3]), (0, 255, 255), 4)   
+    image = cv2.line(im, (ROI_RIGHT_TOP[0], ROI_RIGHT_TOP[1]), (ROI_RIGHT_TOP[2], ROI_RIGHT_TOP[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_TOP[0], ROI_RIGHT_TOP[1]), (ROI_RIGHT_TOP[0], ROI_RIGHT_TOP[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_TOP[2], ROI_RIGHT_TOP[3]), (ROI_RIGHT_TOP[2], ROI_RIGHT_TOP[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_TOP[2], ROI_RIGHT_TOP[3]), (ROI_RIGHT_TOP[0], ROI_RIGHT_TOP[3]), (0, 255, 255), 4)   
+
+
+    image = cv2.line(im, (ROI_LEFT_BOT[0], ROI_LEFT_BOT[1]), (ROI_LEFT_BOT[2], ROI_LEFT_BOT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_BOT[0], ROI_LEFT_BOT[1]), (ROI_LEFT_BOT[0], ROI_LEFT_BOT[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_BOT[2], ROI_LEFT_BOT[3]), (ROI_LEFT_BOT[2], ROI_LEFT_BOT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_BOT[2], ROI_LEFT_BOT[3]), (ROI_LEFT_BOT[0], ROI_LEFT_BOT[3]), (0, 255, 255), 4)
+    
+    image = cv2.line(im, (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[1]), (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[1]), (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[3]), (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[3]), (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[3]), (0, 255, 255), 4)   
     
     
     # display the camera
