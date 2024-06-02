@@ -13,8 +13,10 @@ WIDTH = 640
 HEIGHT = 480
 
 
-LOWER_RED_THRESHOLD = np.array([119, 120, 27])#119,120,27
-UPPER_RED_THRESHOLD = np.array([180, 255, 255])
+LOWER_RED_THRESHOLD1 = np.array([0, 50, 50])
+UPPER_RED_THRESHOLD1 = np.array([10, 255, 255])
+LOWER_RED_THRESHOLD2 = np.array([170, 50, 50])
+UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
 
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
 UPPER_BLACK_THRESHOLD = np.array([180, 255, 55])
@@ -70,9 +72,11 @@ while True:
     # find black thresholds
 
     img_thresh_black = cv2.inRange(img_hsv, LOWER_BLACK_THRESHOLD, UPPER_BLACK_THRESHOLD)
-    img_thresh_red = cv2.inRange(img_hsv, LOWER_RED_THRESHOLD, UPPER_RED_THRESHOLD)
+    img_thresh_red1 = cv2.inRange(img_hsv, LOWER_RED_THRESHOLD1, UPPER_RED_THRESHOLD1)
+    img_thresh_red2 = cv2.inRange(img_hsv, LOWER_RED_THRESHOLD2, UPPER_RED_THRESHOLD2)
     img_thresh_green = cv2.inRange(img_hsv, LOWER_GREEN_THRESHOLD, UPPER_GREEN_THRESHOLD)
     
+    img_thresh_red = img_thresh_red2|img_thresh_red1
     # define functions for right and left contours in respective ROIs
     left_contours_red, hierarchy = cv2.findContours(img_thresh_red[ROI_LEFT[1]:ROI_LEFT[3], ROI_LEFT[0]:ROI_LEFT[2]],
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
