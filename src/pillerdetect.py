@@ -7,22 +7,21 @@ sys.path.append('/home/pi/TurboPi/')
 from picamera2 import Picamera2
 import HiwonderSDK.Board as Board
 
-ROI_MIDDLE = [0, 0, 320, 480]
-ROI_RIGHT = [320, 0, 640, 480]
+ROI_MIDDLE = [200, 200, 440, 320]
 WIDTH = 640
 HEIGHT = 480
 
 
-LOWER_RED_THRESHOLD1 = np.array([0, 50, 50])
+LOWER_RED_THRESHOLD1 = np.array([0, 50, 60])
 UPPER_RED_THRESHOLD1 = np.array([10, 255, 255])
-LOWER_RED_THRESHOLD2 = np.array([170, 50, 50])
+LOWER_RED_THRESHOLD2 = np.array([167, 50, 60])
 UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
 
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
 UPPER_BLACK_THRESHOLD = np.array([180, 255, 55])
 
-LOWER_GREEN_THRESHOLD = np.array([58, 62, 55])
-UPPER_GREEN_THRESHOLD = np.array([96, 255, 255])
+LOWER_GREEN_THRESHOLD = np.array([58, 42, 60])
+UPPER_GREEN_THRESHOLD = np.array([116, 255, 255])
 
 
 ACTIONS_TO_STRAIGHT = 245
@@ -98,7 +97,11 @@ while True:
 
             area = cv2.contourArea(cnt)
             if area > 100:
-                cv2.drawContours(im, cont, i, colour,1)
+                
+                cnt[:, :, 0] += ROI_MIDDLE[0]  # Add X offset
+                cnt[:, :, 1] += ROI_MIDDLE[1]  # Add Y offset
+            
+                cv2.drawContours(im, [cnt], -1, colour, 1)
                 approx=cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt,True),True)
                 x,y,w,h=cv2.boundingRect(approx)
             if c[2]!= 2 and area > 2000:
