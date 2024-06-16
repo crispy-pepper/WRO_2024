@@ -116,14 +116,14 @@ while True:
     contours_black, hierarchy = cv2.findContours(img_thresh_black, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
     
-    contour_red = cv2.findContours(img_thresh_red[ROI_PILLAR[1]:ROI_PILLAR[3], ROI_PILLAR[0]:ROI_PILLAR[2]],
+    contour_red, hierarchy = cv2.findContours(img_thresh_red[ROI_PILLAR[1]:ROI_PILLAR[3], ROI_PILLAR[0]:ROI_PILLAR[2]],
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    contour_green = cv2.findContours(img_thresh_green[ROI_PILLAR[1]:ROI_PILLAR[3], ROI_PILLAR[0]:ROI_PILLAR[2]],
+    contour_green, hierarchy = cv2.findContours(img_thresh_green[ROI_PILLAR[1]:ROI_PILLAR[3], ROI_PILLAR[0]:ROI_PILLAR[2]],
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         
     
     #contours = [(contours_black,(255,255,255),2),(left_contours_red,(0,0,255),1),(right_contours_red,(0,0,255),0),(left_contours_green,(0,255,0),1),(right_contours_green,(0,255,0),0)]
-    contours = [(contour_red,(0,0,255),1),(contour_green,(0,255,0),1),(contours_black,(0,0,0),0)]
+    contours = [(contour_red,(0,0,255),1),(contour_green,(0,255,0),0),(contours_black,(0,0,0),2)]
 
     for c in contours:
         cont = c[0]
@@ -141,6 +141,36 @@ while True:
                 Board.RGB.setPixelColor(c[2], Board.PixelColor(0,0,0))
 
             Board.RGB.show()
+
+    
+    image = cv2.line(im, (ROI_LEFT_TOP[0], ROI_LEFT_TOP[1]), (ROI_LEFT_TOP[2], ROI_LEFT_TOP[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_TOP[0], ROI_LEFT_TOP[1]), (ROI_LEFT_TOP[0], ROI_LEFT_TOP[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_TOP[2], ROI_LEFT_TOP[3]), (ROI_LEFT_TOP[2], ROI_LEFT_TOP[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_TOP[2], ROI_LEFT_TOP[3]), (ROI_LEFT_TOP[0], ROI_LEFT_TOP[3]), (0, 255, 255), 4)
+    
+    image = cv2.line(im, (ROI_RIGHT_TOP[0], ROI_RIGHT_TOP[1]), (ROI_RIGHT_TOP[2], ROI_RIGHT_TOP[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_TOP[0], ROI_RIGHT_TOP[1]), (ROI_RIGHT_TOP[0], ROI_RIGHT_TOP[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_TOP[2], ROI_RIGHT_TOP[3]), (ROI_RIGHT_TOP[2], ROI_RIGHT_TOP[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_TOP[2], ROI_RIGHT_TOP[3]), (ROI_RIGHT_TOP[0], ROI_RIGHT_TOP[3]), (0, 255, 255), 4)   
+
+
+    image = cv2.line(im, (ROI_LEFT_BOT[0], ROI_LEFT_BOT[1]), (ROI_LEFT_BOT[2], ROI_LEFT_BOT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_BOT[0], ROI_LEFT_BOT[1]), (ROI_LEFT_BOT[0], ROI_LEFT_BOT[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_BOT[2], ROI_LEFT_BOT[3]), (ROI_LEFT_BOT[2], ROI_LEFT_BOT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_BOT[2], ROI_LEFT_BOT[3]), (ROI_LEFT_BOT[0], ROI_LEFT_BOT[3]), (0, 255, 255), 4)
+    
+    image = cv2.line(im, (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[1]), (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[1]), (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[3]), (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[3]), (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[3]), (0, 255, 255), 4)   
+
+    image = cv2.line(im, (ROI_PILLAR[0], ROI_PILLAR[1]), (ROI_PILLAR[2], ROI_PILLAR[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_PILLAR[0], ROI_PILLAR[1]), (ROI_PILLAR[0], ROI_PILLAR[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_PILLAR[2], ROI_PILLAR[3]), (ROI_PILLAR[2], ROI_PILLAR[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_PILLAR[2], ROI_PILLAR[3]), (ROI_PILLAR[0], ROI_PILLAR[3]), (0, 255, 255), 4)
+    
+
+    cv2.imshow("Camera", im)
     
     # if the number of actions to the straight section has been met, stop the car
     if (cv2.waitKey(1)==ord("q") or action_counter >= ACTIONS_TO_STRAIGHT):#

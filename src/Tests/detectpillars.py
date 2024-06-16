@@ -114,6 +114,8 @@ while True:
             Board.RGB.show()
 
     
+
+    
     
     # display the camera
     cv2.imshow("Camera", im)
