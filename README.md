@@ -1,17 +1,23 @@
-# <<Team Name>> | Explorer Robotics | WRO - FIRST Robitics | Canada
+# <<<Team Name>>> | Explorer Robotics | WRO - FIRST Robitics | Canada
 
-## Introduction
+## Team Members <br>
+- Sunni Xue
+- Jayden Li
+- John Weng
+## Task 
+Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
 
-### Team Members <br>
-- dvzs
-### Task 
-### Our Approach
+## Our Approach
+### Open Challenge
+The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br>
+Our approach to this challenge was to detect the walls, turn when one wall disappears, and count the number of turns to know when to end. <br><br>
 
+**Track Centering:** To check whether our car was in the middle of the track, we took live camera captures of the field in front of the vehicle. Using four regions of interest (ROI), two on each side, we would detect the size of the black walls and compare them against each other. If one side was significantly larger than the other, it meant the car was too skewed towards that side. To actually center the vehicle, we used a Proportional, Integral and Derivative (PID) wall follower approach.
+ 
+### Obstacle Challenge
 
 ## Engineering materials
-
-This repository contains engineering materials of a self-driven vehicle's model participating in the WRO Future Engineers competition in the season 2022.
-Materials
+### Car Base
 * Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car
 * Komodo Motor
 * Hitec HS-5055MG Servo
@@ -21,6 +27,13 @@ Materials
 * Raspberry Pi Multi-function Expansion Board 
 * Rasberry PI fan
 * 3d printed base
+### Open Challenge
+* SainSmart Camera Module RPi3, 5MP, Fish-Eye
+### Obstacle Challenge
+* SainSmart Camera Module RPi3, 5MP, Fish-Eye
+* BerryIMU v3
+* Raspberry Pi ultrasonic sensor
+
 
 ## Content
 
