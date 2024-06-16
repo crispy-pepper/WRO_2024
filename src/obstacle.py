@@ -12,7 +12,7 @@ MID_SERVO = 80
 MAX_TURN_DEGREE = 50
 ROI_LEFT_BOT = [0, 290, 100, 330]
 ROI_RIGHT_BOT = [540, 290, 640, 330]
-ROI_MIDDLE = [200, 200, 440, 320]
+ROI_MIDDLE = [100, 100, 540, 420]
 
 ROI_LEFT_TOP = [0, 270, 50, 290]
 ROI_RIGHT_TOP = [590, 270, 640, 290]
@@ -324,6 +324,11 @@ while True:
     image = cv2.line(im, (ROI_MIDDLE[0], ROI_MIDDLE[1]), (ROI_MIDDLE[0], ROI_MIDDLE[3]), (0, 255, 255), 2)
     image = cv2.line(im, (ROI_MIDDLE[2], ROI_MIDDLE[3]), (ROI_MIDDLE[2], ROI_MIDDLE[1]), (0, 255, 255), 2)
     image = cv2.line(im, (ROI_MIDDLE[2], ROI_MIDDLE[3]), (ROI_MIDDLE[0], ROI_MIDDLE[3]), (0, 255, 255), 2)
+
+    image = cv2.line(im, (x, y), (x+w, y), (0, 255, 255), 1)
+    image = cv2.line(im, (x, y), ((x, h+y)), (0, 255, 255), 1)
+    image = cv2.line(im, (x+w, y), (x+w, y+h), (0, 255, 255), 1)
+    image = cv2.line(im, (x, y+h), (x+w, y+h), (0, 255, 255), 1)
     # display the camera
     cv2.imshow("Camera", im)
     
