@@ -29,6 +29,8 @@ ACTIONS_TO_STRAIGHT = 400
 WALL_THRESHOLD = 700
 NO_WALL_THRESHOLD = 50
 TURN_ITER_LIMIT = 120
+
+
 #dynamic variables
 sharp_turn_left = False
 sharp_turn_right = False
@@ -141,12 +143,12 @@ while True:
     dc_speed = DC_STRAIGHT_SPEED
     
     
-    if ((sharp_turn_right and right_area< WALL_THRESHOLD) or 1 <= turning_iter<=TURN_ITER_LIMIT):
+    if (sharp_turn_right and (right_area< WALL_THRESHOLD or 1 <= turning_iter<=TURN_ITER_LIMIT)):
         servo_angle = MID_SERVO-MAX_TURN_DEGREE + 5
         dc_speed = DC_TURN_SPEED
         turning_iter += 1
             
-    elif ((sharp_turn_left and left_area< WALL_THRESHOLD)or 1 <= turning_iter <= TURN_ITER_LIMIT):
+    elif (sharp_turn_left and (left_area< WALL_THRESHOLD or 1 <= turning_iter <= TURN_ITER_LIMIT)):
         servo_angle = MID_SERVO+MAX_TURN_DEGREE -5
         dc_speed = DC_TURN_SPEED
         turning_iter += 1
