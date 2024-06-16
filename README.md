@@ -31,6 +31,8 @@ Our approach to this challenge was to detect the walls, turn when one wall disap
 * SainSmart Camera Module RPi3, 5MP, Fish-Eye
 ### Obstacle Challenge
 * SainSmart Camera Module RPi3, 5MP, Fish-Eye
+* BerryIMU v3
+* Raspberry Pi ultrasonic sensor
 
 
 ## Content
