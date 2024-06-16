@@ -9,10 +9,15 @@ Build a self-driving, autonomous vehicle that completes 2 challenges: the open c
 
 ## Our Approach
 ### Open Challenge
+The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br>
+Our approach to this challenge was to detect the walls, turn when one wall disappears, and count the number of turns to know when to end. <br><br>
+
+
+
 ### Obstacle Challenge
 
 ## Engineering materials
-
+### Car Base
 * Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car
 * Komodo Motor
 * Hitec HS-5055MG Servo
@@ -22,6 +27,11 @@ Build a self-driving, autonomous vehicle that completes 2 challenges: the open c
 * Raspberry Pi Multi-function Expansion Board 
 * Rasberry PI fan
 * 3d printed base
+### Open Challenge
+* SainSmart Camera Module RPi3, 5MP, Fish-Eye
+### Obstacle Challenge
+* SainSmart Camera Module RPi3, 5MP, Fish-Eye
+
 
 ## Content
 
