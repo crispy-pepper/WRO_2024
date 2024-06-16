@@ -1,20 +1,18 @@
 # <<<Team Name>>> | Explorer Robotics | WRO - FIRST Robitics | Canada
 
-## Introduction
-
-### Team Members <br>
+## Team Members <br>
 - Sunni Xue
 - Jayden Li
 - John Weng
-### Task 
-Build a self-driving, autonomous vechicle that completes 2 challenges: the open challenge and obstacle challenge.
-### Our Approach
+## Task 
+Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
 
+## Our Approach
+### Open Challenge
+### Obstacle Challenge
 
 ## Engineering materials
 
-This repository contains the engineering materials of our vehicle's model participating in the 2024 WRO Future Engineers competition.
-Materials
 * Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car
 * Komodo Motor
 * Hitec HS-5055MG Servo
