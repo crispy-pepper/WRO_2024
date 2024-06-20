@@ -130,7 +130,7 @@ while True:
                 cnt[:, :, 0] += ROI_MIDDLE[0]  # Add X offset
                 cnt[:, :, 1] += ROI_MIDDLE[1]  # Add Y offset
 
-                cv2.drawContours(im, [cnt], -1, colour, 1)
+                cv2.drawContours(im, [cnt], -1, colour, 2)
                 
                 approx=cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt,True),True)
                 x,y,w,h=cv2.boundingRect(approx)
@@ -171,7 +171,6 @@ while True:
         area = cv2.contourArea(cnt)
         left_area_bot = max(area, left_area_bot)
         
-        
     
     for i in range(len(right_contours_top)):
         cnt = right_contours_top[i]
@@ -194,7 +193,7 @@ while True:
             cnt = contours[i]
             area = cv2.contourArea(cnt)
             if area >100:
-                cv2.drawContours(im, contours, i, (0, 255, 0), 2)
+                cv2.drawContours(im, contours, i, (0, 255, 255), 1)
                 approx=cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt,True),True)
                 x,y,w,h=cv2.boundingRect(approx)
         
@@ -203,11 +202,11 @@ while True:
     
     dc_speed = DC_STRAIGHT_SPEED
     
-    if max_red_contour > 400:
+    if max_red_contour > max_green_contour:
         servo_angle = MID_SERVO - MAX_TURN_DEGREE
         dc_speed = DC_TURN_SPEED
         print("Detected RED, turning RIGHT")
-    elif max_green_contour > 400:
+    elif max_green_contour > max_red_contour:
         servo_angle = MID_SERVO + MAX_TURN_DEGREE
         dc_speed = DC_TURN_SPEED
         print("Detected GREEN, turning LEFT")
