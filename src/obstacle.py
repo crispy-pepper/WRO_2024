@@ -12,7 +12,7 @@ MID_SERVO = 80
 MAX_TURN_DEGREE = 50
 ROI_LEFT_BOT = [0, 290, 100, 330]
 ROI_RIGHT_BOT = [540, 290, 640, 330]
-ROI_MIDDLE = [100, 100, 540, 420]
+ROI_MIDDLE = [100, 200, 540, 420]
 
 ROI_LEFT_TOP = [0, 270, 50, 290]
 ROI_RIGHT_TOP = [590, 270, 640, 290]
@@ -27,8 +27,18 @@ LOWER_RED_THRESHOLD1 = np.array([0, 50, 50])
 UPPER_RED_THRESHOLD1 = np.array([10, 255, 255])
 LOWER_RED_THRESHOLD2 = np.array([167, 50, 50])
 UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
-LOWER_GREEN_THRESHOLD = np.array([58, 42, 60])
-UPPER_GREEN_THRESHOLD = np.array([116, 255, 255])
+
+
+PILLAR_SIZE = 3200
+
+
+#LOWER_GREEN_THRESHOLD = np.array([58, 42, 60])
+#UPPER_GREEN_THRESHOLD = np.array([116, 255, 255])
+
+LOWER_GREEN_THRESHOLD = np.array([58, 62, 55])
+UPPER_GREEN_THRESHOLD = np.array([96, 255, 255])
+
+
 DC_STRAIGHT_SPEED = 1350
 DC_TURN_SPEED = 1364
 MAX_TURNS = 12
@@ -132,8 +142,6 @@ while True:
 
                 cv2.drawContours(im, [cnt], -1, colour, 2)
                 
-                approx=cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt,True),True)
-                x,y,w,h=cv2.boundingRect(approx)
             if c[2]!= 2 and area > 2000:
                 Board.RGB.setPixelColor(c[2], Board.PixelColor(colour[2],colour[1],colour[0]))
             else:
@@ -141,19 +149,32 @@ while True:
 
             Board.RGB.show()
             
-            
-            
+    max_green_contour,max_red_contour,direction = 0,0,""
+    x,y,w,h = 0,0,0,0
     for i in contours_red:
         
         area = cv2.contourArea(i)
-        
-        max_red_contour = max(max_red_contour, area)
+        if area > max_red_contour:
+            approx=cv2.approxPolyDP(i, 0.01*cv2.arcLength(i,True),True)
+            x,y,w,h=cv2.boundingRect(approx)
+            max_red_contour = area
+            if max_red_contour > 800:
+                direction = "red"
         
     for i in contours_green:
         
         area = cv2.contourArea(i)
-        max_green_contour = max(max_green_contour, area)
-    
+        if area > max_green_contour:
+            max_green_contour = area
+            if max_green_contour > max_red_contour:
+                approx=cv2.approxPolyDP(i, 0.01*cv2.arcLength(i,True),True)
+                x,y,w,h=cv2.boundingRect(approx)
+                direction = "green"
+        
+
+
+
+
     for i in range(len(left_contours_bot)):
         cnt = left_contours_bot[i]
         area = cv2.contourArea(cnt)
@@ -192,24 +213,29 @@ while True:
     for i in range(len(contours)):
             cnt = contours[i]
             area = cv2.contourArea(cnt)
-            if area >100:
+            if area > 100:
                 cv2.drawContours(im, contours, i, (0, 255, 255), 1)
-                approx=cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt,True),True)
-                x,y,w,h=cv2.boundingRect(approx)
         
     
     # set default DC motor speed as straight section speed
     
     dc_speed = DC_STRAIGHT_SPEED
     
-    if max_red_contour > max_green_contour:
+    if direction == "red":
         servo_angle = MID_SERVO - MAX_TURN_DEGREE
         dc_speed = DC_TURN_SPEED
         print("Detected RED, turning RIGHT")
-    elif max_green_contour > max_red_contour:
+        if max_red_contour > PILLAR_SIZE:
+            servo_angle = MID_SERVO + MAX_TURN_DEGREE
+            print("Centering")
+
+    elif direction == "green":
         servo_angle = MID_SERVO + MAX_TURN_DEGREE
         dc_speed = DC_TURN_SPEED
         print("Detected GREEN, turning LEFT")
+        if max_green_contour > PILLAR_SIZE:
+            servo_angle = MID_SERVO - MAX_TURN_DEGREE
+            print("Centering")
     else:
     
         if ((sharp_turn_right and right_area< WALL_THRESHOLD) or 1 <= turning_iter<=200):
