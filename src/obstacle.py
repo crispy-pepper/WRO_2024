@@ -12,7 +12,7 @@ MID_SERVO = 80
 MAX_TURN_DEGREE = 50
 ROI_LEFT_BOT = [0, 290, 100, 330]
 ROI_RIGHT_BOT = [540, 290, 640, 330]
-ROI_MIDDLE = [100, 200, 540, 420]
+ROI_MIDDLE = [100, 200, 540, 380]
 
 ROI_LEFT_TOP = [0, 270, 50, 290]
 ROI_RIGHT_TOP = [590, 270, 640, 290]
@@ -221,19 +221,19 @@ while True:
     
     dc_speed = DC_STRAIGHT_SPEED
     
-    if direction == "red":
+    if direction == "red" and max_red_contour > 1200:
         servo_angle = MID_SERVO - MAX_TURN_DEGREE
-        dc_speed = DC_TURN_SPEED
+        #dc_speed = DC_TURN_SPEED
         print("Detected RED, turning RIGHT")
-        if max_red_contour > PILLAR_SIZE:
+        if max_red_contour > PILLAR_SIZE and x <= 200:
             servo_angle = MID_SERVO + MAX_TURN_DEGREE
             print("Centering")
 
-    elif direction == "green":
+    elif direction == "green" and max_green_contour > 1200:
         servo_angle = MID_SERVO + MAX_TURN_DEGREE
-        dc_speed = DC_TURN_SPEED
+        #dc_speed = DC_TURN_SPEED
         print("Detected GREEN, turning LEFT")
-        if max_green_contour > PILLAR_SIZE:
+        if max_green_contour > PILLAR_SIZE and x >= 440:
             servo_angle = MID_SERVO - MAX_TURN_DEGREE
             print("Centering")
     else:
