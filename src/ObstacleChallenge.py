@@ -132,8 +132,7 @@ while True:
 
                 cv2.drawContours(im, [cnt], -1, colour, 1)
                 
-                approx=cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt,True),True)
-                x,y,w,h=cv2.boundingRect(approx)
+                
             if c[2]!= 2 and area > 2000:
                 Board.RGB.setPixelColor(c[2], Board.PixelColor(colour[2],colour[1],colour[0]))
             else:
@@ -196,18 +195,26 @@ while True:
             if area >100:
                 cv2.drawContours(im, contours, i, (0, 255, 0), 2)
                 approx=cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt,True),True)
-                x,y,w,h=cv2.boundingRect(approx)
         
     
     # set default DC motor speed as straight section speed
     
     dc_speed = DC_STRAIGHT_SPEED
     
-    if max_red_contour > 400:
-        servo_angle = MID_SERVO - MAX_TURN_DEGREE
+    if max_red_contour > 2000:
+        approx=cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt,True),True)
+        x,y,w,h=cv2.boundingRect(approx)
+        target_angle = 480-x
+        servo_angle = MID_SERVO - (MAX_TURN_DEGREE * target_angle / 50)
         dc_speed = DC_TURN_SPEED
         print("Detected RED, turning RIGHT")
-    elif max_green_contour > 400:
+    elif max_green_contour > 2000:
+        approx=cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt,True),True)
+        x,y,w,h=cv2.boundingRect(approx)
+        target_angle = x-160
+        servo_angle = MID_SERVO + (MAX_TURN_DEGREE * target_angle / 50)
+        dc_speed = DC_TURN_SPEED
+        print("Detected RED, turning RIGHT")
         servo_angle = MID_SERVO + MAX_TURN_DEGREE
         dc_speed = DC_TURN_SPEED
         print("Detected GREEN, turning LEFT")

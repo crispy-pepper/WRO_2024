@@ -10,25 +10,25 @@ import HiwonderSDK.Board as Board
 
 # constant variables
 MID_SERVO = 80
-MAX_TURN_DEGREE = 50 
+MAX_TURN_DEGREE = 45 
 ROI_LEFT_BOT = [0, 290, 100, 330] 
 ROI_RIGHT_BOT = [540, 290, 640, 330]
-ROI_LEFT_TOP = [0, 260, 50, 290]
-ROI_RIGHT_TOP = [590, 260, 640, 290]
+ROI_LEFT_TOP = [0, 270, 50, 290]
+ROI_RIGHT_TOP = [590, 270, 640, 290]
 PD = 0.003
-PG = 0.0075
+PG = 0.0055
 WIDTH = 640
 HEIGHT = 480
 POINTS = [(115,200), (525,200), (640,370), (0,370)]
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
 UPPER_BLACK_THRESHOLD = np.array([180, 255, 70])
 DC_STRAIGHT_SPEED = 1345
-DC_TURN_SPEED = 1345
+DC_TURN_SPEED = 1355
 MAX_TURNS = 12
-ACTIONS_TO_STRAIGHT = 400
+ACTIONS_TO_STRAIGHT = 200
 WALL_THRESHOLD = 700
 NO_WALL_THRESHOLD = 50
-TURN_ITER_LIMIT = 120
+TURN_ITER_LIMIT = 160
 
 
 #dynamic variables
@@ -141,74 +141,76 @@ while True:
     # set default DC motor speed as straight section speed
     
     dc_speed = DC_STRAIGHT_SPEED
-    if total_turn == MAX_TURNS:
-        action_counter += 1
-        
-        
-    else:
     
-        if (sharp_turn_right and (right_area< WALL_THRESHOLD or 1 <= turning_iter<=TURN_ITER_LIMIT)):
-            servo_angle = MID_SERVO-MAX_TURN_DEGREE + 5
-            dc_speed = DC_TURN_SPEED
+        
+    
+
+    if (sharp_turn_right and (right_area< WALL_THRESHOLD or 1 <= turning_iter<=TURN_ITER_LIMIT)):
+        servo_angle = MID_SERVO-MAX_TURN_DEGREE 
+        dc_speed = DC_TURN_SPEED
+        turning_iter += 1
+            
+    elif (sharp_turn_left and (left_area< WALL_THRESHOLD or 1 <= turning_iter <= TURN_ITER_LIMIT)):
+        servo_angle = MID_SERVO+MAX_TURN_DEGREE 
+        dc_speed = DC_TURN_SPEED
+        turning_iter += 1
+    
+    
+    
+    
+    
+    else:
+        sharp_turn_left = False
+        sharp_turn_right = False
+        turning_iter = 0
+        if right_area < NO_WALL_THRESHOLD:
+            #print("no wall to the right") 
+            
+            # set all movement variables to turn sharply right
+            total_turn+=1
+            
+            print(str(total_turn) + "th turn") 
             turning_iter += 1
-                
-        elif (sharp_turn_left and (left_area< WALL_THRESHOLD or 1 <= turning_iter <= TURN_ITER_LIMIT)):
-            servo_angle = MID_SERVO+MAX_TURN_DEGREE -5
-            dc_speed = DC_TURN_SPEED
+            sharp_turn_right = True
+            
+
+            
+        elif left_area < NO_WALL_THRESHOLD:
+            #print("no wall to the left")
+            
+            # set all movement variables to turn sharply left
+            sharp_turn_left = True
+            total_turn+=1
+            
+            print(str(total_turn) + "th turn") 
             turning_iter += 1
-        
-        
-        
-        
-        
+
+
         else:
-            sharp_turn_left = False
-            sharp_turn_right = False
-            turning_iter = 0
-            if right_area < NO_WALL_THRESHOLD:
-                #print("no wall to the right") 
-                
-                # set all movement variables to turn sharply right
-                total_turn+=1
-                
-                print(str(total_turn) + "th turn") 
-                turning_iter += 1
-                sharp_turn_right = True
-                
-
-                
-            elif left_area < NO_WALL_THRESHOLD:
-                #print("no wall to the left")
-                
-                # set all movement variables to turn sharply left
-                sharp_turn_left = True
-                total_turn+=1
-                
-                print(str(total_turn) + "th turn") 
-                turning_iter += 1
-
-
+            # if in the straight section, calculate the current_difference between the contours in the left and right area
+            current_difference = left_area - right_area
+            #print ("current current_difference: " + str(current_difference))
+            if (left_area > right_area):
+                #print ("left bigger")
+                pass
             else:
-                # if in the straight section, calculate the current_difference between the contours in the left and right area
-                current_difference = left_area - right_area
-                #print ("current current_difference: " + str(current_difference))
-                if (left_area > right_area):
-                    #print ("left bigger")
-                    pass
-                else:
-                    #print ("right bigger")
-                    pass
-                #calculate steering amount using preportional-derivative steering
-                # multiply the current_difference by a constant variable and add the projected error multiplied by another constand
-                servo_angle = MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD)
-                #print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
+                #print ("right bigger")
+                pass
+            #calculate steering amount using preportional-derivative steering
+            # multiply the current_difference by a constant variable and add the projected error multiplied by another constand
+            servo_angle = MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD)
+            #print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
             
+        #   #if the total turns has surpassed the amount required, increment the action counter by 1
+
+        if total_turn == MAX_TURNS:
+            action_counter += 1
+        
+    
         
             
-                
 
 
-#   #if the total turns has surpassed the amount required, increment the action counter by 1
     
         
     # set the last current_difference equal to the current current_difference for derivative steering
