@@ -13,6 +13,7 @@ MAX_TURN_DEGREE = 50
 ROI_LEFT_BOT = [0, 290, 100, 330]
 ROI_RIGHT_BOT = [540, 290, 640, 330]
 ROI_MIDDLE = [200, 200, 440, 320]
+ROI4 = [200, 250, 440, 300]
 
 ROI_LEFT_TOP = [0, 270, 50, 290]
 ROI_RIGHT_TOP = [590, 270, 640, 290]
@@ -29,6 +30,15 @@ LOWER_RED_THRESHOLD2 = np.array([167, 159, 50])
 UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
 LOWER_GREEN_THRESHOLD = np.array([58, 42, 60])
 UPPER_GREEN_THRESHOLD = np.array([93, 255, 255])
+lower_blue = np.array([100, 100, 100])
+upper_blue = np.array([135, 255, 255])
+
+        
+        
+lower_orange = np.array([0, 100, 175])
+upper_orange = np.array([25, 255, 255])
+
+       
 DC_STRAIGHT_SPEED = 1350
 DC_TURN_SPEED = 1364
 MAX_TURNS = 12
@@ -91,9 +101,18 @@ while True:
     
     
     
+    b_mask = cv2.inRange(img_hsv, lower_blue, upper_blue)
+
+    #find blue contours to detect the lines on the mat
+    contours_blue = cv2.findContours(b_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
+    cv2.CHAIN_APPROX_SIMPLE)[-2]
     
-    
-    
+    o_mask = cv2.inRange(img_hsv, lower_orange, upper_orange)
+
+    #find orange contours to detect the lines on the mat
+    contours_orange = cv2.findContours(o_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
+    cv2.CHAIN_APPROX_SIMPLE)[-2]
+        
     
     # define functions for right and left contours in respective ROIs
     left_contours_top, hierarchy = cv2.findContours(img_thresh[ROI_LEFT_TOP[1]:ROI_LEFT_TOP[3], ROI_LEFT_TOP[0]:ROI_LEFT_TOP[2]],
