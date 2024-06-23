@@ -8,11 +8,14 @@
 Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
 
 ## Our Approach
+### Car Body
 ### Open Challenge
 The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br>
 Our approach to this challenge was to detect the walls, turn when one wall disappears, and count the number of turns to know when to end. <br><br>
 
-**Track Centering:** To check whether our car was in the middle of the track, we took live camera captures of the field in front of the vehicle. Using four regions of interest (ROI), two on each side, we would detect the size of the black walls and compare them against each other. If one side was significantly larger than the other, it meant the car was too skewed towards that side. To actually center the vehicle, we used a Proportional, Integral and Derivative (PID) wall follower approach by calculating the difference between the two walls. This would 
+**Track Centering:** To check whether our car was in the middle of the track, we took live camera captures of the field in front of the vehicle. Using four regions of interest (ROI), two on each side, we would detect the size of the black walls and compare them against each other. If one side was significantly larger than the other, it meant the car was too skewed towards that side. To actually center the vehicle, we used a Proportional, Integral and Derivative (PID) wall follower approach by calculating the difference between the two walls. This would help mitigate the chances of overcorrection.
+
+**Turning:** Similar to track centering, we used four ROIs to detect the size of the black walls. If one wall was completely gone, we would know to turn towards that side. Because we experienced issues with detecting the entire front wall and detecting the next wall too early, we set it so that once the turn had started, it would continue to turn until a certain period of time was up. This would remove any instances of premature stopping, overturning, underturning, and overcounting turns.
  
 ### Obstacle Challenge
 
@@ -20,9 +23,9 @@ Our approach to this challenge was to detect the walls, turn when one wall disap
 ### Car Base
 * Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car
 * Komodo Motor
-* Hitec HS-5055MG Servo
+* [Hitec HS-5055MG Servo](https://ca.robotshop.com/products/hs-5055mg-metal-gear-micro-servo-motor?srsltid=AfmBOopv8Z7LoCVOEqe16w05ZV-R78dNmy7dappldIxZiQzCJroxcssFc2Y)
 * Furitek Lizard Pro ESC
-* Gens Ace 2S1P 1300mAh 7.4V battery
+* [Gens Ace 2S1P 1300mAh 7.4V battery](https://www.adrenalinehobby.com/products/gens-ace-g-tech-1300mah-2s-7-4v-25c-lipo-deans-plug?_pos=1&_sid=dde29d30b&_ss=r)
 * Rasberry PI 4 Model B
 * Raspberry Pi Multi-function Expansion Board 
 * Rasberry PI fan
