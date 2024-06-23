@@ -1,4 +1,4 @@
-# <<<Team Name>>> | Explorer Robotics | WRO - FIRST Robitics | Canada
+# SJJ | Explorer Robotics | WRO - FIRST Robitics | Canada
 
 ## Team Members <br>
 - Sunni Xue
