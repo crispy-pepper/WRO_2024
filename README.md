@@ -18,6 +18,8 @@ Our approach to this challenge was to detect the walls, turn when one wall disap
 **Turning:** Similar to track centering, we used four ROIs to detect the size of the black walls. If one wall was completely gone, we would know to turn towards that side. Because we experienced issues with detecting the entire front wall and detecting the next wall too early, we set it so that once the turn had started, it would continue to turn until a certain period of time was up. This would remove any instances of premature stopping, overturning, underturning, and overcounting turns.
  
 ### Obstacle Challenge
+The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured pillars. If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue or change directions to find the parking lot. The car must then back into the parking lot without touching the ends. The size of each side of the field remains constant, 1 metre for each side.<be>
+Our approach to this challenge was to detect the walls, turn when one wall disappears, and count the number of turns to know when to end. <br><br>
 
 ## Engineering materials
 ### Car Base
