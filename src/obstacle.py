@@ -9,10 +9,10 @@ import HiwonderSDK.Board as Board
 
 # constant variables
 MID_SERVO = 80
-MAX_TURN_DEGREE = 50
+MAX_TURN_DEGREE = 40
 ROI_LEFT_BOT = [0, 290, 100, 330]
 ROI_RIGHT_BOT = [540, 290, 640, 330]
-ROI_MIDDLE = [100, 200, 540, 380]
+ROI_MIDDLE = [0, 220, 640, 380]
 
 ROI_LEFT_TOP = [0, 270, 50, 290]
 ROI_RIGHT_TOP = [590, 270, 640, 290]
@@ -76,8 +76,6 @@ Board.setPWMServoPulse(1, pwm(MID_SERVO), 10) #turn servo to mid
 Board.setPWMServoPulse(6, 1500, 100) # arm the esc motor
 time.sleep(2)
 print("---------------------------- running--------------------------")
-
-
 
 while True:
     # setup camera frame
@@ -218,34 +216,50 @@ while True:
         
     
     # set default DC motor speed as straight section speed
-    
+    target = 0
     dc_speed = DC_STRAIGHT_SPEED
+    if direction == "red":
+        target = 130
+    elif direction == "green":
+        target = 480
     
-    if direction == "red" and max_red_contour > 1200:
+    ''' if (direction == "red" and max_red_contour > 1200):
         servo_angle = MID_SERVO - MAX_TURN_DEGREE
-        #dc_speed = DC_TURN_SPEED
+        dc_speed = DC_TURN_SPEED
         print("Detected RED, turning RIGHT")
-        if max_red_contour > PILLAR_SIZE and x <= 200:
+        """if max_red_contour > PILLAR_SIZE and x <= 200:
             servo_angle = MID_SERVO + MAX_TURN_DEGREE
-            print("Centering")
+            print("Centering")"""
 
     elif direction == "green" and max_green_contour > 1200:
         servo_angle = MID_SERVO + MAX_TURN_DEGREE
-        #dc_speed = DC_TURN_SPEED
+        dc_speed = DC_TURN_SPEED
         print("Detected GREEN, turning LEFT")
-        if max_green_contour > PILLAR_SIZE and x >= 440:
+        """if (max_green_contour > PILLAR_SIZE and x >= 440):
+
             servo_angle = MID_SERVO - MAX_TURN_DEGREE
-            print("Centering")
+            print("Centering")""" '''
+    if (max_green_contour > 800 or max_red_contour > 800):
+        if x < target:
+            servo_angle = MID_SERVO + MAX_TURN_DEGREE
+        elif x > target:
+            servo_angle = MID_SERVO - MAX_TURN_DEGREE
+        """ else:
+            if servo_angle > MID_SERVO:
+                servo_angle = MID_SERVO - MAX_TURN_DEGREE
+            else:cd 
+                servo_angle = MID_SERVO + MAX_TURN_DEGREE"""
     else:
+
     
         if ((sharp_turn_right and right_area< WALL_THRESHOLD) or 1 <= turning_iter<=200):
             servo_angle = MID_SERVO-MAX_TURN_DEGREE
-            dc_speed = DC_TURN_SPEED
+            #dc_speed = DC_TURN_SPEED
             turning_iter += 1
                 
         elif ((sharp_turn_left and left_area< WALL_THRESHOLD)or 1 <= turning_iter <= 200):
             servo_angle = MID_SERVO+MAX_TURN_DEGREE
-            dc_speed = DC_TURN_SPEED
+            #dc_speed = DC_TURN_SPEED
             turning_iter += 1
         
         
@@ -354,6 +368,9 @@ while True:
     image = cv2.line(im, (x, y), ((x, h+y)), (0, 255, 255), 1)
     image = cv2.line(im, (x+w, y), (x+w, y+h), (0, 255, 255), 1)
     image = cv2.line(im, (x, y+h), (x+w, y+h), (0, 255, 255), 1)
+
+    image = cv2.line(im, (target, 0), (target, 520), (255, 255, 0), 1)
+    cv2.circle(im,(x,y),5,(255,255,0),1,-1)
     # display the camera
     cv2.imshow("Camera", im)
     
