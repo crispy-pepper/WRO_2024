@@ -10,25 +10,25 @@ import HiwonderSDK.Board as Board
 
 # constant variables
 MID_SERVO = 80
-MAX_TURN_DEGREE = 45 
+MAX_TURN_DEGREE = 34
 ROI_LEFT_BOT = [0, 290, 100, 330] 
 ROI_RIGHT_BOT = [540, 290, 640, 330]
-ROI_LEFT_TOP = [0, 270, 50, 290]
-ROI_RIGHT_TOP = [590, 270, 640, 290]
-PD = 0.003
-PG = 0.0055
+ROI_LEFT_TOP = [0, 275, 40, 290]
+ROI_RIGHT_TOP = [600, 275, 640, 290]
+PD = 0.35
+PG = 0.0062
 WIDTH = 640
 HEIGHT = 480
 POINTS = [(115,200), (525,200), (640,370), (0,370)]
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
-UPPER_BLACK_THRESHOLD = np.array([180, 255, 70])
-DC_STRAIGHT_SPEED = 1345
-DC_TURN_SPEED = 1355
+UPPER_BLACK_THRESHOLD = np.array([180, 255, 60])
+DC_STRAIGHT_SPEED = 1333
+DC_TURN_SPEED = 1342
 MAX_TURNS = 12
-ACTIONS_TO_STRAIGHT = 200
+ACTIONS_TO_STRAIGHT = 100
 WALL_THRESHOLD = 700
 NO_WALL_THRESHOLD = 50
-TURN_ITER_LIMIT = 160
+TURN_ITER_LIMIT = 130
 
 
 #dynamic variables
@@ -145,12 +145,12 @@ while True:
         
     
 
-    if (sharp_turn_right and (right_area< WALL_THRESHOLD or 1 <= turning_iter<=TURN_ITER_LIMIT)):
+    if (sharp_turn_right and (right_area< WALL_THRESHOLD)):
         servo_angle = MID_SERVO-MAX_TURN_DEGREE 
         dc_speed = DC_TURN_SPEED
         turning_iter += 1
             
-    elif (sharp_turn_left and (left_area< WALL_THRESHOLD or 1 <= turning_iter <= TURN_ITER_LIMIT)):
+    elif (sharp_turn_left and (left_area< WALL_THRESHOLD)):
         servo_angle = MID_SERVO+MAX_TURN_DEGREE 
         dc_speed = DC_TURN_SPEED
         turning_iter += 1
