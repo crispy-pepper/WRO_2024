@@ -294,26 +294,24 @@ while True:
 
     
     if trackDir == "right":
-        if (turnDir == "right" and max_blue_area > LINE_THRESHOLD and max_orange_area < LINE_THRESHOLD):   
-                
+        if (turnDir == "right" and max_blue_area > LINE_THRESHOLD and max_orange_area < LINE_THRESHOLD):          
             turnDir = "none"
             print("done turning")
                 
         elif max_orange_area > LINE_THRESHOLD:
-
-                #if the turn direction hasn't been changed yet change the turn direction to right
+    
+            #if the turn direction hasn't been changed yet change the turn direction to right
             if turnDir == "none":
                 total_turn += 1
                 turnDir = "right"    
                 print(turnDir,total_turn)
 
         
-                
-
+            
     elif trackDir == "left":
-        if (turnDir == "left" and max_orange_area > LINE_THRESHOLD and max_blue_area < LINE_THRESHOLD):
-                
 
+        if (turnDir == "left" and max_orange_area > LINE_THRESHOLD and max_blue_area < LINE_THRESHOLD):
+            
             turnDir = "none"
             print("done turning")
                 
