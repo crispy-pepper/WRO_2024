@@ -36,7 +36,7 @@ Our approach to this challenge was to detect the pillars, adjust according to pi
 * SainSmart Camera Module RPi3, 5MP, Fish-Eye
 ### Obstacle Challenge
 * SainSmart Camera Module RPi3, 5MP, Fish-Eye
-* [BerryIMU v3](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC)
+* [BerryIMU V3 10DOF](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC)
 * Raspberry Pi ultrasonic sensor
 
 
