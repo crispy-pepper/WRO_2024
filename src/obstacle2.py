@@ -239,8 +239,6 @@ while True:
     
 
 
-
-
     if lastLapTurnAround:
         #point turn code
         Board.setPWMServoPulse(6, 1650, 100) 
