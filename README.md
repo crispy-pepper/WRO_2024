@@ -29,8 +29,8 @@ Our approach to this challenge was to detect the pillars, adjust according to pi
 * [Hitec HS-5055MG Servo](https://ca.robotshop.com/products/hs-5055mg-metal-gear-micro-servo-motor?srsltid=AfmBOopv8Z7LoCVOEqe16w05ZV-R78dNmy7dappldIxZiQzCJroxcssFc2Y)
 * [Gens Ace 2S1P 1300mAh 7.4V battery](https://www.adrenalinehobby.com/products/gens-ace-g-tech-1300mah-2s-7-4v-25c-lipo-deans-plug?_pos=1&_sid=dde29d30b&_ss=r)
 * Rasberry PI 4 Model B
-* Raspberry Pi Multi-function Expansion Board 
-* Rasberry PI fan
+* Custom Raspberry Pi Multi-function Expansion Board 
+* 5V Mini Fan
 * [3d printed base](/models)
 ### Open Challenge
 * [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module)
