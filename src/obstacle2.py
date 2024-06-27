@@ -32,18 +32,18 @@ UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
 #UPPER_GREEN_THRESHOLD = np.array([116, 255, 255])
 LOWER_GREEN_THRESHOLD = np.array([58, 62, 55])
 UPPER_GREEN_THRESHOLD = np.array([96, 255, 255])
-LOWER_ORANGE_THRESHOLD = np.array([0, 100, 175])
-UPPER_ORANGE_THRESHOLD = np.array([25, 255, 255])
-LOWER_BLUE_THRESHOLD = np.array([100, 100, 100])
-UPPER_BLUE_THRESHOLD = np.array([135, 255, 255])
+LOWER_ORANGE_THRESHOLD1 = np.array([155, 57, 70])
+UPPER_ORANGE_THRESHOLD1 = np.array([180, 255, 255])
+LOWER_ORANGE_THRESHOLD2 = np.array([0, 57, 70])
+UPPER_ORANGE_THRESHOLD2 = np.array([8, 255, 255])
+LOWER_BLUE_THRESHOLD= np.array([100, 49, 47])
+UPPER_BLUE_THRESHOLD = np.array([140, 122, 130])
+LOWER_MAGENTA_THRESHOLD= np.array([168, 175, 50])
+UPPER_MAGENTA_THRESHOLD = np.array([172, 255, 255])
+LINE_THRESHOLD = 35
 
 
 PILLAR_SIZE = 3200
-
-
-
-
-
 
 
 DC_STRAIGHT_SPEED = 1350
@@ -114,11 +114,12 @@ while True:
 
 
     b_mask = cv2.inRange(img_hsv, LOWER_BLUE_THRESHOLD, UPPER_BLUE_THRESHOLD)
+
     #find blue contours to detect the lines on the mat
     contours_blue = cv2.findContours(b_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
     cv2.CHAIN_APPROX_SIMPLE)[-2]
     
-    o_mask = cv2.inRange(img_hsv, LOWER_ORANGE_THRESHOLD, UPPER_ORANGE_THRESHOLD)
+    o_mask = cv2.bitwise_or(cv2.inRange(img_hsv, LOWER_ORANGE_THRESHOLD1, UPPER_ORANGE_THRESHOLD1), cv2.inRange(img_hsv, LOWER_ORANGE_THRESHOLD2, UPPER_ORANGE_THRESHOLD2))
 
     #find orange contours to detect the lines on the mat
     contours_orange = cv2.findContours(o_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
@@ -146,7 +147,7 @@ while True:
 
     right_area_top = 0
     right_area_bot = 0
-    contours_coloured = [(contours_red,(0,0,255),1),(contours_green,(0,255,0),1),(contours,(0,0,0),1)]
+    contours_coloured = [(contours_red,(0,0,255),1,ROI_MIDDLE),(contours_green,(0,255,0),1,ROI_MIDDLE),(contours,(0,0,0),1,(0,0)),(contours_orange,(52,140,235),0,ROI4),(contours_blue,(235,67,52),0,ROI4)]
     max_red_contour = 0
     max_green_contour = 0
 
@@ -154,18 +155,19 @@ while True:
     for c in contours_coloured:
         cont = c[0]
         colour = c[1]
+        ROIROI = c[3]
         for i,cnt in enumerate(cont):
             area = cv2.contourArea(cnt)
             if area > 100:
                 
-                cnt[:, :, 0] += ROI_MIDDLE[0]  # Add X offset
-                cnt[:, :, 1] += ROI_MIDDLE[1]  # Add Y offset
+                cnt[:, :, 0] += ROIROI[0]  # Add X offset
+                cnt[:, :, 1] += ROIROI[1]  # Add Y offset
 
                 cv2.drawContours(im, [cnt], -1, colour, 2)
             if colour == (0,0,0):
                 if area > 200:
                     cv2.drawContours(im, contours, i, (0, 255, 255), 1)
-            elif area > 2000:
+            elif area > 1000:
                 Board.RGB.setPixelColor(c[2], Board.PixelColor(colour[2],colour[1],colour[0]))
             else:
                 Board.RGB.setPixelColor(c[2], Board.PixelColor(0,0,0))
@@ -173,6 +175,8 @@ while True:
             Board.RGB.show()
             
     max_green_contour,max_red_contour,direction = 0,0,""
+    max_blue_area = max(map(cv2.contourArea, contours_blue))
+    max_orange_area = max_blue_area = max(map(cv2.contourArea, contours_orange))
     x,y,w,h = 0,0,0,0
 
     for i in contours_red:
@@ -192,7 +196,6 @@ while True:
                 approx=cv2.approxPolyDP(i, 0.01*cv2.arcLength(i,True),True)
                 x,y,w,h=cv2.boundingRect(approx)
                 direction = "green"
-        
     
     # loop to find largest contours
     
@@ -281,6 +284,50 @@ while True:
 
             servo_angle = MID_SERVO - MAX_TURN_DEGREE
             print("Centering")""" '''
+    
+
+    if trackDir == "none":
+        if max_blue_area>max_orange_area and max_blue_area > LINE_THRESHOLD:
+            trackDir = "left"
+            print("I see more blue than orange and change track dir")
+        if max_orange_area > max_blue_area and max_orange_area > LINE_THRESHOLD:
+            trackDir = "right"
+            print("I see more orange than blue and change track dir")
+
+    
+    if trackDir == "right":
+        if (turnDir == "right" and max_blue_area > LINE_THRESHOLD and max_orange_area < LINE_THRESHOLD):   
+                
+            turnDir = "none"
+            print("done turning")
+                
+        elif max_orange_area > LINE_THRESHOLD:
+
+                #if the turn direction hasn't been changed yet change the turn direction to right
+            if turnDir == "none":
+                total_turn += 1
+                turnDir = "right"    
+                print(turnDir,total_turn)
+
+        
+                
+
+    elif trackDir == "left":
+        if (turnDir == "left" and max_orange_area > LINE_THRESHOLD and max_blue_area < LINE_THRESHOLD):
+                
+
+            turnDir = "none"
+            print("done turning")
+                
+        elif max_blue_area > LINE_THRESHOLD:
+                #if the turn direction hasn't been changed yet change the turn direction to left
+            if turnDir == "none":
+                total_turn+= 1
+                turnDir = "left" 
+                print(turnDir,total_turn)
+
+
+    dc_speed = DC_STRAIGHT_SPEED
     if (max_green_contour > 800 or max_red_contour > 800):
         if x < target:
             servo_angle = MID_SERVO + MAX_TURN_DEGREE
@@ -291,6 +338,16 @@ while True:
                 servo_angle = MID_SERVO - MAX_TURN_DEGREE
             else:cd 
                 servo_angle = MID_SERVO + MAX_TURN_DEGREE"""
+    
+    elif turnDir == 'right':
+        servo_angle = MID_SERVO-MAX_TURN_DEGREE 
+        dc_speed = DC_TURN_SPEED
+        
+            
+    elif turnDir == 'left':
+
+        servo_angle = MID_SERVO+MAX_TURN_DEGREE 
+        dc_speed = DC_TURN_SPEED
     
     else:
         if ((sharp_turn_right and right_area< WALL_THRESHOLD) or 1 <= turning_iter<=200):
@@ -305,7 +362,8 @@ while True:
         
         
         else:
-            sharp_turn_left = False
+            
+            """sharp_turn_left = False
             sharp_turn_right = False
             turning_iter = 0
             if right_area < NO_WALL_THRESHOLD:
@@ -328,8 +386,16 @@ while True:
                 total_turn+=1
                 
                 print(str(total_turn) + "th turn") 
-                turning_iter += 1
-
+                turning_iter += 1"""
+            
+            turnDir = "none"
+       
+            turning_iter = 0
+            
+            if left_area < WALL_THRESHOLD:
+                servo_angle = MID_SERVO+MAX_TURN_DEGREE
+            elif right_area < WALL_THRESHOLD:
+                servo_angle = MID_SERVO+MAX_TURN_DEGREE 
 
             else:
                 # if in the straight section, calculate the current_difference between the contours in the left and right area
@@ -384,8 +450,7 @@ while True:
 
     image = cv2.line(im, (ROI_LEFT_BOT[0], ROI_LEFT_BOT[1]), (ROI_LEFT_BOT[2], ROI_LEFT_BOT[1]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI_LEFT_BOT[0], ROI_LEFT_BOT[1]), (ROI_LEFT_BOT[0], ROI_LEFT_BOT[3]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI_LEFT_BOT[2], ROI_LEFT_BOT[3]), (ROI_LEFT_BOT[2
-           ], ROI_LEFT_BOT[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI_LEFT_BOT[2], ROI_LEFT_BOT[3]), (ROI_LEFT_BOT[2], ROI_LEFT_BOT[1]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI_LEFT_BOT[2], ROI_LEFT_BOT[3]), (ROI_LEFT_BOT[0], ROI_LEFT_BOT[3]), (0, 255, 255), 4)
     
     image = cv2.line(im, (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[1]), (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[1]), (0, 255, 255), 4)
