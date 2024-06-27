@@ -10,30 +10,45 @@ import HiwonderSDK.Board as Board
 
 # constant variables
 MID_SERVO = 80
-MAX_TURN_DEGREE = 45 
-ROI_LEFT_BOT = [0, 290, 100, 330] 
-ROI_RIGHT_BOT = [540, 290, 640, 330]
-ROI_LEFT_TOP = [0, 270, 50, 290]
-ROI_RIGHT_TOP = [590, 270, 640, 290]
-ROI4 = [200, 250, 440, 300]
+MAX_TURN_DEGREE = 32
+ROI_LEFT_BOT = [0, 300, 100, 340] 
+ROI_RIGHT_BOT = [540, 300, 640, 340]
+ROI_LEFT_TOP = [0, 280, 50, 300]
+ROI_RIGHT_TOP = [590, 280, 640, 300]
+ROI4 = [300, 340, 340, 380]
 
 
 turnDir = "none"
-PD = 0.003
-PG = 0.0055
+PD = 0.0065
+PG = 0.0065
 WIDTH = 640
 HEIGHT = 480
 POINTS = [(115,200), (525,200), (640,370), (0,370)]
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
-UPPER_BLACK_THRESHOLD = np.array([180, 255, 70])
+UPPER_BLACK_THRESHOLD = np.array([180, 255, 64])
 DC_STRAIGHT_SPEED = 1345
-DC_TURN_SPEED = 1355
+DC_TURN_SPEED = 1345
 MAX_TURNS = 12
 ACTIONS_TO_STRAIGHT = 200
-WALL_THRESHOLD = 700
+WALL_THRESHOLD = 50
 NO_WALL_THRESHOLD = 50
 TURN_ITER_LIMIT = 160
+LINE_THRESHOLD = 35
 
+LOWER_RED_THRESHOLD1 = np.array([0, 50, 50])
+UPPER_RED_THRESHOLD1 = np.array([10, 255, 255])
+LOWER_RED_THRESHOLD2 = np.array([167, 50, 50])
+UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
+
+
+PILLAR_SIZE = 3200
+
+
+#LOWER_GREEN_THRESHOLD = np.array([58, 42, 60])
+#UPPER_GREEN_THRESHOLD = np.array([116, 255, 255])
+
+LOWER_GREEN_THRESHOLD = np.array([58, 62, 55])
+UPPER_GREEN_THRESHOLD = np.array([96, 255, 255])
 
 #dynamic variables
 sharp_turn_left = False
@@ -43,14 +58,17 @@ action_counter = 0
 last_difference = 0
 current_difference = 0
 servo_angle=0 
-lower_blue = np.array([100, 130, 100])
-upper_blue = np.array([135, 255, 255])
+lower_blue = np.array([100, 49, 47])
+upper_blue = np.array([140, 122, 130])
 trackDir = "none"
 turncounter = 0
         
         
-lower_orange = np.array([0, 100, 100])
-upper_orange = np.array([25, 255, 255])
+lower_orange1 = np.array([155, 57, 70])
+upper_orange1 = np.array([180, 255, 255])
+lower_orange2 = np.array([0, 57, 70])
+upper_orange2 = np.array([8, 255, 255])
+
 turning_iter = 0
 
 # camera setup
@@ -155,7 +173,7 @@ while True:
     contours_blue = cv2.findContours(b_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
     cv2.CHAIN_APPROX_SIMPLE)[-2]
     
-    o_mask = cv2.inRange(img_hsv, lower_orange, upper_orange)
+    o_mask = cv2.bitwise_or(cv2.inRange(img_hsv, lower_orange1, upper_orange1), cv2.inRange(img_hsv, lower_orange2, upper_orange2))
 
     #find orange contours to detect the lines on the mat
     contours_orange = cv2.findContours(o_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
@@ -166,31 +184,43 @@ while True:
     for i in range(len(contours_orange)):
         cnt = contours_orange[i]
         max_orange_area = max(cv2.contourArea(cnt), max_orange_area)
-        cv2.drawContours(im, contours_orange, i, (255, 255, 0), 1)
-          
+        cnt[:, :, 0] += ROI4[0]  # Add X offset
+        cnt[:, :, 1] += ROI4[1]  # Add Y offset
              
+        cv2.drawContours(im, contours_orange, i, (255, 255, 0), 1)
+        
 
         #iterate through blue contours
     for i in range(len(contours_blue)):
         cnt = contours_blue[i]
         max_blue_area = max(cv2.contourArea(cnt), max_blue_area)
+        cnt[:, :, 0] += ROI4[0]  # Add X offset
+        cnt[:, :, 1] += ROI4[1]  # Add Y offset
         #if the turn direction is left
         cv2.drawContours(im, contours_blue, i, (255, 255, 0), 1)
+        
 
     if trackDir == "none":
-        if max_blue_area>max_orange_area:
-            trackDir = "right"
-        else:
+        if max_blue_area>max_orange_area and max_blue_area > LINE_THRESHOLD:
             trackDir = "left"
+            print("I see more blue than orange and change track dir")
+        if max_orange_area > max_blue_area and max_orange_area > LINE_THRESHOLD:
+            trackDir = "right"
+            print("I see more orange than blue and change track dir")
             
 
     
     
     if trackDir == "right":
-        if (turnDir == "right" and max_blue_area > 100 and max_orange_area < 100):
-                turnDir = "none"
-                print("right")
-        elif max_orange_area > 100:
+        if (turnDir == "right" and max_blue_area > LINE_THRESHOLD and max_orange_area < LINE_THRESHOLD):
+                
+                
+                
+                
+            turnDir = "none"
+            print("done turning")
+                
+        elif max_orange_area > LINE_THRESHOLD:
 
                 #if the turn direction hasn't been changed yet change the turn direction to right
             if turnDir == "none":
@@ -202,11 +232,13 @@ while True:
                 
 
     elif trackDir == "left":
-        if (turnDir == "left" and max_orange_area > 100 and max_blue_area < 100):
-                turnDir = "none"
-                print("left")
+        if (turnDir == "left" and max_orange_area > LINE_THRESHOLD and max_blue_area < LINE_THRESHOLD):
                 
-        elif max_blue_area > 100:
+
+            turnDir = "none"
+            print("done turning")
+                
+        elif max_blue_area > LINE_THRESHOLD:
                 #if the turn direction hasn't been changed yet change the turn direction to left
             if turnDir == "none":
                 turncounter += 1
@@ -240,25 +272,32 @@ while True:
        
         turning_iter = 0
         
+        if left_area < WALL_THRESHOLD:
+            servo_angle = MID_SERVO+MAX_TURN_DEGREE
+        elif right_area < WALL_THRESHOLD:
+            servo_angle = MID_SERVO+MAX_TURN_DEGREE 
+ 
 
-        
-        # if in the straight section, calculate the current_difference between the contours in the left and right area
-        current_difference = left_area - right_area
-        #print ("current current_difference: " + str(current_difference))
-        if (left_area > right_area):
-            #print ("left bigger")
-            pass
         else:
-            #print ("right bigger")
-            pass
-        #calculate steering amount using preportional-derivative steering
-        # multiply the current_difference by a constant variable and add the projected error multiplied by another constand
-        servo_angle = MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD)
-        #print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
-        
-    #   #if the total turns has surpassed the amount required, increment the action counter by 1
+            # if in the straight section, calculate the current_difference between the contours in the left and right area
+            current_difference = left_area - right_area
+            #print ("current current_difference: " + str(current_difference))
+            if (left_area > right_area):
+                #print ("left bigger")
+                pass
+            else:
+                #print ("right bigger")
+                pass
+            #calculate steering amount using preportional-derivative steering
+            # multiply the current_difference by a constant variable and add the projected error multiplied by another constand
+            servo_angle = MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD)
+            #print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
+            print("PG: " + str(current_difference * PG))
+            print("PD: " + str((current_difference-last_difference) * PD))
+            print(servo_angle)
+        #   #if the total turns has surpassed the amount required, increment the action counter by 1
 
-    if total_turn == MAX_TURNS:
+    if turncounter == MAX_TURNS:
         action_counter += 1
     
 
@@ -322,6 +361,7 @@ while True:
     
     # if the number of actions to the straight section has been met, stop the car
     if (cv2.waitKey(1)==ord("q") or action_counter >= ACTIONS_TO_STRAIGHT):#
+        Board.setPWMServoPulse(6, 1500, 100) 
         time.sleep(0.02)
         Board.setPWMServoPulse(6, 1500, 100) 
         Board.setPWMServoPulse(1, pwm(MID_SERVO), 1000)
