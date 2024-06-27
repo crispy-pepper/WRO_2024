@@ -59,7 +59,7 @@ prevPillar = ""
 
 turning_iter = 0
 turnDir = ""
-
+lastLapDone = False
 
 # camera setup
 picam2 = Picamera2()
@@ -215,7 +215,6 @@ while True:
             area = cv2.contourArea(cnt)
             if area > 100:
                 cv2.drawContours(im, contours, i, (0, 255, 255), 1)"""
-        
     
 
 
@@ -236,8 +235,7 @@ while True:
         Board.setPWMServoPulse(1, pwm(MID_SERVO-MAX_TURN_DEGREE), 1000)
         time.sleep(0.5)
         lastLapTurnAround = False
-        total_turn = 0
-        MAX_TURNS = 4
+        continue
 
     # set default DC motor speed as straight section speed
     target = 0
@@ -395,12 +393,18 @@ while True:
     
     # if the number of actions to the straight section has been met, stop the car
     if action_counter >= ACTIONS_TO_STRAIGHT:
-        if prevPillar == "green":
-            lastLapTurnAround = True
-            stop()
-            time.sleep(1)
-        action_counter = 0
-        total_turn += 1
+        if not lastLapDone:
+            if prevPillar == "green":
+                lastLapTurnAround = True
+                stop()
+                time.sleep(1)
+            action_counter = 0
+            total_turn = 0
+            MAX_TURNS = 4
+        
+        else:
+
+
     if (cv2.waitKey(1)==ord("q")):#
         time.sleep(0.02)
         stop()
@@ -408,5 +412,5 @@ while True:
         
         break
     
-    
+
 cv2.destroyAllWindows()
