@@ -31,7 +31,7 @@ Our approach to this challenge was to detect the pillars, adjust according to pi
 * Rasberry PI 4 Model B
 * Raspberry Pi Multi-function Expansion Board 
 * Rasberry PI fan
-* [3d printed base]/models
+* [3d printed base](/models)
 ### Open Challenge
 * SainSmart Camera Module RPi3, 5MP, Fish-Eye
 ### Obstacle Challenge
