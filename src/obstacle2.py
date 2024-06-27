@@ -12,10 +12,11 @@ MID_SERVO = 80
 MAX_TURN_DEGREE = 40
 ROI_LEFT_BOT = [0, 290, 100, 330]
 ROI_RIGHT_BOT = [540, 290, 640, 330]
-ROI_MIDDLE = [0, 220, 640, 380]
-
 ROI_LEFT_TOP = [0, 270, 50, 290]
 ROI_RIGHT_TOP = [590, 270, 640, 290]
+ROI4 = [200, 250, 440, 300]
+ROI_MIDDLE = [0, 220, 640, 380]
+
 PD = 0.0036
 PG = 0.009
 WIDTH = 640
@@ -27,16 +28,22 @@ LOWER_RED_THRESHOLD1 = np.array([0, 50, 50])
 UPPER_RED_THRESHOLD1 = np.array([10, 255, 255])
 LOWER_RED_THRESHOLD2 = np.array([167, 50, 50])
 UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
+#LOWER_GREEN_THRESHOLD = np.array([58, 42, 60])
+#UPPER_GREEN_THRESHOLD = np.array([116, 255, 255])
+LOWER_GREEN_THRESHOLD = np.array([58, 62, 55])
+UPPER_GREEN_THRESHOLD = np.array([96, 255, 255])
+LOWER_ORANGE_THRESHOLD = np.array([0, 100, 175])
+UPPER_ORANGE_THRESHOLD = np.array([25, 255, 255])
+LOWER_BLUE_THRESHOLD = np.array([100, 100, 100])
+UPPER_BLUE_THRESHOLD = np.array([135, 255, 255])
 
 
 PILLAR_SIZE = 3200
 
 
-#LOWER_GREEN_THRESHOLD = np.array([58, 42, 60])
-#UPPER_GREEN_THRESHOLD = np.array([116, 255, 255])
 
-LOWER_GREEN_THRESHOLD = np.array([58, 62, 55])
-UPPER_GREEN_THRESHOLD = np.array([96, 255, 255])
+
+
 
 
 DC_STRAIGHT_SPEED = 1350
@@ -104,6 +111,18 @@ while True:
     
     contours_red, _ = cv2.findContours(img_thresh_red[ROI_MIDDLE[1]:ROI_MIDDLE[3], ROI_MIDDLE[0]:ROI_MIDDLE[2]], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     contours_green, _ = cv2.findContours(img_thresh_green[ROI_MIDDLE[1]:ROI_MIDDLE[3], ROI_MIDDLE[0]:ROI_MIDDLE[2]], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+
+    b_mask = cv2.inRange(img_hsv, LOWER_BLUE_THRESHOLD, UPPER_BLUE_THRESHOLD)
+    #find blue contours to detect the lines on the mat
+    contours_blue = cv2.findContours(b_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
+    cv2.CHAIN_APPROX_SIMPLE)[-2]
+    
+    o_mask = cv2.inRange(img_hsv, LOWER_ORANGE_THRESHOLD, UPPER_ORANGE_THRESHOLD)
+
+    #find orange contours to detect the lines on the mat
+    contours_orange = cv2.findContours(o_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
+    cv2.CHAIN_APPROX_SIMPLE)[-2]
     
     
     # define functions for right and left contours in respective ROIs
@@ -115,7 +134,6 @@ while True:
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     right_contours_bot, hierarchy = cv2.findContours(img_thresh[ROI_RIGHT_BOT[1]:ROI_RIGHT_BOT[3], ROI_RIGHT_BOT[0]:ROI_RIGHT_BOT[2]],
         cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    
     #left_contours = np.concatenate((left_contours_top,left_contours_bot))
     #right_contours =  np.concatenate((right_contours_top,right_contours_bot))
     
@@ -403,6 +421,8 @@ while True:
             MAX_TURNS = 4
         
         else:
+            #parking lot thing sequence
+            pass
 
 
     if (cv2.waitKey(1)==ord("q")):#
