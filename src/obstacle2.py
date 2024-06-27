@@ -263,11 +263,17 @@ while True:
     target = 0
     dc_speed = DC_STRAIGHT_SPEED
     if direction == "red":
-        prevPillar = "red"
-        target = 130
+        if max_red_contour/(w*h) < 0.3:
+            direction = ""
+        else:
+            prevPillar = "red"
+            target = 130
     elif direction == "green":
-        prevPillar = "green"
-        target = 480
+        if max_green_contour/(w*h) < 0.3:
+            direction = ""
+        else:
+            prevPillar = "green"
+            target = 480
     
     ''' if (direction == "red" and max_red_contour > 1200):
         servo_angle = MID_SERVO - MAX_TURN_DEGREE
