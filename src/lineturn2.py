@@ -212,10 +212,7 @@ while True:
     
     
     if trackDir == "right":
-        if (turnDir == "right" and max_blue_area > LINE_THRESHOLD and max_orange_area < LINE_THRESHOLD):
-                
-                
-                
+        if (turnDir == "right" and max_blue_area > LINE_THRESHOLD and max_orange_area < LINE_THRESHOLD):   
                 
             turnDir = "none"
             print("done turning")
