@@ -14,7 +14,7 @@ ROI_LEFT_BOT = [0, 290, 100, 330]
 ROI_RIGHT_BOT = [540, 290, 640, 330]
 ROI_LEFT_TOP = [0, 270, 50, 290]
 ROI_RIGHT_TOP = [590, 270, 640, 290]
-ROI4 = [200, 250, 440, 300]
+ROI4 = [300, 340, 340, 380]
 ROI_MIDDLE = [0, 220, 640, 380]
 
 PD = 0.0065
@@ -65,7 +65,8 @@ lastLapTurnAround = False
 prevPillar = ""
 
 turning_iter = 0
-turnDir = ""
+turnDir = "none"
+trackDir = "none"
 lastLapDone = False
 
 # camera setup
@@ -116,14 +117,12 @@ while True:
     b_mask = cv2.inRange(img_hsv, LOWER_BLUE_THRESHOLD, UPPER_BLUE_THRESHOLD)
 
     #find blue contours to detect the lines on the mat
-    contours_blue = cv2.findContours(b_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
-    cv2.CHAIN_APPROX_SIMPLE)[-2]
+    contours_blue,_ = cv2.findContours(b_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     
     o_mask = cv2.bitwise_or(cv2.inRange(img_hsv, LOWER_ORANGE_THRESHOLD1, UPPER_ORANGE_THRESHOLD1), cv2.inRange(img_hsv, LOWER_ORANGE_THRESHOLD2, UPPER_ORANGE_THRESHOLD2))
 
     #find orange contours to detect the lines on the mat
-    contours_orange = cv2.findContours(o_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
-    cv2.CHAIN_APPROX_SIMPLE)[-2]
+    contours_orange,_ = cv2.findContours(o_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     
     
     # define functions for right and left contours in respective ROIs
@@ -175,8 +174,12 @@ while True:
             Board.RGB.show()
             
     max_green_contour,max_red_contour,direction = 0,0,""
-    max_blue_area = max(map(cv2.contourArea, contours_blue))
-    max_orange_area = max_blue_area = max(map(cv2.contourArea, contours_orange))
+    try:
+        max_blue_area = max(map(cv2.contourArea, contours_blue))
+        max_orange_area = max_blue_area = max(map(cv2.contourArea, contours_orange))
+    except:
+        max_blue_area = 0
+        max_orange_area = 0
     x,y,w,h = 0,0,0,0
 
     for i in contours_red:
@@ -199,7 +202,7 @@ while True:
     
     # loop to find largest contours
     
-    """for i in range(len(left_contours_top)):
+    for i in range(len(left_contours_top)):
         cnt = left_contours_top[i]
         area = cv2.contourArea(cnt)
         left_area_top = max(area, left_area_top)
@@ -222,11 +225,11 @@ while True:
 
         area = cv2.contourArea(cnt)
         
-        right_area_bot = max(area, right_area_bot)"""
-    left_area_bot = max(map(cv2.contourArea, left_contours_bot))
-    left_area_top = max(map(cv2.contourArea, left_contours_top))
-    right_area_bot = max(map(cv2.contourArea, right_contours_bot))
-    right_area_top = max(map(cv2.contourArea, right_contours_top))
+        right_area_bot = max(area, right_area_bot)
+    #left_area_bot = max(map(cv2.contourArea, left_contours_bot))
+    #left_area_top = max(map(cv2.contourArea, left_contours_top))
+    #right_area_bot = max(map(cv2.contourArea, right_contours_bot))
+    #right_area_top = max(map(cv2.contourArea, right_contours_top))
         
     right_area = right_area_bot+right_area_top
     left_area = left_area_bot+left_area_top
@@ -463,6 +466,11 @@ while True:
     image = cv2.line(im, (x, y), ((x, h+y)), (0, 255, 255), 1)
     image = cv2.line(im, (x+w, y), (x+w, y+h), (0, 255, 255), 1)
     image = cv2.line(im, (x, y+h), (x+w, y+h), (0, 255, 255), 1)
+
+    image = cv2.line(im, (ROI4[0], ROI4[1]), (ROI4[2], ROI4[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI4[0], ROI4[1]), (ROI4[0], ROI4[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI4[2], ROI4[3]), (ROI4[2], ROI4[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI4[2], ROI4[3]), (ROI4[0], ROI4[3]), (0, 255, 255), 4)      
 
     image = cv2.line(im, (target, 0), (target, 520), (255, 255, 0), 1)
     cv2.circle(im,(x,y),5,(255,255,0),1,-1)
