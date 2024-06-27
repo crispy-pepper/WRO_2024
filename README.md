@@ -23,7 +23,7 @@ Our approach to this challenge was to detect the pillars, adjust according to pi
 
 ## Engineering materials
 ### Car Base
-* Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car
+* [Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car](https://www.ebay.ca/itm/134622499234)
 * Komodo Motor
 * [Hitec HS-5055MG Servo](https://ca.robotshop.com/products/hs-5055mg-metal-gear-micro-servo-motor?srsltid=AfmBOopv8Z7LoCVOEqe16w05ZV-R78dNmy7dappldIxZiQzCJroxcssFc2Y)
 * Furitek Lizard Pro ESC
@@ -36,7 +36,7 @@ Our approach to this challenge was to detect the pillars, adjust according to pi
 * SainSmart Camera Module RPi3, 5MP, Fish-Eye
 ### Obstacle Challenge
 * SainSmart Camera Module RPi3, 5MP, Fish-Eye
-* BerryIMU v3
+* [BerryIMU v3](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC)
 * Raspberry Pi ultrasonic sensor
 
 
