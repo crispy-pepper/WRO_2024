@@ -14,11 +14,12 @@ ROI_LEFT_BOT = [0, 290, 100, 330]
 ROI_RIGHT_BOT = [540, 290, 640, 330]
 ROI_LEFT_TOP = [0, 270, 50, 290]
 ROI_RIGHT_TOP = [590, 270, 640, 290]
-ROI4 = [300, 340, 340, 380]
+ROI4 = [300, 280, 340, 320]
 ROI_MIDDLE = [0, 220, 640, 380]
-
-PD = 0.0065
-PG = 0.0065
+OBSTACLEPG = 0.001
+SIZEPG = 0.0009
+PD = 0.0045
+PG = 0.016
 WIDTH = 640
 HEIGHT = 480
 POINTS = [(115,200), (525,200), (640,370), (0,370)]
@@ -26,12 +27,12 @@ LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
 
 UPPER_BLACK_THRESHOLD = np.array([180, 255, 70])
 
-LOWER_RED_THRESHOLD = np.array([150, 160, 50])
-UPPER_RED_THRESHOLD = np.array([171, 225, 235])
-#LOWER_RED_THRESHOLD1 = np.array([0, 50, 50])
-#UPPER_RED_THRESHOLD1 = np.array([10, 255, 255])
-#LOWER_RED_THRESHOLD2 = np.array([167, 50, 50])
-#UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
+#LOWER_RED_THRESHOLD = np.array([150, 160, 50])
+#UPPER_RED_THRESHOLD = np.array([171, 225, 235])
+LOWER_RED_THRESHOLD1 = np.array([0, 120, 110])
+UPPER_RED_THRESHOLD1 = np.array([1, 255, 215])
+LOWER_RED_THRESHOLD2 = np.array([150, 120, 110])
+UPPER_RED_THRESHOLD2 = np.array([180, 225, 215])
 #LOWER_GREEN_THRESHOLD = np.array([58, 42, 60])
 #UPPER_GREEN_THRESHOLD = np.array([116, 255, 255])
 #LOWER_GREEN_THRESHOLD = np.array([99, 34, 30])
@@ -39,19 +40,19 @@ UPPER_RED_THRESHOLD = np.array([171, 225, 235])
 #LOWER_GREEN_THRESHOLD = np.array([98, 34, 92])
 #UPPER_GREEN_THRESHOLD = np.array([126, 144, 160])
 LOWER_GREEN_THRESHOLD = np.array([90, 33, 40])
-UPPER_GREEN_THRESHOLD = np.array([111, 105, 135])
-LOWER_ORANGE_THRESHOLD1 = np.array([155, 57, 70])
+UPPER_GREEN_THRESHOLD = np.array([101, 175, 135])
+LOWER_ORANGE_THRESHOLD1 = np.array([155, 57, 50])
 UPPER_ORANGE_THRESHOLD1 = np.array([180, 255, 255])
-LOWER_ORANGE_THRESHOLD2 = np.array([0, 57, 70])
-UPPER_ORANGE_THRESHOLD2 = np.array([8, 255, 255])
-LOWER_BLUE_THRESHOLD= np.array([100, 49, 47])
-UPPER_BLUE_THRESHOLD = np.array([140, 122, 130])
+LOWER_ORANGE_THRESHOLD2 = np.array([0, 57, 50])
+UPPER_ORANGE_THRESHOLD2 = np.array([9, 255, 255])
+LOWER_BLUE_THRESHOLD= np.array([115, 0, 60])
+UPPER_BLUE_THRESHOLD = np.array([140, 122, 115])
 LOWER_MAGENTA_THRESHOLD= np.array([168, 175, 50])
 UPPER_MAGENTA_THRESHOLD = np.array([172, 255, 255])
-LINE_THRESHOLD = 35
-PILLAR_SIZE = 1000
-DC_STRAIGHT_SPEED = 1340
-DC_TURN_SPEED = 1340
+LINE_THRESHOLD =40
+PILLAR_SIZE = 800
+DC_STRAIGHT_SPEED = 1343
+DC_TURN_SPEED = 1343
 MAX_TURNS = 12
 ACTIONS_TO_STRAIGHT = 400
 WALL_THRESHOLD = 600
@@ -109,11 +110,11 @@ while True:
         
     # find black thresholds
     img_thresh = cv2.inRange(img_hsv, LOWER_BLACK_THRESHOLD, UPPER_BLACK_THRESHOLD)
-    #img_thresh_red1 = cv2.inRange(img_hsv, LOWER_RED_THRESHOLD1, UPPER_RED_THRESHOLD1)
-    #img_thresh_red2 = cv2.inRange(img_hsv, LOWER_RED_THRESHOLD2, UPPER_RED_THRESHOLD2)
+    img_thresh_red1 = cv2.inRange(img_hsv, LOWER_RED_THRESHOLD1, UPPER_RED_THRESHOLD1)
+    img_thresh_red2 = cv2.inRange(img_hsv, LOWER_RED_THRESHOLD2, UPPER_RED_THRESHOLD2)
     img_thresh_green = cv2.inRange(img_hsv, LOWER_GREEN_THRESHOLD, UPPER_GREEN_THRESHOLD)
-    #img_thresh_red = cv2.bitwise_or(img_thresh_red1, img_thresh_red2)
-    img_thresh_red = cv2.inRange(img_hsv, LOWER_RED_THRESHOLD, UPPER_RED_THRESHOLD)
+    img_thresh_red = cv2.bitwise_or(img_thresh_red1, img_thresh_red2)
+    #img_thresh_red = cv2.inRange(img_hsv, LOWER_RED_THRESHOLD, UPPER_RED_THRESHOLD)
     
     
     contours_red, _ = cv2.findContours(img_thresh_red[ROI_MIDDLE[1]:ROI_MIDDLE[3], ROI_MIDDLE[0]:ROI_MIDDLE[2]], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -284,12 +285,13 @@ while True:
     if target != 'none':
         if target > x-10 and target < x+10:
             target = 'none'
-        if direction == "red":
-            prevPillar = "red"
-            target = 130
-        elif direction == "green":
-            prevPillar = "green"
-            target = 480
+            
+    if direction == "red":
+        prevPillar = "red"
+        target = 160
+    elif direction == "green":
+        prevPillar = "green"
+        target = 480
     
 
     if trackDir == "none":
@@ -345,11 +347,12 @@ while True:
     else:
         turnDir = "none"
         if target != 'none':
-            if ((max_green_contour > PILLAR_SIZE or max_red_contour > PILLAR_SIZE)and (max_green_contour/(w*h) > 0.3 or max_red_contour/(w*h) > 0.3)):
+            if ((max_green_contour > PILLAR_SIZE or max_red_contour > PILLAR_SIZE)):
                 dc_speed = DC_TURN_SPEED
 
-                servo_angle = MID_SERVO - ((x - target) * MAX_TURN_DEGREE) * 0.002
-                print(servo_angle)       
+                servo_angle = MID_SERVO - (((x - target) * MAX_TURN_DEGREE) * OBSTACLEPG) * h*w* SIZEPG
+            else:
+                target = 'none'
         
         
         else:
@@ -357,25 +360,21 @@ while True:
             dc_speed = DC_STRAIGHT_SPEED
 
             
-            if left_area < WALL_THRESHOLD:
-                servo_angle = MID_SERVO+MAX_TURN_DEGREE
-            elif right_area < WALL_THRESHOLD:
-                servo_angle = MID_SERVO-MAX_TURN_DEGREE 
+            
 
+            # if in the straight section, calculate the current_difference between the contours in the left and right area
+            current_difference = left_area - right_area
+            #print ("current current_difference: " + str(current_difference))
+            if (left_area > right_area):
+                #print ("left bigger")
+                pass
             else:
-                # if in the straight section, calculate the current_difference between the contours in the left and right area
-                current_difference = left_area - right_area
-                #print ("current current_difference: " + str(current_difference))
-                if (left_area > right_area):
-                    #print ("left bigger")
-                    pass
-                else:
-                    #print ("right bigger")
-                    pass
-                #calculate steering amount using preportional-derivative steering
-                # multiply the current_difference by a constant variable and add the projected error multiplied by another constand
-                servo_angle = MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD)
-                #print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
+                #print ("right bigger")
+                pass
+            #calculate steering amount using preportional-derivative steering
+            # multiply the current_difference by a constant variable and add the projected error multiplied by another constand
+            servo_angle = MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD)
+            #print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
 
     #   #if the total turns has surpassed the amount required, increment the action counter by 1
     if total_turn == MAX_TURNS:
@@ -437,14 +436,14 @@ while True:
     image = cv2.line(im, (ROI4[0], ROI4[1]), (ROI4[0], ROI4[3]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI4[2], ROI4[3]), (ROI4[2], ROI4[1]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI4[2], ROI4[3]), (ROI4[0], ROI4[3]), (0, 255, 255), 4)      
-    print(str(x) + " " + str(y) + ' ' + str(w) + ' ' + str(h))
     if target != 'none':
         image = cv2.line(im, (target, 0), (target, 520), (255, 255, 0), 1)
     cv2.circle(im,(x,y),5,(255,255,0),1,-1)
     # display the camera
     cv2.imshow("Camera", im)
     
-    
+    print(servo_angle)       
+
     # if the number of actions to the straight section has been met, stop the car
     if action_counter >= ACTIONS_TO_STRAIGHT:
         if not lastLapDone:

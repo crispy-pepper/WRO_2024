@@ -205,9 +205,7 @@ while True:
 
         if total_turn == MAX_TURNS:
             action_counter += 1
-        
-    
-        
+      
             
 
 
