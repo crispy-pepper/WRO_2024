@@ -14,12 +14,12 @@ ROI_LEFT_BOT = [0, 290, 100, 330]
 ROI_RIGHT_BOT = [540, 290, 640, 330]
 ROI_LEFT_TOP = [0, 270, 50, 290]
 ROI_RIGHT_TOP = [590, 270, 640, 290]
-ROI4 = [300, 280, 340, 320]
+ROI4 = [200, 325, 440,350]
 ROI_MIDDLE = [0, 220, 640, 380]
-OBSTACLEPG = 0.001
-SIZEPG = 0.0009
-PD = 0.0045
-PG = 0.016
+OBSTACLEPG = 0.1
+YAXISPG = 0.1
+PD = 0.01
+PG = 0.02
 WIDTH = 640
 HEIGHT = 480
 POINTS = [(115,200), (525,200), (640,370), (0,370)]
@@ -30,8 +30,8 @@ UPPER_BLACK_THRESHOLD = np.array([180, 255, 70])
 #LOWER_RED_THRESHOLD = np.array([150, 160, 50])
 #UPPER_RED_THRESHOLD = np.array([171, 225, 235])
 LOWER_RED_THRESHOLD1 = np.array([0, 120, 110])
-UPPER_RED_THRESHOLD1 = np.array([1, 255, 215])
-LOWER_RED_THRESHOLD2 = np.array([150, 120, 110])
+UPPER_RED_THRESHOLD1 = np.array([0, 255, 215])
+LOWER_RED_THRESHOLD2 = np.array([150, 120, 90])
 UPPER_RED_THRESHOLD2 = np.array([180, 225, 215])
 #LOWER_GREEN_THRESHOLD = np.array([58, 42, 60])
 #UPPER_GREEN_THRESHOLD = np.array([116, 255, 255])
@@ -40,19 +40,19 @@ UPPER_RED_THRESHOLD2 = np.array([180, 225, 215])
 #LOWER_GREEN_THRESHOLD = np.array([98, 34, 92])
 #UPPER_GREEN_THRESHOLD = np.array([126, 144, 160])
 LOWER_GREEN_THRESHOLD = np.array([90, 33, 40])
-UPPER_GREEN_THRESHOLD = np.array([101, 175, 135])
+UPPER_GREEN_THRESHOLD = np.array([110, 175, 135])
 LOWER_ORANGE_THRESHOLD1 = np.array([155, 57, 50])
 UPPER_ORANGE_THRESHOLD1 = np.array([180, 255, 255])
 LOWER_ORANGE_THRESHOLD2 = np.array([0, 57, 50])
 UPPER_ORANGE_THRESHOLD2 = np.array([9, 255, 255])
-LOWER_BLUE_THRESHOLD= np.array([115, 0, 60])
-UPPER_BLUE_THRESHOLD = np.array([140, 122, 115])
+LOWER_BLUE_THRESHOLD= np.array([125, 30, 60])
+UPPER_BLUE_THRESHOLD = np.array([140, 145, 98])
 LOWER_MAGENTA_THRESHOLD= np.array([168, 175, 50])
 UPPER_MAGENTA_THRESHOLD = np.array([172, 255, 255])
-LINE_THRESHOLD =40
+LINE_THRESHOLD =150
 PILLAR_SIZE = 800
-DC_STRAIGHT_SPEED = 1343
-DC_TURN_SPEED = 1343
+DC_STRAIGHT_SPEED = 1350
+DC_TURN_SPEED = 1350
 MAX_TURNS = 12
 ACTIONS_TO_STRAIGHT = 400
 WALL_THRESHOLD = 600
@@ -94,7 +94,7 @@ def stop():
 
     
 
-Board.setPWMServoPulse(1, pwm(MID_SERVO), 10) #turn servo to mid
+Board.setPWMServoPulse(1, pwm(MID_SERVO), 1) #turn servo to mid
 Board.setPWMServoPulse(6, 1500, 100) # arm the esc motor
 time.sleep(2)
 print("---------------------------- running--------------------------")
@@ -350,7 +350,7 @@ while True:
             if ((max_green_contour > PILLAR_SIZE or max_red_contour > PILLAR_SIZE)):
                 dc_speed = DC_TURN_SPEED
 
-                servo_angle = MID_SERVO - (((x - target) * MAX_TURN_DEGREE) * OBSTACLEPG) * h*w* SIZEPG
+                servo_angle = MID_SERVO - ((((x - target) * MAX_TURN_DEGREE) * OBSTACLEPG) + (y * YAXISPG))
             else:
                 target = 'none'
         
@@ -442,7 +442,7 @@ while True:
     # display the camera
     cv2.imshow("Camera", im)
     
-    print(servo_angle)       
+    print(max_blue_area)       
 
     # if the number of actions to the straight section has been met, stop the car
     if action_counter >= ACTIONS_TO_STRAIGHT:
