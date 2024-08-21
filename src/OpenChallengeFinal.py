@@ -17,13 +17,13 @@ ROI_LEFT_TOP = [0, 285, 40, 300]
 ROI_RIGHT_TOP = [600, 285, 640, 300]
 ROI4 = [270, 320, 360, 360]
 
-lower_blue = np.array([104, 73,40])
-upper_blue = np.array([132, 205, 115])    
-lower_orange1 = np.array([155, 59, 70])
-upper_orange1 = np.array([180, 255, 255])
-lower_orange2 = np.array([0, 59, 70])
-upper_orange2 = np.array([8, 255, 255])
-turnDir = "none"
+LOWER_BLUE_THRESHOLD = np.array([104, 73,40])
+UPPER_BLUE_THRESHOLD = np.array([132, 205, 115])    
+LOWER_ORANGE_THRESHOLD1 = np.array([155, 59, 70])
+UPPER_ORANGE_THRESHOLD1 = np.array([180, 255, 255])
+LOWER_ORANGE_THRESHOLD2 = np.array([0, 59, 70])
+UPPER_ORANGE_THRESHOLD2 = np.array([8, 255, 255])
+
 PD = 0.2
 PG = 0.0035
 WIDTH = 640
@@ -50,8 +50,8 @@ action_counter = 0
 last_difference = 0
 current_difference = 0
 servo_angle=0 
-
-trackDir = "none"
+turn_direction = "none"
+track_direction = "none"
 turncounter = 0
         
 
@@ -156,13 +156,13 @@ while True:
                 x,y,w,h=cv2.boundingRect(approx)
         
     
-    b_mask = cv2.inRange(img_hsv, lower_blue, upper_blue)
+    b_mask = cv2.inRange(img_hsv, LOWER_BLUE_THRESHOLD, UPPER_BLUE_THRESHOLD)
 
     #find blue contours to detect the lines on the mat
     contours_blue = cv2.findContours(b_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
     cv2.CHAIN_APPROX_SIMPLE)[-2]
     
-    o_mask = cv2.bitwise_or(cv2.inRange(img_hsv, lower_orange1, upper_orange1), cv2.inRange(img_hsv, lower_orange2, upper_orange2))
+    o_mask = cv2.bitwise_or(cv2.inRange(img_hsv, LOWER_ORANGE_THRESHOLD1, UPPER_ORANGE_THRESHOLD1), cv2.inRange(img_hsv, LOWER_ORANGE_THRESHOLD2, UPPER_ORANGE_THRESHOLD2))
 
     #find orange contours to detect the lines on the mat
     contours_orange = cv2.findContours(o_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
@@ -189,43 +189,43 @@ while True:
         cv2.drawContours(im, contours_blue, i, (255, 255, 0), 1)
         
 
-    if trackDir == "none":
+    if track_direction == "none":
         if max_blue_area>max_orange_area and max_blue_area > LINE_THRESHOLD:
-            trackDir = "left"
+            track_direction = "left"
             print("I see more blue than orange and change track dir")
         if max_orange_area > max_blue_area and max_orange_area > LINE_THRESHOLD:
-            trackDir = "right"
+            track_direction = "right"
             print("I see more orange than blue and change track dir")
             
 
     
     
-    if trackDir == "right":
-        if (turnDir == "right" and max_blue_area > LINE_THRESHOLD and max_orange_area < LINE_THRESHOLD):
-                turnDir = "none"
+    if track_direction == "right":
+        if (turn_direction == "right" and max_blue_area > LINE_THRESHOLD and max_orange_area < LINE_THRESHOLD):
+                turn_direction = "none"
                 print("done turning")
         elif max_orange_area > LINE_THRESHOLD:
 
                 #if the turn direction hasn't been changed yet change the turn direction to right
-            if turnDir == "none":
+            if turn_direction == "none":
                 turncounter += 1
-                turnDir = "right"    
-                print(turnDir,turncounter)
+                turn_direction = "right"    
+                print(turn_direction,turncounter)
 
         
                 
 
-    elif trackDir == "left":
-        if (turnDir == "left" and max_orange_area > LINE_THRESHOLD and max_blue_area < LINE_THRESHOLD):
-                turnDir = "none"
+    elif track_direction == "left":
+        if (turn_direction == "left" and max_orange_area > LINE_THRESHOLD and max_blue_area < LINE_THRESHOLD):
+                turn_direction = "none"
                 print("done turning")
                 
         elif max_blue_area > LINE_THRESHOLD:
                 #if the turn direction hasn't been changed yet change the turn direction to left
-            if turnDir == "none":
+            if turn_direction == "none":
                 turncounter += 1
-                turnDir = "left" 
-                print(turnDir,turncounter)
+                turn_direction = "left" 
+                print(turn_direction,turncounter)
             
     
     # set default DC motor speed as straight section speed
@@ -235,12 +235,12 @@ while True:
         
     
 
-    if turnDir == 'right':
+    if turn_direction == 'right':
         servo_angle = MID_SERVO-MAX_TURN_DEGREE 
         dc_speed = DC_TURN_SPEED
         
             
-    elif turnDir == 'left':
+    elif turn_direction == 'left':
 
         servo_angle = MID_SERVO+MAX_TURN_DEGREE 
         dc_speed = DC_TURN_SPEED
@@ -250,7 +250,7 @@ while True:
     
     
     else:
-        turnDir = "none"
+        turn_direction = "none"
        
         turning_iter = 0
         
