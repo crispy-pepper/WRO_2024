@@ -9,26 +9,37 @@ from picamera2 import Picamera2
 import HiwonderSDK.Board as Board
 
 # constant variables
-MID_SERVO = 80
-MAX_TURN_DEGREE = 40
-ROI_LEFT_BOT = [0, 290, 100, 330] 
-ROI_RIGHT_BOT = [540, 290, 640, 330]
-ROI_LEFT_TOP = [0, 275, 40, 290]
-ROI_RIGHT_TOP = [600, 275, 640, 290]
-PD = 0.35
-PG = 0.0062
+MID_SERVO = 82
+MAX_TURN_DEGREE = 41
+ROI_LEFT_BOT = [0, 300, 100, 340] 
+ROI_RIGHT_BOT = [540, 300, 640, 340]
+ROI_LEFT_TOP = [0, 285, 40, 300]
+ROI_RIGHT_TOP = [600, 285, 640, 300]
+ROI4 = [270, 320, 360, 360]
+
+lower_blue = np.array([104, 73,40])
+upper_blue = np.array([132, 205, 115])    
+lower_orange1 = np.array([155, 59, 70])
+upper_orange1 = np.array([180, 255, 255])
+lower_orange2 = np.array([0, 59, 70])
+upper_orange2 = np.array([8, 255, 255])
+turnDir = "none"
+PD = 0.2
+PG = 0.0035
 WIDTH = 640
 HEIGHT = 480
 POINTS = [(115,200), (525,200), (640,370), (0,370)]
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
-UPPER_BLACK_THRESHOLD = np.array([180, 255, 60])
-DC_STRAIGHT_SPEED = 1322
-DC_TURN_SPEED = 1346
+UPPER_BLACK_THRESHOLD = np.array([180, 255, 54])
+DC_STRAIGHT_SPEED = 1342
+DC_TURN_SPEED = 1342
 MAX_TURNS = 12
-ACTIONS_TO_STRAIGHT = 50
-WALL_THRESHOLD = 700
-NO_WALL_THRESHOLD = 100
-TURN_ITER_LIMIT = 130
+ACTIONS_TO_STRAIGHT = 170
+WALL_THRESHOLD = 50
+NO_WALL_THRESHOLD = 50
+TURN_ITER_LIMIT = 160
+LINE_THRESHOLD = 30
+
 
 
 #dynamic variables
@@ -40,6 +51,11 @@ last_difference = 0
 current_difference = 0
 servo_angle=0 
 
+trackDir = "none"
+turncounter = 0
+        
+
+
 turning_iter = 0
 
 # camera setup
@@ -49,6 +65,8 @@ picam2.preview_configuration.main.format = "RGB888"
 picam2.preview_configuration.controls.FrameRate = 35
 picam2.preview_configuration.align()
 picam2.configure("preview")
+picam2.set_controls({ "Saturation":1.4, "Brightness" : 0.05})
+
 picam2.start()
 
 # utility function for pwm angle calculation
@@ -59,7 +77,7 @@ def pwm(degree):
 
 Board.setPWMServoPulse(1, pwm(MID_SERVO), 10) #turn servo to mid
 Board.setPWMServoPulse(6, 1500, 100) # arm the esc motor
-time.sleep(2)
+time.sleep(1)
 print("---------------------------- running--------------------------")
 
 
@@ -138,6 +156,78 @@ while True:
                 x,y,w,h=cv2.boundingRect(approx)
         
     
+    b_mask = cv2.inRange(img_hsv, lower_blue, upper_blue)
+
+    #find blue contours to detect the lines on the mat
+    contours_blue = cv2.findContours(b_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
+    cv2.CHAIN_APPROX_SIMPLE)[-2]
+    
+    o_mask = cv2.bitwise_or(cv2.inRange(img_hsv, lower_orange1, upper_orange1), cv2.inRange(img_hsv, lower_orange2, upper_orange2))
+
+    #find orange contours to detect the lines on the mat
+    contours_orange = cv2.findContours(o_mask[ROI4[1]:ROI4[3], ROI4[0]:ROI4[2]], cv2.RETR_EXTERNAL,
+    cv2.CHAIN_APPROX_SIMPLE)[-2]
+        
+    max_blue_area = 0
+    max_orange_area = 0
+    for i in range(len(contours_orange)):
+        cnt = contours_orange[i]
+        max_orange_area = max(cv2.contourArea(cnt), max_orange_area)
+        cnt[:, :, 0] += ROI4[0]  # Add X offset
+        cnt[:, :, 1] += ROI4[1]  # Add Y offset
+             
+        cv2.drawContours(im, contours_orange, i, (255, 255, 0), 1)
+        
+
+        #iterate through blue contours
+    for i in range(len(contours_blue)):
+        cnt = contours_blue[i]
+        max_blue_area = max(cv2.contourArea(cnt), max_blue_area)
+        cnt[:, :, 0] += ROI4[0]  # Add X offset
+        cnt[:, :, 1] += ROI4[1]  # Add Y offset
+        #if the turn direction is left
+        cv2.drawContours(im, contours_blue, i, (255, 255, 0), 1)
+        
+
+    if trackDir == "none":
+        if max_blue_area>max_orange_area and max_blue_area > LINE_THRESHOLD:
+            trackDir = "left"
+            print("I see more blue than orange and change track dir")
+        if max_orange_area > max_blue_area and max_orange_area > LINE_THRESHOLD:
+            trackDir = "right"
+            print("I see more orange than blue and change track dir")
+            
+
+    
+    
+    if trackDir == "right":
+        if (turnDir == "right" and max_blue_area > LINE_THRESHOLD and max_orange_area < LINE_THRESHOLD):
+                turnDir = "none"
+                print("done turning")
+        elif max_orange_area > LINE_THRESHOLD:
+
+                #if the turn direction hasn't been changed yet change the turn direction to right
+            if turnDir == "none":
+                turncounter += 1
+                turnDir = "right"    
+                print(turnDir,turncounter)
+
+        
+                
+
+    elif trackDir == "left":
+        if (turnDir == "left" and max_orange_area > LINE_THRESHOLD and max_blue_area < LINE_THRESHOLD):
+                turnDir = "none"
+                print("done turning")
+                
+        elif max_blue_area > LINE_THRESHOLD:
+                #if the turn direction hasn't been changed yet change the turn direction to left
+            if turnDir == "none":
+                turncounter += 1
+                turnDir = "left" 
+                print(turnDir,turncounter)
+            
+    
     # set default DC motor speed as straight section speed
     
     dc_speed = DC_STRAIGHT_SPEED
@@ -145,46 +235,30 @@ while True:
         
     
 
-    if (sharp_turn_right and (right_area< WALL_THRESHOLD)):
+    if turnDir == 'right':
         servo_angle = MID_SERVO-MAX_TURN_DEGREE 
         dc_speed = DC_TURN_SPEED
-        turning_iter += 1
+        
             
-    elif (sharp_turn_left and (left_area< WALL_THRESHOLD)):
+    elif turnDir == 'left':
+
         servo_angle = MID_SERVO+MAX_TURN_DEGREE 
         dc_speed = DC_TURN_SPEED
-        turning_iter += 1
     
     
     
     
     
     else:
-        sharp_turn_left = False
-        sharp_turn_right = False
+        turnDir = "none"
+       
         turning_iter = 0
-        if right_area < NO_WALL_THRESHOLD:
-            #print("no wall to the right") 
-            
-            # set all movement variables to turn sharply right
-            total_turn+=1
-            
-            print(str(total_turn) + "th turn") 
-            turning_iter += 1
-            sharp_turn_right = True
-            
-
-            
-        elif left_area < NO_WALL_THRESHOLD:
-            #print("no wall to the left")
-            
-            # set all movement variables to turn sharply left
-            sharp_turn_left = True
-            total_turn+=1
-            
-            print(str(total_turn) + "th turn") 
-            turning_iter += 1
-
+        
+        if left_area < WALL_THRESHOLD:
+            servo_angle = MID_SERVO+MAX_TURN_DEGREE
+        elif right_area < WALL_THRESHOLD:
+            servo_angle = MID_SERVO-MAX_TURN_DEGREE 
+ 
 
         else:
             # if in the straight section, calculate the current_difference between the contours in the left and right area
@@ -200,12 +274,16 @@ while True:
             # multiply the current_difference by a constant variable and add the projected error multiplied by another constand
             servo_angle = MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD)
             #print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
-            
+            print("PG: " + str(current_difference * PG))
+            print("PD: " + str((current_difference-last_difference) * PD))
+            print(servo_angle)
         #   #if the total turns has surpassed the amount required, increment the action counter by 1
 
-        if total_turn == MAX_TURNS:
-            action_counter += 1
-      
+    if turncounter == MAX_TURNS:
+        action_counter += 1
+    
+
+        
             
 
 
@@ -251,7 +329,12 @@ while True:
     image = cv2.line(im, (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[1]), (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[1]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[1]), (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[3]), (0, 255, 255), 4)
     image = cv2.line(im, (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[3]), (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[1]), (0, 255, 255), 4)
-    image = cv2.line(im, (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[3]), (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[3]), (0, 255, 255), 4)   
+    image = cv2.line(im, (ROI_RIGHT_BOT[2], ROI_RIGHT_BOT[3]), (ROI_RIGHT_BOT[0], ROI_RIGHT_BOT[3]), (0, 255, 255), 4)
+    
+    image = cv2.line(im, (ROI4[0], ROI4[1]), (ROI4[2], ROI4[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI4[0], ROI4[1]), (ROI4[0], ROI4[3]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI4[2], ROI4[3]), (ROI4[2], ROI4[1]), (0, 255, 255), 4)
+    image = cv2.line(im, (ROI4[2], ROI4[3]), (ROI4[0], ROI4[3]), (0, 255, 255), 4)      
     
     
     # display the camera
@@ -260,6 +343,7 @@ while True:
     
     # if the number of actions to the straight section has been met, stop the car
     if (cv2.waitKey(1)==ord("q") or action_counter >= ACTIONS_TO_STRAIGHT):#
+        Board.setPWMServoPulse(6, 1500, 100) 
         time.sleep(0.02)
         Board.setPWMServoPulse(6, 1500, 100) 
         Board.setPWMServoPulse(1, pwm(MID_SERVO), 1000)
