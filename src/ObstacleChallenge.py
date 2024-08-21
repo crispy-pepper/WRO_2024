@@ -1,3 +1,4 @@
+
 #libraries
 import sys
 import cv2
@@ -8,57 +9,68 @@ from picamera2 import Picamera2
 import HiwonderSDK.Board as Board
 from libcamera import controls
 # constant variables
-MID_SERVO = 80
-MAX_TURN_DEGREE = 38
-ROI_LEFT_BOT = [0, 290, 100, 330]
-ROI_RIGHT_BOT = [540, 290, 640, 330]
-ROI_LEFT_TOP = [0, 270, 50, 290]
-ROI_RIGHT_TOP = [590, 270, 640, 290]
-ROI4 = [200, 325, 440,350]
+MID_SERVO = 82
+MAX_TURN_DEGREE = 40
+ROI_LEFT_BOT = [0, 300, 100, 340]
+ROI_RIGHT_BOT = [540, 300, 640, 340]
+ROI_LEFT_TOP = [0, 280, 50, 300]
+ROI_RIGHT_TOP = [590, 280, 640, 300]
+ROI4 = [300, 330, 340, 370]
 ROI_MIDDLE = [0, 220, 640, 380]
-OBSTACLEPG = 0.1
-YAXISPG = 0.1
-PD = 0.01
-PG = 0.02
+OBSTACLEPG = 0.002
+OBSTACLEPD = 0.05
+YAXISPG = 0.01
+PD = 0.2
+PG = 0.018
+
 WIDTH = 640
 HEIGHT = 480
 POINTS = [(115,200), (525,200), (640,370), (0,370)]
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
 
 UPPER_BLACK_THRESHOLD = np.array([180, 255, 70])
-
-#LOWER_RED_THRESHOLD = np.array([150, 160, 50])
-#UPPER_RED_THRESHOLD = np.array([171, 225, 235])
-LOWER_RED_THRESHOLD1 = np.array([0, 120, 110])
+#UPPER_BLACK_THRESHOLD = np.array([180, 255, 20])
+LOWER_RED_THRESHOLD1 = np.array([0, 150, 80])
 UPPER_RED_THRESHOLD1 = np.array([0, 255, 215])
-LOWER_RED_THRESHOLD2 = np.array([150, 120, 90])
+LOWER_RED_THRESHOLD2 = np.array([150, 120, 80])
 UPPER_RED_THRESHOLD2 = np.array([180, 225, 215])
-#LOWER_GREEN_THRESHOLD = np.array([58, 42, 60])
-#UPPER_GREEN_THRESHOLD = np.array([116, 255, 255])
-#LOWER_GREEN_THRESHOLD = np.array([99, 34, 30])
-#UPPER_GREEN_THRESHOLD = np.array([126, 95, 88])
-#LOWER_GREEN_THRESHOLD = np.array([98, 34, 92])
-#UPPER_GREEN_THRESHOLD = np.array([126, 144, 160])
-LOWER_GREEN_THRESHOLD = np.array([90, 33, 40])
-UPPER_GREEN_THRESHOLD = np.array([110, 175, 135])
-LOWER_ORANGE_THRESHOLD1 = np.array([155, 57, 50])
-UPPER_ORANGE_THRESHOLD1 = np.array([180, 255, 255])
-LOWER_ORANGE_THRESHOLD2 = np.array([0, 57, 50])
-UPPER_ORANGE_THRESHOLD2 = np.array([9, 255, 255])
-LOWER_BLUE_THRESHOLD= np.array([125, 30, 60])
-UPPER_BLUE_THRESHOLD = np.array([140, 145, 98])
+
+#LOWER_RED_THRESHOLD1 = np.array([0, 150, 110])
+#UPPER_RED_THRESHOLD1 = np.array([0, 255, 215])
+#LOWER_RED_THRESHOLD2 = np.array([150, 152, 40])
+#UPPER_RED_THRESHOLD2 = np.array([164, 225, 215])
+
+#LOWER_GREEN_THRESHOLD = np.array([80, 33, 49])
+#UPPER_GREEN_THRESHOLD = np.array([110, 175, 135])
+LOWER_GREEN_THRESHOLD = np.array([43, 110, 60])
+UPPER_GREEN_THRESHOLD = np.array([106, 245, 185])
+LOWER_ORANGE_THRESHOLD1 = np.array([175, 70, 90])
+UPPER_ORANGE_THRESHOLD1 = np.array([180, 255, 195])
+LOWER_ORANGE_THRESHOLD2 = np.array([0, 70, 120])
+UPPER_ORANGE_THRESHOLD2 = np.array([20, 255, 195])
+
+#LOWER_ORANGE_THRESHOLD1 = np.array([155, 130, 72])
+#UPPER_ORANGE_THRESHOLD1 = np.array([180, 255, 125])
+#LOWER_ORANGE_THRESHOLD2 = np.array([0, 80, 90])
+#UPPER_ORANGE_THRESHOLD2 = np.array([0, 255, 195])
+LOWER_BLUE_THRESHOLD = np.array([104, 73,40])
+UPPER_BLUE_THRESHOLD = np.array([132, 205, 115])    
+#LOWER_BLUE_THRESHOLD= np.array([100, 120, 37])
+#UPPER_BLUE_THRESHOLD = np.array([145, 151, 130])
+
 LOWER_MAGENTA_THRESHOLD= np.array([168, 175, 50])
 UPPER_MAGENTA_THRESHOLD = np.array([172, 255, 255])
-LINE_THRESHOLD =150
-PILLAR_SIZE = 800
-DC_STRAIGHT_SPEED = 1350
-DC_TURN_SPEED = 1350
+LINE_THRESHOLD =35
+PILLAR_SIZE =150
+DC_STRAIGHT_SPEED = 1345
+DC_TURN_SPEED = 1345
 MAX_TURNS = 12
 ACTIONS_TO_STRAIGHT = 400
 WALL_THRESHOLD = 600
 NO_WALL_THRESHOLD = 10
 
 #dynamic variables
+error = 0
 sharp_turn_left = False
 sharp_turn_right = False
 total_turn = 0
@@ -68,7 +80,7 @@ current_difference = 0
 servo_angle=0 
 lastLapTurnAround = False
 prevPillar = ""
-
+prevError = 0
 turning_iter = 0
 turnDir = "none"
 trackDir = "none"
@@ -81,8 +93,9 @@ picam2.preview_configuration.main.size = (640,480)
 picam2.preview_configuration.main.format = "RGB888"
 picam2.preview_configuration.controls.FrameRate = 35
 picam2.preview_configuration.align()
-#picam2.awb_gains = (0.1 , 2)
 picam2.configure("preview")
+picam2.set_controls({ "Saturation":1.4, "Brightness" : 0.05})
+
 picam2.start()
 # utility function for pwm angle calculation
 def pwm(degree):
@@ -224,7 +237,8 @@ while True:
                 approx=cv2.approxPolyDP(i, 0.01*cv2.arcLength(i,True),True)
                 x,y,w,h=cv2.boundingRect(approx)
                 direction = "green"
-    
+    if direction == "none":
+        target = "none"
     # loop to find largest contours
     
     for i in range(len(left_contours_top)):
@@ -281,11 +295,11 @@ while True:
         lastLapTurnAround = False
         continue
 
-    
+    """
     if target != 'none':
         if target > x-10 and target < x+10:
             target = 'none'
-            
+    """
     if direction == "red":
         prevPillar = "red"
         target = 160
@@ -333,39 +347,48 @@ while True:
                 print(turnDir,total_turn)
 
 
-    
-    if turnDir == 'right':
-        servo_angle = MID_SERVO-MAX_TURN_DEGREE 
-        dc_speed = DC_TURN_SPEED
-        
-            
-    elif turnDir == 'left':
-
-        servo_angle = MID_SERVO+MAX_TURN_DEGREE 
-        dc_speed = DC_TURN_SPEED
-    
-    else:
-        turnDir = "none"
-        if target != 'none':
+    if target != 'none':
             if ((max_green_contour > PILLAR_SIZE or max_red_contour > PILLAR_SIZE)):
                 dc_speed = DC_TURN_SPEED
+                error = target -x
 
-                servo_angle = MID_SERVO - ((((x - target) * MAX_TURN_DEGREE) * OBSTACLEPG) + (y * YAXISPG))
+                servo_angle = MID_SERVO + ((((error) * MAX_TURN_DEGREE) * OBSTACLEPG)) + (error - prevError) * OBSTACLEPD
+                if error <= 0:
+                    servo_angle -= int(YAXISPG * (y))  
+                else:
+                    servo_angle += int(YAXISPG * (y))
+                
             else:
                 target = 'none'
+                
+                
+    else:
+   
+        if turnDir == 'right':
+            servo_angle = MID_SERVO-MAX_TURN_DEGREE 
+            dc_speed = DC_TURN_SPEED
+            
+                
+        elif turnDir == 'left':
+
+            servo_angle = MID_SERVO+MAX_TURN_DEGREE 
+            dc_speed = DC_TURN_SPEED
+        
+        
+        
         
         
         else:
-            
+            turnDir = "none"
             dc_speed = DC_STRAIGHT_SPEED
-
+            error = 0
             
             
 
             # if in the straight section, calculate the current_difference between the contours in the left and right area
             current_difference = left_area - right_area
             #print ("current current_difference: " + str(current_difference))
-            if (left_area > right_area):
+            if (left_area == 0):
                 #print ("left bigger")
                 pass
             else:
@@ -375,6 +398,17 @@ while True:
             # multiply the current_difference by a constant variable and add the projected error multiplied by another constand
             servo_angle = MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD)
             #print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
+            """
+            if left_area == 0:
+                servo_angle +=30
+                dc_speed = DC_TURN_SPEED
+            elif right_area == 0:
+                servo_angle -=30
+                dc_speed = DC_TURN_SPEED
+            """
+            
+                
+        
 
     #   #if the total turns has surpassed the amount required, increment the action counter by 1
     if total_turn == MAX_TURNS:
@@ -382,7 +416,7 @@ while True:
         
     # set the last current_difference equal to the current current_difference for derivative steering
     last_difference= current_difference
-    
+    prevError = error
     # if the steering variable is higher than the max turn degree for the servo, set it to the max turn degree
     if (servo_angle < MID_SERVO - MAX_TURN_DEGREE):
         servo_angle = MID_SERVO - MAX_TURN_DEGREE
@@ -442,7 +476,7 @@ while True:
     # display the camera
     cv2.imshow("Camera", im)
     
-    print(max_blue_area)       
+    print(servo_angle)       
 
     # if the number of actions to the straight section has been met, stop the car
     if action_counter >= ACTIONS_TO_STRAIGHT:
@@ -469,3 +503,4 @@ while True:
     
 
 cv2.destroyAllWindows()
+
