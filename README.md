@@ -119,7 +119,7 @@ ensuring that it aligns correctly with the existing drivetrain components.
 
 12. Running the Code:
  - Once the assembly is complete, upload the control code to the Raspberry Pi. Ensure all systems are functioning correctly by performing a series of preliminary tests, such as motor and servo response, camera feed, and sensor readings.
-
+*explain how to upload control to the rasberry pi
 
 ## Content
 
