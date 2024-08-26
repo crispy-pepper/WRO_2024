@@ -85,6 +85,8 @@ When approaching a turn, the vehicle relies on the ROIs to detect changes in the
 The vehicle encounters pillars of various colors on the course, which it must navigate around. To manage this, the camera continuously scans for the color of the pillars using the ROIs. Depending on the detected color, the vehicle will swerve left or right to avoid colliding with the pillar. This dynamic response is critical for maintaining the vehicle’s path and avoiding penalties.
 
 If the vehicle detects that it has passed a pillar on the wrong side, it immediately reverses and adjusts its trajectory to correct the mistake. This capability is essential for recovering from potential errors and ensuring that the vehicle completes the course correctly.
+* add 3-point turn and parallel parking
+
 
 #### Assembly Instructions
 1. Disassembling the Chassis:
