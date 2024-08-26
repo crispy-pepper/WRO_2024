@@ -82,9 +82,9 @@ To correct the vehicle’s position, we used a Proportional-Integral-Derivative 
 
 When approaching a turn, the vehicle uses the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera’s view, the vehicle starts to initiate a turn. To prevent early stoppage or incorrect turn execution, the vehicle continues turning for a predetermined period once a turn has begun. This approach stops issues like overturning or under-turning.
 
-To navigate the pillars, the camera continuously scans for the color of the pillars using the ROIs. Depending on the color, the vehicle will swerve left or right. This dynamic response is critical for maintaining the vehicle’s path and avoiding penalties.
+The camera scans for the color of the pillars using the ROIs. Depending on the color, the vehicle will swerve left or right. This dynamic response is critical for maintaining the vehicle’s path and avoiding penalties.
 
-If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts its direction to correct the mistake. This ensures that the vehicle completes the course correctly.
+If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts its direction to correct the mistake. This ensures that the vehicle completes the course correctly. It also reverses if it is too close to a wall.
 * add 3-point turn and parallel parking
 
 
