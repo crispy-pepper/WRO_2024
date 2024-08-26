@@ -30,12 +30,6 @@ Build a self-driving, autonomous vehicle that completes 2 challenges: the open c
 #### Open Challenge
 The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br>
 Our approach to this challenge was to detect the walls, turn when one wall disappears, and then count the number of turns to know when to end. <br><br>
-
-**Track Centering:** To check whether our car was in the middle of the track, we took live camera captures of the field in front of the vehicle. Using four regions of interest (ROI), two on each side, we would detect the size of the black walls and compare them against each other. If one side was significantly larger than the other, it meant the car was too skewed towards that side. To actually center the vehicle, we used a Proportional, Integral and Derivative (PID) wall follower approach by calculating the difference between the two walls. This would help mitigate the chances of overcorrection.
-
-**Turning:** Similar to track centering, we used four ROIs to detect the size of the black walls. If one wall was completely gone, we would know to turn towards that side. Because we experienced issues with detecting the entire front wall and detecting the next wall too early, we set it so that once the turn had started, it would continue to turn until a certain period of time was up. This would remove any instances of premature stopping, overturning, underturning, and overcounting turns.
-
-**Pillars** To  navigate around pillars, we implemented a color detection system using the camera's region of interest (ROI). This  ensures that the system accurately identifies the pillars while minimizing interference from background noise. Based on the detected color of the pillars, the vehicle adjusts itself, swerving left or right as needed. In cases where the vehicle detects that it is passing a pillar on the incorrect side, it automatically uses a reverse maneuver to realign itself and correct its course, ensuring compliance with the intended path.
  
 ### Obstacle Challenge
 The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured pillars. If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue or change directions to find the parking lot. The car must then back into the parking lot without touching the ends. The size of each side of the field remains constant, 1 metre for each side. <br>
@@ -81,8 +75,18 @@ In the obstacle challenge, the camera is used to detect the color of pillars and
 
 <br><br>
 
+#### Obstacle Management
+Track Centering and Wall Following: To ensure that our vehicle stays centered on the track, we implemented a wall-following strategy based on live camera feeds. The camera captures the area ahead of the vehicle, and we analyze this feed using four regions of interest (ROI)—two on each side of the track. By comparing the size of the black walls in these regions, we determine if the vehicle is veering too far to one side.
 
-## Assembly Instructions
+To correct the vehicle’s position, we employed a Proportional-Integral-Derivative (PID) control algorithm. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the steering accordingly. The use of PID control minimizes the risk of overcorrection, ensuring that the vehicle remains stable and centered on the track.
+
+When approaching a turn, the vehicle relies on the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera’s view, the vehicle knows that it’s time to initiate a turn. To prevent premature stopping or incorrect turn execution, the vehicle is programmed to continue turning for a predetermined period once a turn has begun. This approach mitigates issues like overturning or under-turning, ensuring smooth and accurate cornering.
+
+The vehicle encounters pillars of various colors on the course, which it must navigate around. To manage this, the camera continuously scans for the color of the pillars using the ROIs. Depending on the detected color, the vehicle will swerve left or right to avoid colliding with the pillar. This dynamic response is critical for maintaining the vehicle’s path and avoiding penalties.
+
+If the vehicle detects that it has passed a pillar on the wrong side, it immediately reverses and adjusts its trajectory to correct the mistake. This capability is essential for recovering from potential errors and ensuring that the vehicle completes the course correctly.
+
+#### Assembly Instructions
 1. Disassembling the Chassis:
  - Begin by carefully unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
  - Next, unscrew the top shell of the vehicle. After the shell is removed, detach the components securing the servo and motor in place.
