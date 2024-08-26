@@ -40,6 +40,8 @@ The obstacle challenge is where the car must complete three full laps around the
 Our approach to this challenge was to detect the pillars, adjust according to pillar colour, turn at the orange/blue lines, count the number of turns to know when the laps end, detect the parking lot, and back in using additional sensors. <br>
 
 ### Hardware
+
+#### Movement Considerations
 * Servo for steering
 * Motor for RWD (Rear-wheel drive)
 * The vehicle Chassis is a Carisma 80468 GT24RS 1/24 so the vehicle is small enough to fit in the parallel parking space vertically
@@ -57,6 +59,18 @@ The vehicle is based on the [Charisma 80468 GT24RS 1/24 model](#engineering-mate
 
 The motor and servo replace the original components in the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), with the servo needing modifications to the chassis of the car. The other components of the car are attached through a 3d printed base that is clipped in on top of the car. 
 (something something add the building/assembly instructions, CAD files and parts) <br>
+
+#### Power Considerations
+* Sensors and power management
+* Reference schematic <br>
+
+The vehicle is powered by one Gens Ace 2S1P 1300mAh 7.4V battery, which has 1300mAh with a discharge rating of 45C, which means it is capable of providing 58.5 Amps, which is more than capable of powering our car.<br>
+
+The open and obstacle challenge both use a SainSmart Camera Module RPi3 to detect and avoid walls, as well as for turning. The open challenge also uses the camera to detect pillars and colours. The camera has a fish-eye lens, which allows it to see more of the field from closer, which allows us to make decisions faster than a normal lens would allow. This gives us more information and time to make a decision. This camera captures colour in enough <br>
+
+Add senor power consumption
+(also if we use ultrasonic sensor or BerryIMU ill add it later)<br>
+
 
 <br><br>
 
