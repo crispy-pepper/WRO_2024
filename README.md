@@ -60,15 +60,15 @@ The motor and servo replace the original components in the [Charisma 80468 GT24R
 * Sensors and power management
 * Reference schematic <br>
 
-The power and sensor systems are critical to the vehicle's performance in navigating the challenges of the competition. For this project, the vehicle is powered by a Gens Ace 2S1P 1300mAh 7.4V battery. This battery has a discharge rating of 45C, meaning it can provide up to 58.5 Amps of current, which is more than sufficient to meet the power demands of the vehicle’s components, including the motor, servo, and Raspberry Pi.
+The power and sensor systems are critical to the vehicle's performance in navigating the challenges of the competition. For this project, the vehicle is powered by a Gens Ace 2S1P 1300mAh 7.4V battery. This battery has a discharge rating of 45C, meaning it can provide up to 58.5 Amps of current, which is more than enough  to meet the power the vehicle’s components.
 
-The battery serves as the primary power source for the vehicle, delivering consistent and reliable energy to the entire system. The Furitek Lizard Pro 30A/50A Brushless ESC is connected to the battery to regulate the power delivered to the Furitek Micro Komodo 1212 3450KV Brushless Motor. This ESC is required to ensure smooth acceleration and deceleration, protecting the motor from potential damage due to power surges.
+The battery serves as the power source for the vehicle, providing energy for all parts. The Furitek Lizard Pro 30A/50A Brushless ESC is connected to the battery to regulate the power delivered to the Furitek Micro Komodo 1212 3450KV Brushless Motor. This ESC is required to ensure smooth acceleration and deceleration, protecting the motor from potential damage due to power surges.
 
-The Raspberry Pi, which acts as the vehicle's central processing unit, has a typical power consumption of 1280mA under heavy stress. Given the battery’s capabilities, this power draw is well within the available current, allowing the Raspberry Pi to operate efficiently while managing all sensor inputs and processing the control algorithms.
+The Raspberry Pi, which acts as the vehicle's brains, has a power consumption of 1280mA under heavy stress which is shown by studies. Given the battery’s capabilities, this power draw is much less than the battery can provide, allowing the Raspberry Pi to operate properly while managing all sensor inputs and processing.
 
-The vehicle's sensing capabilities are primarily managed by a SainSmart Camera Module RPi3, which is used in both the open and obstacle challenges. The camera is equipped with a fish-eye lens, which offers a wider field of view. This visual range enables the vehicle to detect obstacles, such as walls and pillars, more effectively and to process environmental data faster than a standard lens would allow. 
+The vehicle's sensing capabilities inlcudes a SainSmart Camera Module RPi3, which is used in both the open and obstacle challenges. The camera is equipped with a fish-eye lens, which offers a wider field of view. This visual range enables the vehicle to detect obstacles, such as walls and pillars, and to more effectively process the surroudings. 
 
-In the obstacle challenge, the camera is used to detect the color of pillars and the lines on the course. The vehicle uses this information to swerve left or right accordingly, ensuring it stays on course. The fish-eye lens enhances the vehicle’s ability to capture more of the field at closer distances, providing the system with more information to make timely decisions.
+In the obstacle challenge, the camera is used to detect the color of pillars and the lines on the course. The vehicle uses this information to change direciton left or right accordingly, ensuring it stays on course. The fish-eye lens enhances the vehicle’s ability to capture more of the field at closer distances, providing the system with more information to make timely decisions.
 
 (also if we use ultrasonic sensor or BerryIMU ill add it later)<br>
 
@@ -76,37 +76,36 @@ In the obstacle challenge, the camera is used to detect the color of pillars and
 <br><br>
 
 #### Obstacle Management
-Track Centering and Wall Following: To ensure that our vehicle stays centered on the track, we implemented a wall-following strategy based on live camera feeds. The camera captures the area ahead of the vehicle, and we analyze this feed using four regions of interest (ROI)—two on each side of the track. By comparing the size of the black walls in these regions, we determine if the vehicle is veering too far to one side.
+Track Centering and Wall Following: To ensure that our vehicle stays centered on the track, we implemented a wall-following strategy using the camera. The camera captures the area ahead of the vehicle, and we analyze this feed using four regions of interests and can compare the size of the black walls in these regions to determine if the vehicle is veering too far to one side.
 
-To correct the vehicle’s position, we employed a Proportional-Integral-Derivative (PID) control algorithm. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the steering accordingly. The use of PID control minimizes the risk of overcorrection, ensuring that the vehicle remains stable and centered on the track.
+To correct the vehicle’s position, we used a Proportional-Integral-Derivative (PID) algorithm. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the direction accordingly. The use of PID control gives the car stable turning, ensuring that the vehicle remains stable and centered on the track.
 
-When approaching a turn, the vehicle relies on the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera’s view, the vehicle knows that it’s time to initiate a turn. To prevent premature stopping or incorrect turn execution, the vehicle is programmed to continue turning for a predetermined period once a turn has begun. This approach mitigates issues like overturning or under-turning, ensuring smooth and accurate cornering.
+When approaching a turn, the vehicle uses the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera’s view, the vehicle starts to initiate a turn. To prevent early stoppage or incorrect turn execution, the vehicle continues turning for a predetermined period once a turn has begun. This approach stops issues like overturning or under-turning.
 
-The vehicle encounters pillars of various colors on the course, which it must navigate around. To manage this, the camera continuously scans for the color of the pillars using the ROIs. Depending on the detected color, the vehicle will swerve left or right to avoid colliding with the pillar. This dynamic response is critical for maintaining the vehicle’s path and avoiding penalties.
+To navigate the pillars, the camera continuously scans for the color of the pillars using the ROIs. Depending on the color, the vehicle will swerve left or right. This dynamic response is critical for maintaining the vehicle’s path and avoiding penalties.
 
-If the vehicle detects that it has passed a pillar on the wrong side, it immediately reverses and adjusts its trajectory to correct the mistake. This capability is essential for recovering from potential errors and ensuring that the vehicle completes the course correctly.
+If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts its direction to correct the mistake. This ensures that the vehicle completes the course correctly.
 * add 3-point turn and parallel parking
 
 
 #### Assembly Instructions
 1. Disassembling the Chassis:
- - Begin by carefully unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
+ - Begin by unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
  - Next, unscrew the top shell of the vehicle. After the shell is removed, detach the components securing the servo and motor in place.
 
 2. Creating Space for New Components:
- - Remove the battery holder from the chassis, followed by the front partition of the servo holder. This step is crucial to create sufficient space for the 
-installation of the upgraded motor and servo.
+ - Remove the battery holder from the chassis, followed by the front partition of the servo holder. This step creates sufficient space for the 
+installation of the new motor and servo.
 
 3. Installing the New Motor:
- - Replace the original motor with the Furitek Micro Komodo 1212 3450KV Brushless Motor. Carefully position the motor within the chassis and secure it in place, 
-ensuring that it aligns correctly with the existing drivetrain components.
+ - Replace the original motor with the Furitek Micro Komodo 1212 3450KV Brushless Motor, using the original motor compartment and holder.
 
 4. Installing the New Servo:
- - Replace the original servo with the Hitec HS-5055MG Servo. Secure the servo by screwing a long screw into its end to properly engage the steering mechanism. 
- - Make sure to clip the standoffs into place for stability.
+ - Replace the original servo with the Hitec HS-5055MG Servo. Screw a long screw into the servo horn/arm so that it moves the steering mechanism. 
+ - Make sure to clip the standoffs of the servo to fit into the chassis.
 
 5. Wiring the Power System:
- - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. Follow the wiring configuration provided in the README of the schemes folder to ensure proper power delivery to the motor and other components.
+ - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. Follow the wiring  provided in the README of the schemes folder to ensure proper power delivery to the motor and other components.
 
 6. 3D Printed Components Installation:
  - Print one “base v3.stl” and one “camera holder v6.stl” using a 3D printer.
@@ -114,22 +113,22 @@ ensuring that it aligns correctly with the existing drivetrain components.
  - Mount the assembled base onto the poles that originally supported the vehicle’s cover, ensuring the camera holder is positioned over the rear wheels. Use the original pins from the car to securely clip the base in place.
 
 7. Installing the Camera:
- - Secure the camera into the holder using screws, aligning it with the pre-drilled holes in the camera holder. Ensure the camera is firmly fixed to prevent any movement during operation.
+ - Secure the camera into the holder using screws, aligning it with the holes in the camera holder. Ensure the camera is firmly fixed to prevent any movement during operation.
 
 8. Mounting the Battery:
- - Place the battery into the designated cutout within the camera holder's supports. Use tape, Velcro, or zip ties to secure the battery in place, ensuring it remains stable during vehicle operation.
+ - Place the battery into the  cutout within the camera holder's supports. Use tape, Velcro, or zip ties to secure the battery in place, ensuring it remains stable during vehicle operation.
 
 9. Installing the Raspberry Pi:
- - Place the Raspberry Pi on top of the base, ensuring that the pins on the base align with the screw holes on the Raspberry Pi. Secure the Raspberry Pi in place using appropriate screws.
+ - Place the Raspberry Pi on top of the base, ensuring that the pins on the base align with the screw holes on the Raspberry Pi.
 
 10. Wiring the Vehicle:
- - Carefully wire the car together according to the provided schematic, ensuring all connections are secure and correctly aligned. Pay special attention to wire management to prevent tangling or obstruction of moving parts.
+ - Wire the car together according to the provided schematic, ensuring all connections are secure and correctly aligned. Pay attention to wire management to prevent tangling or obstruction of moving parts or obstruction of the camera.
 
 11. Final Checks:
- - Ensure all components are securely mounted and that there is no excess movement. Double-check all wiring connections for correctness and stability.
+ - Ensure all components are secure and that there is no excess movement. Double-check all wiring connections for correctness and stability.
 
 12. Running the Code:
- - Once the assembly is complete, upload the control code to the Raspberry Pi. Ensure all systems are functioning correctly by performing a series of preliminary tests, such as motor and servo response, camera feed, and sensor readings.
+ - Once the assembly is complete, upload the control code to the Raspberry Pi. Check all systems are working by performing a series of tests that can be found in the tests folder located in the src folder.
 *explain how to upload control to the rasberry pi
 
 ## Content
