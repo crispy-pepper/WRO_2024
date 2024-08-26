@@ -38,8 +38,26 @@ Our approach to this challenge was to detect the pillars, adjust according to pi
 ### Obstacle Challenge
 * [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module)
 * [BerryIMU V3 10DOF](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC)
-* Raspberry Pi ultrasonic sensor
+* Raspberry Pi ultrasonic sensor<br><br>
 
+## Assembly Instructions
+1. Unscrew the cover of the chassis off a Carisma 80468 GT24RS 1/24, as well as the top pole holding the back of the cover.
+2. Unscrew the top shell, and remove the parts holding the servo and the motor.
+3. Remove the battery holder and the front partition of the servo holder, creating more space for the new parts.
+4. Replace the original motor with the Furitek Micro Komodo 1212 3450KV Brushless Motor, and install into the car
+5.Replace the original servo with the Hitec HS-5055MG Servo, ensuring to screw a long screw into the end of the servo to move the steering mechanism, and clipping the standoffs.
+Wire the Gens Ace 2S1P 1300mAh 7.4V battery cable with the Furiteck Lizard Pro 30A/50A Brushless ESC cable using this configuration:<br>
+
+![plot](other/images-used/assembly_power-configuration.png)
+
+6. Print one “base v3.stl” and one “camera holder v6.stl” using a 3d printer. Install the camera holder into the base using the negatives that were inset into the base, and install the base onto the poles that were originally holding up the cover of the car, ensuring that the camera holder is over the rear wheels. Use the pins from the original car to clip the base into place.
+7. Install the camera into place using screws and the screw holes in the camera holder.
+8. Install the battery into the camera holder where there is a cutout in the supports, using tape, velcro, or zipties to keep it in place.
+(ready the raspberry PI or smth)
+9. Place the raspberry PI on top of the base, ensuring the pins in the base line up with the screw holes in the rasberry PI
+10. Wire the car together using the schematic.
+11. Idk wire management
+12. askdjalkaskldfjghsldkjf
 
 ## Content
 
