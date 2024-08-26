@@ -11,7 +11,7 @@ Build a self-driving, autonomous vehicle that completes 2 challenges: the open c
 ### Car Body
 ### Open Challenge
 The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br>
-Our approach to this challenge was to detect the walls, turn when one wall disappears, and count the number of turns to know when to end. <br><br>
+Our approach to this challenge was to detect the walls, turn when one wall disappears, and then count the number of turns to know when to end. <br><br>
 
 **Track Centering:** To check whether our car was in the middle of the track, we took live camera captures of the field in front of the vehicle. Using four regions of interest (ROI), two on each side, we would detect the size of the black walls and compare them against each other. If one side was significantly larger than the other, it meant the car was too skewed towards that side. To actually center the vehicle, we used a Proportional, Integral and Derivative (PID) wall follower approach by calculating the difference between the two walls. This would help mitigate the chances of overcorrection.
 
@@ -29,7 +29,8 @@ Our approach to this challenge was to detect the pillars, adjust according to pi
 * [Hitec HS-5055MG Servo](https://ca.robotshop.com/products/hs-5055mg-metal-gear-micro-servo-motor?srsltid=AfmBOopv8Z7LoCVOEqe16w05ZV-R78dNmy7dappldIxZiQzCJroxcssFc2Y)
 * [Gens Ace 2S1P 1300mAh 7.4V battery](https://www.adrenalinehobby.com/products/gens-ace-g-tech-1300mah-2s-7-4v-25c-lipo-deans-plug?_pos=1&_sid=dde29d30b&_ss=r)
 * Rasberry PI 4 Model B
-* Custom Raspberry Pi Multi-function Expansion Board 
+* Custom Raspberry Pi Multi-function Expansion Board
+* Rocker Switch
 * 5V Mini Fan
 * [3d printed base](/models)
 ### Open Challenge
