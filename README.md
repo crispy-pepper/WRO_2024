@@ -65,12 +65,16 @@ The motor and servo replace the original components in the [Charisma 80468 GT24R
 #### Power Considerations
 * Sensors and power management
 * Reference schematic <br>
+The power and sensor systems are critical to the vehicle's performance in navigating the challenges of the competition. For this project, the vehicle is powered by a Gens Ace 2S1P 1300mAh 7.4V battery. This battery has a discharge rating of 45C, meaning it can provide up to 58.5 Amps of current, which is more than sufficient to meet the power demands of the vehicle’s components, including the motor, servo, and Raspberry Pi.
 
-The vehicle is powered by one [Gens Ace 2S1P 1300mAh 7.4V battery](#engineering-materials), which has 1300mAh with a discharge rating of 45C, which means it is capable of providing 58.5 Amps, which is more than capable of powering our car.<br>
+The battery serves as the primary power source for the vehicle, delivering consistent and reliable energy to the entire system. The Furitek Lizard Pro 30A/50A Brushless ESC is connected to the battery to regulate the power delivered to the Furitek Micro Komodo 1212 3450KV Brushless Motor. This ESC is required to ensure smooth acceleration and deceleration, protecting the motor from potential damage due to power surges.
 
-The open and obstacle challenges both use a [SainSmart Camera Module RPi3](#engineering-materials) to detect and avoid walls, as well as for turning. The open challenge also uses the camera to detect pillars and colours. The camera has a fish-eye lens, which allows it to see more of the field from closer, which allows us to make decisions faster than a normal lens would allow. This gives us more information and time to make a decision. This camera captures colour in enough <br>
+The Raspberry Pi, which acts as the vehicle's central processing unit, has a typical power consumption of 1280mA under heavy stress. Given the battery’s capabilities, this power draw is well within the available current, allowing the Raspberry Pi to operate efficiently while managing all sensor inputs and processing the control algorithms.
 
-Add senor power consumption
+The vehicle's sensing capabilities are primarily managed by a SainSmart Camera Module RPi3, which is used in both the open and obstacle challenges. The camera is equipped with a fish-eye lens, which offers a wider field of view. This visual range enables the vehicle to detect obstacles, such as walls and pillars, more effectively and to process environmental data faster than a standard lens would allow. 
+
+In the obstacle challenge, the camera is used to detect the color of pillars and the lines on the course. The vehicle uses this information to swerve left or right accordingly, ensuring it stays on course. The fish-eye lens enhances the vehicle’s ability to capture more of the field at closer distances, providing the system with more information to make timely decisions.
+
 (also if we use ultrasonic sensor or BerryIMU ill add it later)<br>
 
 
