@@ -35,8 +35,7 @@ Our approach to this challenge was to detect the walls, turn when one wall disap
 
 **Turning:** Similar to track centering, we used four ROIs to detect the size of the black walls. If one wall was completely gone, we would know to turn towards that side. Because we experienced issues with detecting the entire front wall and detecting the next wall too early, we set it so that once the turn had started, it would continue to turn until a certain period of time was up. This would remove any instances of premature stopping, overturning, underturning, and overcounting turns.
 
-**Pillars**
-To avoid pillars, we detected the colours of the pillars using the region of interests on the cameras to ensure we are seeing the pillars and not any background noise. We use this information to swerve to the left and right depending on the colour of the pillars. If we detect that we are passing a pillar on the wrong side, the car reverses to try to change turn the car to the correct side.
+**Pillars** To  navigate around pillars, we implemented a color detection system using the camera's region of interest (ROI). This  ensures that the system accurately identifies the pillars while minimizing interference from background noise. Based on the detected color of the pillars, the vehicle adjusts itself, swerving left or right as needed. In cases where the vehicle detects that it is passing a pillar on the incorrect side, it automatically uses a reverse maneuver to realign itself and correct its course, ensuring compliance with the intended path.
  
 ### Obstacle Challenge
 The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured pillars. If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue or change directions to find the parking lot. The car must then back into the parking lot without touching the ends. The size of each side of the field remains constant, 1 metre for each side. <br>
@@ -91,11 +90,11 @@ Wire the Gens Ace 2S1P 1300mAh 7.4V battery cable with the Furiteck Lizard Pro 3
 6. Print one “base v3.stl” and one “camera holder v6.stl” using a 3d printer. Install the camera holder into the base using the negatives that were inset into the base, and install the base onto the poles that were originally holding up the cover of the car, ensuring that the camera holder is over the rear wheels. Use the pins from the original car to clip the base into place.
 7. Install the camera into place using screws and the screw holes in the camera holder.
 8. Install the battery into the camera holder where there is a cutout in the supports, using tape, velcro, or zipties to keep it in place.
-(ready the raspberry PI or smth)
-9. Place the raspberry PI on top of the base, ensuring the pins in the base line up with the screw holes in the rasberry PI
-10. Wire the car together using the schematic.
-11. Idk wire management
-12. askdjalkaskldfjghsldkjf
+9. (ready the raspberry PI or smth) - explain how to put the code into the rasberry pi 
+10. Place the raspberry PI on top of the base, ensuring the pins in the base line up with the screw holes in the rasberry PI
+11. Wire the car together using the schematic.
+12. Idk wire management
+13. (explain how to run the code)
 
 ## Content
 
