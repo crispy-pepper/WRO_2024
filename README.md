@@ -44,9 +44,9 @@ Our approach to this challenge was to detect the pillars, adjust according to pi
 #### Movement Considerations
 * Servo for steering
 * Motor for RWD (Rear-wheel drive)
-* The vehicle Chassis is a Carisma 80468 GT24RS 1/24 so the vehicle is small enough to fit in the parallel parking space vertically
+* The vehicle [Chassis is a Carisma 80468 GT24RS 1/24](#engineering-materials) so the vehicle is small enough to fit in the parallel parking space vertically
 * The components are mounted on a 3d printed base sitting on top of the chassis, with the motor and servo being mounted directly into the chassis
-* The Furitek Micro Komodo 1212 3450KV Brushless Motor was chosen combined with a Furiteck Lizard Pro 30A/50A Brushless ESC because brushless motors are mechanically driven, which allows more precise speed controls, longer life and higher efficiency with less maintenance.
+* The [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials) was chosen combined with a [Furiteck Lizard Pro 30A/50A Brushless ESC](#engineering-materials) because brushless motors are mechanically driven, which allows more precise speed controls, longer life and higher efficiency with less maintenance.
 * The servo was chosen because.. (use engineering principles: speed, torque, power etc) <br>
 
 In both the open and obstacle challenge, vehicle movement is essential for ensuring optimal performance. The vehicle is managed through a rear-wheel drive configuration, with front-wheel steering. This configuration resembles everyday cars on the street, and allows for movement forwards and backwards, as well as turning in both directions. <br>
