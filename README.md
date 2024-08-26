@@ -65,6 +65,7 @@ The motor and servo replace the original components in the [Charisma 80468 GT24R
 #### Power Considerations
 * Sensors and power management
 * Reference schematic <br>
+
 The power and sensor systems are critical to the vehicle's performance in navigating the challenges of the competition. For this project, the vehicle is powered by a Gens Ace 2S1P 1300mAh 7.4V battery. This battery has a discharge rating of 45C, meaning it can provide up to 58.5 Amps of current, which is more than sufficient to meet the power demands of the vehicle’s components, including the motor, servo, and Raspberry Pi.
 
 The battery serves as the primary power source for the vehicle, delivering consistent and reliable energy to the entire system. The Furitek Lizard Pro 30A/50A Brushless ESC is connected to the battery to regulate the power delivered to the Furitek Micro Komodo 1212 3450KV Brushless Motor. This ESC is required to ensure smooth acceleration and deceleration, protecting the motor from potential damage due to power surges.
