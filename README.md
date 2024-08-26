@@ -64,9 +64,9 @@ The motor and servo replace the original components in the [Charisma 80468 GT24R
 * Sensors and power management
 * Reference schematic <br>
 
-The vehicle is powered by one Gens Ace 2S1P 1300mAh 7.4V battery, which has 1300mAh with a discharge rating of 45C, which means it is capable of providing 58.5 Amps, which is more than capable of powering our car.<br>
+The vehicle is powered by one [Gens Ace 2S1P 1300mAh 7.4V battery](#engineering-materials), which has 1300mAh with a discharge rating of 45C, which means it is capable of providing 58.5 Amps, which is more than capable of powering our car.<br>
 
-The open and obstacle challenge both use a SainSmart Camera Module RPi3 to detect and avoid walls, as well as for turning. The open challenge also uses the camera to detect pillars and colours. The camera has a fish-eye lens, which allows it to see more of the field from closer, which allows us to make decisions faster than a normal lens would allow. This gives us more information and time to make a decision. This camera captures colour in enough <br>
+The open and obstacle challenges both use a [SainSmart Camera Module RPi3](#engineering-materials) to detect and avoid walls, as well as for turning. The open challenge also uses the camera to detect pillars and colours. The camera has a fish-eye lens, which allows it to see more of the field from closer, which allows us to make decisions faster than a normal lens would allow. This gives us more information and time to make a decision. This camera captures colour in enough <br>
 
 Add senor power consumption
 (also if we use ultrasonic sensor or BerryIMU ill add it later)<br>
