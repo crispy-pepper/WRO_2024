@@ -6,28 +6,41 @@
 - John Weng
   **add team photo here**
 ## Content
-### Content of Repository
- Folder  | Content 
---- | --- |
-`Team Photos` | 30 
-`Vehicle Photos` | 301 
-`models` | 301 
-`others` | 301 
-`schemes` | 301 
-`scr` | 301 
-`videos` | 301 
+<table>
+<tr><th>Content of Repository</th><th>Content of README.md</th></tr>
+<tr><td>
+ 
+| Folder  | Content| 
+| -- | -- |
+| [`Team Photos`](/Team%20Photos)| 30 |
+| [`Vehicle Photos`](/Vehicle%20Photos) | 301 |
+| [`models`](/models) | 301 |
+| [`others`](/others) | 301 |
+| [`schemes`](/schemes) | 301 |
+| [`scr`](/scr) | 301 |
+| [`videos`](/videos) | 301 |
 
-### Content of README.md
+</td><td>
+ 
 Section  | Content 
 --- | --- |
-`Task` | 30 
-`Engineering Materials` | 301 
-`Our Approach` | 301 
-`Assembly Instructions` | 301 
+[`Task`](#task) | 30 
+[`Engineering Materials`](#engineering-materials) | 301 
+[`Our Approach`](#our-approach) | 301 
+[`Assembly Instructions`](#assembly-instructions) | 301 
+
+</td></tr> </table>
 
 ## Task 
 ![plot](/other/images-used/task.jpg)
 Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
+### Open Challenge
+The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br><br>
+ 
+### Obstacle Challenge
+The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured pillars. If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue or change directions to find the parking lot. The car must then back into the parking lot without touching the ends. The size of each side of the field remains constant, 1 metre for each side. <br><br>
+
+
 ## Engineering materials
 **photo of vehicle**
 ### Car Base
@@ -62,13 +75,37 @@ Build a self-driving, autonomous vehicle that completes 2 challenges: the open c
 
 ## Our Approach
 ### Software
-#### Open Challenge
-The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br>
-Our approach to this challenge was to detect the walls, turn when one wall disappears, and then count the number of turns to know when to end. <br><br>
+**Open Challenge**: Our approach to this challenge was to detect the walls, turn when one wall disappears, and then count the number of turns to know when to end. <br><br>
  
-### Obstacle Challenge
-The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured pillars. If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue or change directions to find the parking lot. The car must then back into the parking lot without touching the ends. The size of each side of the field remains constant, 1 metre for each side. <br>
-Our approach to this challenge was to detect the pillars, adjust according to pillar colour, turn at the orange/blue lines, count the number of turns to know when the laps end, detect the parking lot, and back in using additional sensors. <br>
+**Obstacle Challenge**: Our approach to this challenge was to detect the pillars, adjust according to pillar colour, turn at the orange/blue lines, count the number of turns to know when the laps end, detect the parking lot, and back in using additional sensors. <br>
+
+### Obstacle Management
+**ss of cv2 window**
+#### Wall Following/Track Centering
+To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. Using these captures, we applied four (left top, left bottom, right top, right bottom) unique ROIs (regions of interest) that encapsulated the walls diagonally ahead on both sides. We then created a black threshold mask to calculate how much area of the ROIs was black. Using these areas, we could determine if the vehicle is veering too far to one side by calculating the difference between the two sides.
+<br><br>
+To physically put this calculation into action, we used a Proportional-Integral-Derivative (PID) algorithm approach, although we only used proportional and derivative.
+This algorithm calculates the precise angle the servo should turn by taking the difference between the two sides multiplied it by the proportional value (constant) and adding it to the derivative value (constant) multiplied by the difference between the current and last difference in the two sides. The use of PID control allows stable turning with less oscillating and overcorrection, ensuring that the vehicle remains centered on the track.
+<br><br>
+#### Turning
+Similar to how we centered the vehicle, we also used the area of black in the ROIs to decide when to turn. If one ROI's black area was less than a certain value, it would mean that the wall has disappeared and the servo would turn to the most extreme angle. The vehicle would keep turning until the wall appeared again.
+<br><br>
+However, this did not always work because of the varying widths of each corner. To fix this, we added another trigger for the turning sequence: the lines on the mat. Another small ROI was added to detect orange and blue contours. Depending on which of the colours detected first, it would know which direction to turn. Because the walls were unreliable for this turn, we used a timed turn for this, meaning it would continue turning for a certain period of time without worrying about the surroundings. This approach also helped prevent issues with overturning and underturning at narrower corners.
+<br><br>
+#### Pillar Maneuvering: Obstacle Challenge Only
+The camera scans for pillars using another ROI and a red and green mask. We would know the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. However, this posed many challenges with overturning, underturning, turning past before it got to the pillar, and not turning at all. We fixed this by adding a constant target value for both coloured pillars and adjusting according to the distance between the pillar's left x-value and the target line. The vehicle would constantly try to match the x-value up with the target line. This way, the vehicle would know to continue turning towards the pillar or to turn the other way to correct the overturning.
+<br>
+
+#### Backtracking: Obstacle Challenge Only
+Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust and continue forwards. This would continue until the vehicle could successfully make it past.
+<br>
+
+#### 3-Point Turn: Obstacle Challenge Only
+iseic
+<br>
+#### Parallel Parking: Obstacle Challenge Only
+uydsc
+<br><br><br>
 
 ### Hardware
 
@@ -79,8 +116,9 @@ Our approach to this challenge was to detect the pillars, adjust according to pi
 * The components are mounted on a 3d printed base sitting on top of the chassis, with the motor and servo being mounted directly into the chassis
 * The [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials) was chosen combined with a [Furiteck Lizard Pro 30A/50A Brushless ESC](#engineering-materials) because brushless motors are mechanically driven, which allows more precise speed controls, longer life and higher efficiency with less maintenance.
 * The servo was chosen because.. (use engineering principles: speed, torque, power etc) <br>
+<img src="/other/images-used/engineeringmaterials_motor.jpg" height="300"><img src="/other/images-used/engineeringmaterials_ESC.jpg" height="300">
+<img src="/other/images-used/engineeringmaterials_servo.jpg" height="300"><br>
 
-**photo of motor and servo**
 
 In both the open and obstacle challenge, vehicle movement is essential for ensuring optimal performance. The vehicle is managed through a four-wheel drive configuration, with front-wheel steering. This configuration resembles everyday cars on the street, and allows for movement forwards and backwards, as well as turning in both directions. <br>
 
@@ -96,7 +134,7 @@ The motor and servo replace the original components in the [Charisma 80468 GT24R
 #### Power Considerations
 * Sensors and power management
 * Reference schematic <br>
-**photo of battery**
+<img src="/other/images-used/engineeringmaterials_battery.jpg" width="500">
 
 The power and sensor systems are critical to the vehicle's performance in navigating the challenges of the competition. For this project, the vehicle is powered by a [Gens Ace 2S1P 1300mAh 7.4V battery](#engineering-materials). This battery has a discharge rating of 45C, meaning it can provide up to 58.5 Amps of current, which is more than enough to meet the power requirement of the vehicle's components.
 
@@ -111,65 +149,53 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 (also if we use ultrasonic sensor or BerryIMU ill add it later)<br>
 
 
-<br><br>
-
-#### Obstacle Management
-**ss of cv2 window**
-Track Centering and Wall Following: To ensure that the vehicle stays centered on the track, we implemented a wall-following strategy using the camera. The camera captures the area of the wall diagonally ahead on both sides and analyzes this feed using four regions of interests, comparing the area of black to each other to determine if the vehicle is veering too far to one side.
-
-We used a Proportional-Integral-Derivative (PID) algorithm to adjust the vehicle's position for track centering and turning. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the direction accordingly. The use of PID control gives the car stable turning without oscillating and overcorrection, ensuring that the vehicle remains stable and centered on the track.
-
-When approaching a turn, the vehicle uses the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera's view, the vehicle initiates a turn. To prevent early stoppage or incorrect turn execution, the vehicle enters a "turn sequence" which continues the turning for a predetermined period. This approach circumvents issues with overturning and underturning.
-
-The camera scans for the colour of the pillars using the ROIs. Depending on the colour, the vehicle will turn left or right. This dynamic response is critical for maintaining the vehicle's path and avoiding penalties.
-
-If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts its direction to correct the mistake. This ensures that the vehicle completes the course without actually touching obstacles. It also reverses if it is too close to a wall.
-* add 3-point turn and parallel parking
-
+<br>
 
 ## Assembly Instructions
-1. Disassembling the Chassis:
+### Software
+<br><br>
+### Hardware
+**1. Disassembling the Chassis:**
  - Begin by unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
  - Next, unscrew the top shell of the vehicle. After the shell is removed, detach the components securing the servo and motor in place.
 
-2. Creating Space for New Components:
+**2. Creating Space for New Components:**
  - Remove the battery holder from the chassis, followed by the front partition of the servo holder. This step creates sufficient space for the 
 installation of the new motor and servo.
 
-3. Installing the New Motor:
+**3. Installing the New Motor:**
  - Replace the original motor with the Furitek Micro Komodo 1212 3450KV Brushless Motor, using the original motor compartment and holder.
 
-4. Installing the New Servo:
+**4. Installing the New Servo:**
  - Replace the original servo with the Hitec HS-5055MG Servo. Screw a long screw into the servo horn/arm so that it moves the steering mechanism. 
  - Make sure to clip the standoffs of the servo to fit into the chassis.
 
-5. Wiring the Power System:
- - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. To ensure proper power delivery to the motor and other components, follow the wiring provided in the README of the schemes folder or use this image:
-   ![plot](/other/images-used/assembly_power-configuration.png)
+**5. Wiring the Power System:**
+ - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. To ensure proper power delivery to the motor and other components, follow the wiring provided in the [README](/schemes/README.md) of the schemes folder
 
-6. 3D Printed Components Installation:
+**6. 3D Printed Components Installation:**
  - Print one “base v3.stl” and one “camera holder v6.stl” using a 3D printer.
  - Install the camera holder into the base by aligning it with the inset negatives on the base.
  - Mount the assembled base onto the poles that originally supported the vehicle’s cover, ensuring the camera holder is positioned over the rear wheels. Use the original pins from the car to securely clip the base in place.
 
-7. Installing the Camera:
+**7. Installing the Camera:**
  - Secure the camera into the holder using screws, aligning it with the holes in the camera holder. Ensure the camera is firmly fixed to prevent any movement during operation.
 
-8. Mounting the Battery:
+**8. Mounting the Battery:**
  - Place the battery into the  cutout within the camera holder's supports. Use tape, Velcro, or zip ties to secure the battery in place, ensuring it remains stable during vehicle operation.
 
-9. Installing the Raspberry Pi:
+**9. Installing the Raspberry Pi:**
  - Place the Raspberry Pi on top of the base, ensuring that the pins on the base align with the screw holes on the Raspberry Pi.
 
-10. Wiring the Vehicle:
+**10. Wiring the Vehicle:**
  - Wire the car together according to the provided schematic, ensuring all connections are secure and correctly aligned. Pay attention to wire management to prevent tangling or obstruction of moving parts or obstruction of the camera.
 
-11. Final Checks:
+**11. Final Checks:**
  - Ensure all components are secure and that there is no excess movement. Double-check all wiring connections for correctness and stability.
 
-12. Running the Code:
+**12. Running the Code:**
  - Once the assembly is complete, upload the control code to the Raspberry Pi. Check all systems are working by performing a series of tests that can be found in the tests folder located in the src folder.
-*explain how to upload control to the rasberry pi
+*explain how to upload control to the raspberry pi
 
 ## Content
 
