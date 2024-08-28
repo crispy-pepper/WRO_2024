@@ -1,8 +1,8 @@
 # Electromechanical diagrams
 
-Our vehicle's schematic can be separated into 3 main areas: the power area, [the Raspberry Pi] area(#engineering-materials), and the [Pi expansion board] area(#engineering-materials). <br>
+Our vehicle's schematic can be separated into 3 main areas: the power area, [the Raspberry Pi] area(#engineering-materials), and the [Pi expansion board] area(#engineering-materials). <br><br>
 ****As the Raspberry Pi and expansion board are not of our design, you can find their documentation on their respective sites**
-<br><br>
+<br>
 
 ## The Power Area
 The power area contains the [main switch](#engineering-materials), [motor](#engineering-materials) and [motor ESC](#engineering-materials), and [battery](#engineering-materials).  Mandated by the rules, the main switch controls all power flowing through the vehicle. The switch is in series with the battery, which is connected to the Pi expansion board and motor ESC in parallel. Here is what the wiring would look like:<br>
