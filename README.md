@@ -6,9 +6,6 @@
 - John Weng
   **add team photo here**
 ## Content
-<table>
-<tr><th>Content of Repository</th><th>Content of README.md</th></tr>
-<tr><td>
  
 | Folder  | Content| 
 | -- | -- |
@@ -19,17 +16,13 @@
 | [`schemes`](/schemes) | Schematic explanations, expansion board schematic, Raspberry Pi schematic, vehicle schematic |
 | [`scr`](/scr) | Obstacle challenge final, open challenge final, HSV finder, test files |
 | [`videos`](/videos) | Full video, open challenge, obstacle challenge final |
-
-</td><td>
- 
+ <br><br>
 Section  | Content 
 --- | --- |
 [`Task`](#task) | Introduces what problem/task of this competition
 [`Engineering Materials`](#engineering-materials) | Engineering materials used to complete the vehicle 
 [`Our Approach`](#our-approach) | Software and hardware approch to the challenge
 [`Assembly Instructions`](#assembly-instructions) | How to build the vehicle
-
-</td></tr> </table>
 
 ## Task 
 ![plot](/other/images-used/task.jpg)
