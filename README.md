@@ -137,7 +137,7 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 (also if we use ultrasonic sensor or BerryIMU ill add it later)<br>
 
 
-<br><br>
+<br>
 
 ## Assembly Instructions
 1. Disassembling the Chassis:
