@@ -17,6 +17,7 @@
 | [`scr`](/scr) | Obstacle challenge final, open challenge final, HSV finder, test files |
 | [`videos`](/videos) | Full video, open challenge, obstacle challenge final |
  <br><br>
+ 
 Section  | Content 
 --- | --- |
 [`Task`](#task) | Introduces what problem/task of this competition
