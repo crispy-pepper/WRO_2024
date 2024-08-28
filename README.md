@@ -91,19 +91,20 @@ This algorithm calculates the precise angle the servo should turn by taking the 
 Similar to how we centered the vehicle, we also used the area of black in the ROIs to decide when to turn. If one ROI's black area was less than a certain value, it would mean that the wall has disappeared and the servo would turn to the most extreme angle. The vehicle would keep turning until the wall appeared again.
 <br><br>
 However, this did not always work because of the varying widths of each corner. To fix this, we added another trigger for the turning sequence: the lines on the mat. Another small ROI was added to detect orange and blue contours. Depending on which of the colours detected first, it would know which direction to turn. Because the walls were unreliable for this turn, we used a timed turn for this, meaning it would continue turning for a certain period of time without worrying about the surroundings. This approach also helped prevent issues with overturning and underturning at narrower corners.
-<br>
+<br><br>
 #### Pillar Maneuvering: Obstacle Challenge Only
-The camera scans for the colour of the pillars using the ROIs. Depending on the colour, the vehicle will turn left or right. This dynamic response is critical for maintaining the vehicle's path and avoiding penalties.
+The camera scans for pillars using another ROI and a red and green mask. We would know the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. However, this posed many challenges with overturning, underturning, turning past before it got to the pillar, and not turning at all. We fixed this by adding a constant target value for both coloured pillars and adjusting according to the distance between the pillar's left x-value and the target line. The vehicle would constantly try to match the x-value up with the target line. This way, the vehicle would know to continue turning towards the pillar or to turn the other way to correct the overturning.
 <br>
-#### Back Tracking: Obstacle Challenge Only
-If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts its direction to correct the mistake. This ensures that the vehicle completes the course without actually touching obstacles. It also reverses if it is too close to a wall.
-<br>
-#### Parallel Parking: Obstacle Challenge Only
-uydsc
+#### Backtracking: Obstacle Challenge Only
+Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust and continue forwards. This would continue until the vehicle could successfully make it past.
+
 <br>
 #### 3-Point Turn: Obstacle Challenge Only
 iseic
-<br><br>
+<br>
+#### Parallel Parking: Obstacle Challenge Only
+uydsc
+<br><br><br>
 
 ### Hardware
 
