@@ -10,7 +10,7 @@
 | Folder  | Content| 
 | -- | -- |
 | [`Team Photos`](/Team%20Photos)| Informal team photo, formal team photo |
-| [`Vehicle Photos`](/Vehicle%20Photos) | Bottom view, front view, left view, rear view, right view, top view |
+| [`Vehicle Photos`](/Vehicle%20Photos) | [Bottom view](/Vehicle%20Photos/bottom_view.jpg), [front view](/Vehicle%20Photos/front_view.jpg), [left view](/Vehicle%20Photos/left_view.jpg), [rear view](/Vehicle%20Photos/rear_view.jpg), [right view](/Vehicle%20Photos/right_view.jpg), [top view](/Vehicle%20Photos/top_view.jpg) |
 | [`models`](/models) | Final base model, final camera base model, final camera holder model, expansion board diagram, final fan holder model, old and unused models (zipped) |
 | [`other`](/other) | Images used in documentation |
 | [`schemes`](/schemes) | Schematic explanations, expansion board schematic, Raspberry Pi schematic, vehicle schematic |
