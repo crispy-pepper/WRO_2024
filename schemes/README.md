@@ -10,7 +10,7 @@ The power area contains the [main switch](#engineering-materials), [motor](#engi
 
 ## The Raspberry Pi Area
 The Raspberry Pi Area contains the [camera](#engineering-materials) and [Raspberry Pi](#engineering-materials). The [Raspberry Pi](#engineering-materials) takes in the data from the [camera](#engineering-materials), calculates the outputs, and then sends the outputs to the correct movement instructions to the [expansion board](#engineering-materials) through the 24 connected pins.
-![plot](../other/images-used/schematic_pi.png)
+![plot](../other/images-used/schematic_pi.jpg)
 
 ## The Expansion Board Area
 The expansion board area controls the movement part of the vehicle. It is connected to the motor ESC, servo motor, and fan. It receives instructions through the 24 pin holes connected to the Raspberry Pi and sends them to the motors
