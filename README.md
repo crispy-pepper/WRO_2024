@@ -60,15 +60,15 @@ The motor and servo replace the original components in the [Charisma 80468 GT24R
 * Sensors and power management
 * Reference schematic <br>
 
-The power and sensor systems are critical to the vehicle's performance in navigating the challenges of the competition. For this project, the vehicle is powered by a Gens Ace 2S1P 1300mAh 7.4V battery. This battery has a discharge rating of 45C, meaning it can provide up to 58.5 Amps of current, which is more than enough  to meet the power the vehicle’s components.
+The power and sensor systems are critical to the vehicle's performance in navigating the challenges of the competition. For this project, the vehicle is powered by a [Gens Ace 2S1P 1300mAh 7.4V battery](#engineering-materials). This battery has a discharge rating of 45C, meaning it can provide up to 58.5 Amps of current, which is more than enough to meet the power requirement of the vehicle's components.
 
-The battery serves as the power source for the vehicle, providing energy for all parts. The Furitek Lizard Pro 30A/50A Brushless ESC is connected to the battery to regulate the power delivered to the Furitek Micro Komodo 1212 3450KV Brushless Motor. This ESC is required to ensure smooth acceleration and deceleration, protecting the motor from potential damage due to power surges.
+The battery serves as the power source for the vehicle, providing energy for all parts. The [Furitek Lizard Pro 30A/50A Brushless ESC](#engineering-materials) is connected to the battery to regulate the power delivered to the [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials). This ESC is required to ensure smooth acceleration and deceleration, protecting the motor from potential damage due to power surges.
 
-The Raspberry Pi, which acts as the vehicle's brains, has a power consumption of 1280mA under heavy stress which is shown by studies. Given the battery’s capabilities, this power draw is much less than the battery can provide, allowing the Raspberry Pi to operate properly while managing all sensor inputs and processing.
+The Raspberry Pi, which acts as the vehicle's brain, has a power consumption of 1280mA under heavy stress, shown by studies. Given the battery's capabilities, this power draw is much less than what the battery can provide, allowing the Raspberry Pi to operate properly while managing all sensor inputs and processing.
 
-The vehicle's sensing capabilities inlcudes a SainSmart Camera Module RPi3, which is used in both the open and obstacle challenges. The camera is equipped with a fish-eye lens, which offers a wider field of view. This visual range enables the vehicle to detect obstacles, such as walls and pillars, and to more effectively process the surroudings. 
+The vehicle's sensing capabilities include a [SainSmart Camera Module RPi3](#engineering-materials), which is used in both the open and obstacle challenges. The camera is equipped with a fish-eye lens, offering a wider field of view. This visual range enables the vehicle to detect obstacles, such as walls and pillars, and to more effectively process the surroundings. 
 
-In the obstacle challenge, the camera is used to detect the color of pillars and the lines on the course. The vehicle uses this information to change direciton left or right accordingly, ensuring it stays on course. The fish-eye lens enhances the vehicle’s ability to capture more of the field at closer distances, providing the system with more information to make timely decisions.
+In the obstacle challenge, the camera detects the walls, the colour of the pillars, the parking space, and the lines on the course. The vehicle uses this information to change the direction left or right accordingly, ensuring it stays on course. The fish-eye lens enhances the vehicle’s ability to capture more of the field at closer distances, providing the system with more information to make timely decisions.
 
 (also if we use ultrasonic sensor or BerryIMU ill add it later)<br>
 
@@ -76,15 +76,15 @@ In the obstacle challenge, the camera is used to detect the color of pillars and
 <br><br>
 
 #### Obstacle Management
-Track Centering and Wall Following: To ensure that our vehicle stays centered on the track, we implemented a wall-following strategy using the camera. The camera captures the area ahead of the vehicle, and we analyze this feed using four regions of interests and can compare the size of the black walls in these regions to determine if the vehicle is veering too far to one side.
+Track Centering and Wall Following: To ensure that the vehicle stays centered on the track, we implemented a wall-following strategy using the camera. The camera captures the area of the wall diagonally ahead on both sides and analyzes this feed using four regions of interests, comparing the area of black to each other to determine if the vehicle is veering too far to one side.
 
-To correct the vehicle’s position, we used a Proportional-Integral-Derivative (PID) algorithm. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the direction accordingly. The use of PID control gives the car stable turning, ensuring that the vehicle remains stable and centered on the track.
+We used a Proportional-Integral-Derivative (PID) algorithm to adjust the vehicle's position for track centering and turning. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the direction accordingly. The use of PID control gives the car stable turning without oscillating and overcorrection, ensuring that the vehicle remains stable and centered on the track.
 
-When approaching a turn, the vehicle uses the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera’s view, the vehicle starts to initiate a turn. To prevent early stoppage or incorrect turn execution, the vehicle continues turning for a predetermined period once a turn has begun. This approach stops issues like overturning or under-turning.
+When approaching a turn, the vehicle uses the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera's view, the vehicle initiates a turn. To prevent early stoppage or incorrect turn execution, the vehicle enters a "turn sequence" which continues the turning for a predetermined period. This approach circumvents issues with overturning and underturning.
 
-The camera scans for the color of the pillars using the ROIs. Depending on the color, the vehicle will swerve left or right. This dynamic response is critical for maintaining the vehicle’s path and avoiding penalties.
+The camera scans for the colour of the pillars using the ROIs. Depending on the colour, the vehicle will turn left or right. This dynamic response is critical for maintaining the vehicle's path and avoiding penalties.
 
-If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts its direction to correct the mistake. This ensures that the vehicle completes the course correctly. It also reverses if it is too close to a wall.
+If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts its direction to correct the mistake. This ensures that the vehicle completes the course without actually touching obstacles. It also reverses if it is too close to a wall.
 * add 3-point turn and parallel parking
 
 
