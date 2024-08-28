@@ -27,7 +27,7 @@ Section  | Content
 [`Task`](#task) | Introduces what problem/task of this competition
 [`Engineering Materials`](#engineering-materials) | Engineering materials used to complete the vehicle 
 [`Our Approach`](#our-approach) | Software and hardware approch to the challenge
-[`Assembly Instructions`](#assembly-instructions) | 301 
+[`Assembly Instructions`](#assembly-instructions) | How to build the vehicle
 
 </td></tr> </table>
 
