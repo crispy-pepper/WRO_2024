@@ -24,9 +24,9 @@
  
 Section  | Content 
 --- | --- |
-[`Task`](#task) | 30 
-[`Engineering Materials`](#engineering-materials) | 301 
-[`Our Approach`](#our-approach) | 301 
+[`Task`](#task) | Introduces what problem/task of this competition
+[`Engineering Materials`](#engineering-materials) | Engineering materials used to complete the vehicle 
+[`Our Approach`](#our-approach) | Software and hardware approch to the challenge
 [`Assembly Instructions`](#assembly-instructions) | 301 
 
 </td></tr> </table>
