@@ -5,6 +5,18 @@
 - Jayden Li
 - John Weng
   **add team photo here**
+## Content
+### Content of Repository
+ Folder  | Content 
+--- | --- |
+`Team Photos` | 301 
+`Vehicle Photos` | 301 
+`Models` | 301 
+`Others` | 301 
+`Schemes` | 301 
+`Scr` | 301 
+`Videos` | 301 
+### Content of README.md
 ## Task 
 ![plot](/other/images-used/task.jpg)
 Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
