@@ -74,40 +74,152 @@ The obstacle challenge is where the car must complete three full laps around the
 * [BerryIMU V3 10DOF](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC))<br>
 <img src="/other/images-used/engineeringmaterials_gyro.jpg" height="150"><br>
 * Raspberry Pi ultrasonic sensor)<br>
-<img src="/other/images-used/engineeringmaterials_ultrasonic.jpg" height="150"><br><br><br>
-
+<img src="/other/images-used/engineeringmaterials_ultrasonic.jpg" height="150"><br><br>
 ## Our Approach
 ### Software
-**Open Challenge**: Our approach to this challenge was to detect the walls, turn when one wall disappears, and then count the number of turns to know when to end. <br><br>
- 
-**Obstacle Challenge**: Our approach to this challenge was to detect the pillars, adjust according to pillar colour, turn at the orange/blue lines, count the number of turns to know when the laps end, detect the parking lot, and back in using additional sensors. <br>
-
+<br>
+**Open Challenge**: Our approach to this challenge was to detect the walls, turn when one wall disappears, and then count the number of turns to know when to end. 
+<br>
+**Obstacle Challenge**: Our approach to this challenge was to detect the pillars, adjust according to pillar colour, turn at the orange/blue lines, count the number of turns to know when the laps end, detect the parking lot, and back in using additional sensors. 
+<br>
 ### Obstacle Management
 **ss of cv2 window**
-#### Wall Following/Track Centering
-To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. Using these captures, we applied four (left top, left bottom, right top, right bottom) unique ROIs (regions of interest) that encapsulated the walls diagonally ahead on both sides. We then created a black threshold mask to calculate how much area of the ROIs was black. Using these areas, we could determine if the vehicle is veering too far to one side by calculating the difference between the two sides.
-<br><br>
-To physically put this calculation into action, we used a Proportional-Integral-Derivative (PID) algorithm approach, although we only used proportional and derivative.
-This algorithm calculates the precise angle the servo should turn by taking the difference between the two sides multiplied it by the proportional value (constant) and adding it to the derivative value (constant) multiplied by the difference between the current and last difference in the two sides. The use of PID control allows stable turning with less oscillating and overcorrection, ensuring that the vehicle remains centered on the track.
-<br><br>
-#### Turning
-Similar to how we centered the vehicle, we also used the area of black in the ROIs to decide when to turn. If one ROI's black area was less than a certain value, it would mean that the wall has disappeared and the servo would turn to the most extreme angle. The vehicle would keep turning until the wall appeared again.
-<br><br>
-However, this did not always work because of the varying widths of each corner. To fix this, we added another trigger for the turning sequence: the lines on the mat. Another small ROI was added to detect orange and blue contours. Depending on which of the colours detected first, it would know which direction to turn. Because the walls were unreliable for this turn, we used a timed turn for this, meaning it would continue turning for a certain period of time without worrying about the surroundings. This approach also helped prevent issues with overturning and underturning at narrower corners.
-<br><br>
-#### Pillar Maneuvering: Obstacle Challenge Only
-The camera scans for pillars using another ROI and a red and green mask. We would know the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. However, this posed many challenges with overturning, underturning, turning past before it got to the pillar, and not turning at all. We fixed this by adding a constant target value for both coloured pillars and adjusting according to the distance between the pillar's left x-value and the target line. The vehicle would constantly try to match the x-value up with the target line. This way, the vehicle would know to continue turning towards the pillar or to turn the other way to correct the overturning.
-<br>
 
-#### Backtracking: Obstacle Challenge Only
+##### Wall Following/Track Centering
+<br>
+Our open and obstacle challenge used the same wall following algorithm that guaranteed the robot to remain in the center of the two walls when needed. To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. Using these captures, we applied four (left top, left bottom, right top, right bottom) unique ROIs (regions of interest) that captured the areas of the walls diagonally ahead on both sides. We then created a black threshold mask to calculate how much area of the ROIs was black. Using these areas, we could determine if the vehicle is veering too far to one side by calculating the difference between the two sides and adjust the robot accordingly. To physically implement this calculation, we used a Proportional-Derivative (PD) algorithm approach, deciding that a combining the two factors would be perfect for our goal of following the walls.
+<br>
+```
+error = left_area - right_area
+turn (error)(proportional gain) + (change in error value over time)(derivative gain)
+```
+<br>
+This algorithm calculates the precise angle the servo should turn by taking the difference between the two sides multiplied it by the proportional value (constant) and adding it to the derivative value (constant) multiplied by the difference between the current and last difference in the two sides. The use of PID control allows stable turning with less oscillating and overcorrection, ensuring that the vehicle remains centered on the track.
+<br>
+#### Open Challenge
+<br>
+##### Turning
+<br>
+Our initial turning algorithm was simple in premise: when one of the walls was no longer detected, the robot would turn that direction. In practice, this algorithm performed inadequately because when turning into a narrow section, the robot would not turn at a great enough angle and therefore veer too close to the wall.
+<br>
+```
+if left_area is none
+	turn sharp left until left_area is detected
+else if right_area is none
+	turn sharp right until right_area is detected
+```
+<br>
+Realizing that waiting for the wall to be passed would not provide an adequate turn, our goal was to create a turn algorithm that could pre-emptively detect that a turn was needed. Our solution was to use the blue and orange lines on the mat to decide when to turn. Another small ROI was added to detect orange and blue contours. 
+<br>
+Depending on which of the colours was detected first, the algorithm would turn the correct direction accordingly. The turn would be ended after the opposite colour line was detected and the respective wall was detected again on the camera.
+<br>
+The same logic for if a wall was no longer detected from the first algorithm was also used in conjunction, creating an algorithm that would turn in a more optimized path. 
+<br>
+```
+if orange line detected
+	turn sharp right until blue line detected
+	
+else if blue line detected
+	turn sharp left until orange line detected
+	
+if left_area is none
+	turn sharp left until left_area is detected
+else if right_area is none
+	turn sharp right until right_area is detected
+```
+<br>
+This algorithm performed much better, but had a flaw: the line would be detected and the turn would start, but once the orange line was detected again, the turn would end. Therefore, we created a solution that would allow for the wall to fully be passed before ending the turn. This solution was adding a short timer to the turn that would ensure that the turn was not ended early.
+<br>
+```
+if orange line detected
+	turn sharp right until blue line detected
+	
+	if blue line detected
+		increment turn_timer
+		
+	if turn_timer greater than turn time
+		end the turn
+	
+else if blue line detected
+	turn sharp left until orange line detected
+	
+	if orange line detected
+		increment turn_timer
+	
+	if turn_timer greater than turn time
+		end the turn
+		
+if left_area is none
+	turn sharp left until left_area is detected
+	
+else if right_area is none
+	turn sharp right until right_area is detected
+```
+<br>
+This algorithm was both reliable and efficient, allowing the robot to travel at high speeds with no risk of hitting the walls. 
+<br>
+#### Obstacle Challenge
+<br>
+##### Turning
+Similar to how we centered the vehicle, we also used the area of black in the ROIs to decide when to turn. If one ROI's black area was less than a certain value, it would mean that the wall has disappeared and the servo would turn to the most extreme angle. The vehicle would keep turning until the wall appeared again. This naïve approach was straightforward but failed in many cases because of the pillar-avoidance requirement:
+<br>
+```
+if left_area is none
+	turn sharp left until left_area is detected
+else if right_area is none
+	turn sharp right until right_area is detected
+```
+<br>
+However, this did not always work because of the varying widths of each corner. To fix this, we added another trigger for the turning sequence: the lines on the mat. This algorithm was very similar to the line detection in the open challenge without the timed aspect later added to that algorithm. 
+<br>
+```
+if orange line detected
+	turn sharp right until blue line detected
+	if right_area is detected
+		stop turning
+	
+if blue line detected
+	turn sharp left until orange line detected
+	if left area is detected 
+		stop turning
+```
+<br>
+If a pillar was detected in the turn, the pillar-avoidance variables would be changed in order to enter the straight section while passing by the obstacle correctly. This would be achieved by making the y-axis proportional steering more sensitive. 
+<br>
+##### Pillar Maneuvering: 
+The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar is detected.
+<br>
+```
+if red_area greater than pillar_threshold
+	turn right
+else if green_area greater than pillar_threshold
+	turn left
+```
+<br>
+However, this posed many challenges with overturning, underturning, turning past before it got to the pillar, and not turning at all. We fixed this by adding a constant target value for both coloured pillars and adjusting according to the distance between the pillar's left x-value and the target line. The vehicle would constantly try to match the x-value up with the target line. This way, the vehicle would know to continue turning towards the pillar or to turn the other way to correct the overturning. Additionally, we found that it would be beneficial for the robot to turn at a greater angle if the pillar is closer to avoid the pillar in urgent situations. Therefore, we added another factor into our turn degree: y-axis gain. This functionality would turn the servo motor at a greater angle based on the y-coordinate of the pillar, which is the straight distance forward from the robot. 
+<br>
+```
+if red_area greater than pillar_threshold
+	error = target - red_pillar_x
+	turn (error)(pillar proportional gain) 
+	+ (change in error value over time)(pillar derivative gain)
+	+ (y axis gain)(red_pillar_y)
+	
+```
+<br>
+##### Backtracking: 
 Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust and continue forwards. This would continue until the vehicle could successfully make it past.
 <br>
-
-#### 3-Point Turn: Obstacle Challenge Only
-iseic
+```
+if pillar_area greater than avoidable distance and pillar_x is not on the correct side:
+	reverse the robot
+```
 <br>
-#### Parallel Parking: Obstacle Challenge Only
-uydsc
+##### 3-Point Turn
+jayden will do
+<br>
+##### Parking
+jayden will do
 <br><br><br>
 
 ### Hardware
