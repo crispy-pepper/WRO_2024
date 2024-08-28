@@ -6,24 +6,30 @@
 - John Weng
   **add team photo here**
 ## Content
-### Content of Repository
- Folder  | Content 
---- | --- |
-`Team Photos` | 30 
-`Vehicle Photos` | 301 
-`models` | 301 
-`others` | 301 
-`schemes` | 301 
-`scr` | 301 
-`videos` | 301 
+<table>
+<tr><th>Content of Repository</th><th>Content of README.md</th></tr>
+<tr><td>
+ 
+| Folder  | Content| 
+| -- | -- |
+| `Team Photos` | 30 |
+| `Vehicle Photos` | 301 |
+| `models` | 301 |
+| `others` | 301 |
+| `schemes` | 301 |
+| `scr` | 301 |
+| `videos` | 301 |
 
-### Content of README.md
+</td><td>
+ 
 Section  | Content 
 --- | --- |
 `Task` | 30 
 `Engineering Materials` | 301 
 `Our Approach` | 301 
 `Assembly Instructions` | 301 
+
+</td></tr> </table>
 
 ## Task 
 ![plot](/other/images-used/task.jpg)
