@@ -1,6 +1,6 @@
 # SJJ | Explorer Robotics | WRO - FIRST Robitics | Canada
 
-## Team Members <br>
+## Team Members 👧👦👦 <br>
 - Sunni Xue
 - Jayden Li
 - John Weng
@@ -25,6 +25,7 @@ Section  | Content
 [`Engineering Materials`](#engineering-materials) | Engineering materials used to complete the vehicle 
 [`Our Approach`](#our-approach) | Software and hardware approch to the challenge
 [`Assembly Instructions`](#assembly-instructions) | How to build the vehicle
+
 <br><br><br>
 ## Task 
 ![plot](/other/images-used/task.jpg)
