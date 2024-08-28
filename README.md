@@ -14,7 +14,7 @@ Build a self-driving, autonomous vehicle that completes 2 challenges: the open c
 * [Hitec HS-5055MG Servo](https://ca.robotshop.com/products/hs-5055mg-metal-gear-micro-servo-motor?srsltid=AfmBOopv8Z7LoCVOEqe16w05ZV-R78dNmy7dappldIxZiQzCJroxcssFc2Y)
 * [Gens Ace 2S1P 1300mAh 7.4V battery](https://www.adrenalinehobby.com/products/gens-ace-g-tech-1300mah-2s-7-4v-25c-lipo-deans-plug?_pos=1&_sid=dde29d30b&_ss=r)
 * Rasberry PI 4 Model B
-* Custom Raspberry Pi Multi-function Expansion Board
+* [Raspberry Pi 5 Expansion Board Model A(DC Port)](https://www.hiwonder.com/collections/expansion-board/products/expansion-board-for-raspberry-pi-5)
 * Mini Rocker Switch
 * 5V Mini Fan
 * [3d printed base](/models)
