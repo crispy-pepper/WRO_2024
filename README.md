@@ -21,18 +21,24 @@ Build a self-driving, autonomous vehicle that completes 2 challenges: the open c
 <img src="/other/images-used/engineeringmaterials_servo.jpg" height="150"><br>
 * [Gens Ace 2S1P 1300mAh 7.4V battery](https://www.adrenalinehobby.com/products/gens-ace-g-tech-1300mah-2s-7-4v-25c-lipo-deans-plug?_pos=1&_sid=dde29d30b&_ss=r)<br>
 <img src="/other/images-used/engineeringmaterials_battery.jpg" height="150"><br>
-* Rasberry PI 4 Model B
+* Rasberry PI 4 Model B)<br>
+<img src="/other/images-used/engineeringmaterials_pi.jpg" height="150"><br>
 * [Raspberry Pi 5 Expansion Board Model A(DC Port)](https://www.hiwonder.com/collections/expansion-board/products/expansion-board-for-raspberry-pi-5)<br>
 <img src="/other/images-used/engineeringmaterials_pihat1.jpg" height="150"><img src="/other/images-used/engineeringmaterials_pihat2.png" height="150"><br>
-* Mini Rocker Switch
-* 5V Mini Fan
+* Mini Rocker Switch)<br>
+<img src="/other/images-used/engineeringmaterials_switch.jpg" height="150"><br>
+* 5V Mini Fan)<br>
+<img src="/other/images-used/engineeringmaterials_fan.jpg" height="150"><br>
 * [3d printed base](/models)
 ### Open Challenge
-* [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module)
+* [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module))<br>
+<img src="/other/images-used/engineeringmaterials_camera.jpg" height="150"><br>
 ### Obstacle Challenge
 * [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module)
-* [BerryIMU V3 10DOF](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC)
-* Raspberry Pi ultrasonic sensor<br><br>
+* [BerryIMU V3 10DOF](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC))<br>
+<img src="/other/images-used/engineeringmaterials_gyro.jpg" height="150"><br>
+* Raspberry Pi ultrasonic sensor)<br>
+<img src="/other/images-used/engineeringmaterials_ultrasonic.jpg" height="150"><br><br><br>
 
 ## Our Approach
 ### Software
