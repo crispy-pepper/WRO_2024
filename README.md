@@ -11,7 +11,7 @@
 | -- | -- |
 | [`Team Photos`](/Team%20Photos)| Informal team photo, formal team photo |
 | [`Vehicle Photos`](/Vehicle%20Photos) | [Bottom view](/Vehicle%20Photos/bottom_view.jpg), [front view](/Vehicle%20Photos/front_view.jpg), [left view](/Vehicle%20Photos/left_view.jpg), [rear view](/Vehicle%20Photos/rear_view.jpg), [right view](/Vehicle%20Photos/right_view.jpg), [top view](/Vehicle%20Photos/top_view.jpg) |
-| [`models`](/models) | [Final base model](/models/base%20v3.stl), final camera base model, final camera holder model, expansion board diagram, final fan holder model, old and unused models (zipped) |
+| [`models`](/models) | [Final base model](/models/base%20v3.stl), [final camera base model](/models/camera%20base.stl), [final camera holder model](/models/camera%20holder%20v5.stl), expansion board diagram, final fan holder model, old and unused models (zipped) |
 | [`other`](/other) | [Images used in documentation](other/images-used) |
 | [`schemes`](/schemes) | [Schematic explanations](/scheme/README.md), [expansion board schematic](/schemes/Raspberry%20Pi%20Expansion%20Board%20Schematic.png), [Raspberry Pi schematic](/schemes/Raspberry%20Pi%20Schematic.png), [vehicle schematic](/schemes/Vehicle%20Schematic.png) |
 | [`src`](/src) | Obstacle challenge final, [open challenge final](/src/OpenChallengeFinal.py), HSV finder, [test files](/src/Tests) |
