@@ -81,11 +81,11 @@ The obstacle challenge is where the car must complete three full laps around the
 
 ### Obstacle Management
 **ss of cv2 window**
-#### Track Centering
-To ensure that the vehicle stays centered on the track, we implemented a wall-following strategy using the camera. The camera captures the area of the wall diagonally ahead on both sides and analyzes this feed using four regions of interests, comparing the area of black to each other to determine if the vehicle is veering too far to one side.
+#### Wall Following/Track Centering
+To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. Using these captures, we applied four(left top, left bottom, right top, right bottom) unique ROIs (regions of interest) that encapsulated the walls diagonally ahead on both sides. We then created a black threshold mask to calculate how much area of the ROIs was black. Using these areas, we could determine if the vehicle is veering too far to one side by calculating the difference between the two sides.
 <br>
-#### Wall Following
-We used a Proportional-Integral-Derivative (PID) algorithm to adjust the vehicle's position for track centering and turning. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the direction accordingly. The use of PID control gives the car stable turning without oscillating and overcorrection, ensuring that the vehicle remains stable and centered on the track.
+To physically center the vehicle we used a Proportional-Integral-Derivative (PID) algorithm approach, although we only used proportional and derivative.
+This algorithm calculates the precise angle the servo should turn by taking the difference between the two sides multiplied it by the proportional value (constant) and adding it to the derivative value (constant) multiplied by the difference between the current and last difference in the two sides. The use of PID control allows stable turning with less oscillating and overcorrection, ensuring that the vehicle remains centered on the track.
 <br>
 #### Turning
 When approaching a turn, the vehicle uses the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera's view, the vehicle initiates a turn. To prevent early stoppage or incorrect turn execution, the vehicle enters a "turn sequence" which continues the turning for a predetermined period. This approach circumvents issues with overturning and underturning.
