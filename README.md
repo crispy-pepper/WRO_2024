@@ -12,13 +12,13 @@
  
 | Folder  | Content| 
 | -- | -- |
-| [`Team Photos`](/Team%20Photos)| 30 |
-| [`Vehicle Photos`](/Vehicle%20Photos) | 301 |
-| [`models`](/models) | 301 |
-| [`others`](/others) | 301 |
-| [`schemes`](/schemes) | 301 |
-| [`scr`](/scr) | 301 |
-| [`videos`](/videos) | 301 |
+| [`Team Photos`](/Team%20Photos)| Informal team photo, formal team photo |
+| [`Vehicle Photos`](/Vehicle%20Photos) | Bottom view, front view, left view, rear view, right view, top view |
+| [`models`](/models) | Final base model, final camera base model, final camera holder model, expansion board diagram, final fan holder model, old and unused models (zipped) |
+| [`other`](/other) | Images used in documentation |
+| [`schemes`](/schemes) | Schematic explanations, expansion board schematic, Raspberry Pi schematic, vehicle schematic |
+| [`scr`](/scr) | Obstacle challenge final, open challenge final, HSV finder, test files |
+| [`videos`](/videos) | Full video, open challenge, obstacle challenge final |
 
 </td><td>
  
