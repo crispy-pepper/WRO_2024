@@ -6,7 +6,7 @@
 - John Weng
   **add team photo here**
 ## Task 
-**photo of field**
+![plot](/other/images-used/task.jpg)
 Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
 ## Engineering materials
 **photo of vehicle**
