@@ -152,6 +152,9 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 <br>
 
 ## Assembly Instructions
+### Software
+<br><br>
+### Hardware
 **1. Disassembling the Chassis:**
  - Begin by unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
  - Next, unscrew the top shell of the vehicle. After the shell is removed, detach the components securing the servo and motor in place.
