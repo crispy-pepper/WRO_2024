@@ -4,9 +4,12 @@
 - Sunni Xue
 - Jayden Li
 - John Weng
+  **add team photo here**
 ## Task 
+**photo of field**
 Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
 ## Engineering materials
+**photo of vehicle**
 ### Car Base
 * [Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car](https://www.ebay.ca/itm/134622499234)
 * [Furitek Micro Komodo 1212 3450KV Brushless Motor](https://furitek.com/products/furitek-micro-komodo-1212-3456kv-brushless-motor-with-15t-steel-pinion-for-fury-wagon-fx118)
@@ -45,6 +48,8 @@ Our approach to this challenge was to detect the pillars, adjust according to pi
 * The [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials) was chosen combined with a [Furiteck Lizard Pro 30A/50A Brushless ESC](#engineering-materials) because brushless motors are mechanically driven, which allows more precise speed controls, longer life and higher efficiency with less maintenance.
 * The servo was chosen because.. (use engineering principles: speed, torque, power etc) <br>
 
+**photo of motor and servo**
+
 In both the open and obstacle challenge, vehicle movement is essential for ensuring optimal performance. The vehicle is managed through a four-wheel drive configuration, with front-wheel steering. This configuration resembles everyday cars on the street, and allows for movement forwards and backwards, as well as turning in both directions. <br>
 
 For the propulsion of the vehicle, we choose the [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials) due to the high speeds that the motor can achieve, indicated by the 3450KV rating. High speeds allow rapid movements and give us headroom without needing to max out the motor while running. Brushless motors are known for providing consistent torque which allows the vehicle to move smoothly. Brushless motors are electrically driven, which allows more precise speed control, and have a longer lifespan with less maintenance, which is ideal for our vehicle. We paired the motor with a [Furiteck Lizard Pro 30A/50A Brushless ESC](#engineering-materials), which regulates the power delivered to the motor, allowing for smooth acceleration and deceleration and ensures the safety and consistency of the motor.<br>
@@ -59,6 +64,7 @@ The motor and servo replace the original components in the [Charisma 80468 GT24R
 #### Power Considerations
 * Sensors and power management
 * Reference schematic <br>
+**photo of battery**
 
 The power and sensor systems are critical to the vehicle's performance in navigating the challenges of the competition. For this project, the vehicle is powered by a [Gens Ace 2S1P 1300mAh 7.4V battery](#engineering-materials). This battery has a discharge rating of 45C, meaning it can provide up to 58.5 Amps of current, which is more than enough to meet the power requirement of the vehicle's components.
 
@@ -76,6 +82,7 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 <br><br>
 
 #### Obstacle Management
+**ss of cv2 window**
 Track Centering and Wall Following: To ensure that the vehicle stays centered on the track, we implemented a wall-following strategy using the camera. The camera captures the area of the wall diagonally ahead on both sides and analyzes this feed using four regions of interests, comparing the area of black to each other to determine if the vehicle is veering too far to one side.
 
 We used a Proportional-Integral-Derivative (PID) algorithm to adjust the vehicle's position for track centering and turning. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the direction accordingly. The use of PID control gives the car stable turning without oscillating and overcorrection, ensuring that the vehicle remains stable and centered on the track.
