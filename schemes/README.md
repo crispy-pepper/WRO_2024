@@ -13,4 +13,4 @@ The Raspberry Pi Area contains the [camera](#engineering-materials) and [Raspber
 ![plot](../other/images-used/schematic_pi.jpg)
 
 ## The Expansion Board Area
-The expansion board area receives and distributes power, and controls the movement of parts. It is connected to the switch + battery, the Raspberry Pi, the motor ESC, the servo motor, and the fan. It receives instructions through the 24 pin holes connected to the Raspberry Pi and sends them to the motors.![plot](../other/images-used/schematic_expansion.jpg)
+The expansion board area receives and distributes power, and controls the movement of parts. It is connected to the [switch](#engineering-materials) + [battery](#engineering-materials) (DC Port), the [Raspberry Pi](#engineering-materials) (24 pins), the [motor ESC](#engineering-materials) (5V, ground, PWM [white]), the [servo motor](#engineering-materials) (5V, ground, PWM [white]), and the [fan](#engineering-materials) (5V, ground). It receives instructions through the 24 pin holes connected to the [Raspberry Pi](#engineering-materials) and sends them to the [motors](#engineering-materials).![plot](../other/images-used/schematic_expansion.jpg)
