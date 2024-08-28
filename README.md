@@ -31,7 +31,7 @@ Section  | Content
 Obstacle challenge field
 <br><br>
 ### Problem Statement
-The self-driving car challenge in this season is a Time Attack race: there will not be multiple cars at the same time on the track. Instead, one car per attempt will try to achieve the best time by driving several laps fully autonomously. The traffic signs indicate the side of the lane the vehicle has to follow.
+[The self-driving car challenge in this season is a Time Attack race: there will not be multiple cars at the same time on the track. Instead, one car per attempt will try to achieve the best time by driving several laps fully autonomously. The traffic signs indicate the side of the lane the vehicle has to follow.](https://www.wro2022.org/theme/future-engineers)
 <br>
 In order to perform the race, the car must drive three laps. The vehicle is not allowed to move or knock down the traffic signs.
 <br><br>
