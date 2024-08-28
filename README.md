@@ -11,12 +11,20 @@
 --- | --- |
 `Team Photos` | 30 
 `Vehicle Photos` | 301 
-`Models` | 301 
-`Others` | 301 
-`Schemes` | 301 
-`Scr` | 301 
-`Videos` | 301 
+`models` | 301 
+`others` | 301 
+`schemes` | 301 
+`scr` | 301 
+`videos` | 301 
+
 ### Content of README.md
+Section  | Content 
+--- | --- |
+`Task` | 30 
+`Engineering Materials` | 301 
+`Our Approach` | 301 
+`Assembly Instructions` | 301 
+
 ## Task 
 ![plot](/other/images-used/task.jpg)
 Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
@@ -119,7 +127,7 @@ If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts
 * add 3-point turn and parallel parking
 
 
-#### Assembly Instructions
+## Assembly Instructions
 1. Disassembling the Chassis:
  - Begin by unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
  - Next, unscrew the top shell of the vehicle. After the shell is removed, detach the components securing the servo and motor in place.
