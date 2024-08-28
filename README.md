@@ -112,7 +112,8 @@ installation of the new motor and servo.
  - Make sure to clip the standoffs of the servo to fit into the chassis.
 
 5. Wiring the Power System:
- - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. Follow the wiring  provided in the README of the schemes folder to ensure proper power delivery to the motor and other components.
+ - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. To ensure proper power delivery to the motor and other components, follow the wiring provided in the README of the schemes folder or use this image:
+   ![plot](/other/images-used/assembly_power-configuration.png)
 
 6. 3D Printed Components Installation:
  - Print one “base v3.stl” and one “camera holder v6.stl” using a 3D printer.
