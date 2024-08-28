@@ -1,11 +1,11 @@
 # SJJ | Explorer Robotics | WRO - FIRST Robitics | Canada
 
-## Team Members 👧👦👦 <br>
+## Team Members <br>
 - Sunni Xue
 - Jayden Li
 - John Weng
   **add team photo here**
-## Content
+## Content 📖📚
  
 | Folder  | Content| 
 | -- | -- |
