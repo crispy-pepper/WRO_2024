@@ -27,7 +27,7 @@ Section  | Content
 [`Assembly Instructions`](#assembly-instructions) | How to build the vehicle
 
 <br><br><br>
-## Task 
+## Task ❓❓
 ![plot](/other/images-used/task.jpg)
 Obstacle challenge field
 <br><br>
@@ -44,7 +44,7 @@ The open challenge is where the car must complete three full laps around the fie
 The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured traffic signs(pillars). If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue in the same direction or change directions to find the parking lot. The car must then back into the parking lot without touching either of the ends. The size of each side of the field remains constant, 1 metre for each side. <br><br>
 
 
-## Engineering materials
+## Engineering materials 🔧🛠🔨⚒
 **photo of vehicle**
 ### Car Base
 * [Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car](https://www.ebay.ca/itm/134622499234)<br>
