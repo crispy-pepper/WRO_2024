@@ -19,7 +19,7 @@ DC_SPEED = 1339
 # proportion constants for the servo motor angle (PID steering)
 PD = 0.2
 PG = 0.0035
-# Integration is not used
+# no integral value
 
 
 # ROI constants
