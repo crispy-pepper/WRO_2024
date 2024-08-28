@@ -9,7 +9,7 @@
 ### Content of Repository
  Folder  | Content 
 --- | --- |
-`Team Photos` | 301 
+`Team Photos` | 30 
 `Vehicle Photos` | 301 
 `Models` | 301 
 `Others` | 301 
