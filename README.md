@@ -28,6 +28,9 @@ Section  | Content
 
 ## Task 
 ![plot](/other/images-used/task.jpg)
+Obstacle challenge field
+<br><br>
+### Problem Statement
 Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
 ### Open Challenge
 The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br><br>
