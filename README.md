@@ -6,30 +6,25 @@
 - John Weng
   **add team photo here**
 ## Content
-<table>
-<tr><th>Content of Repository</th><th>Content of README.md</th></tr>
-<tr><td>
  
 | Folder  | Content| 
 | -- | -- |
-| `Team Photos` | 30 |
-| `Vehicle Photos` | 301 |
-| `models` | 301 |
-| `others` | 301 |
-| `schemes` | 301 |
-| `scr` | 301 |
-| `videos` | 301 |
+| [`Team Photos`](/Team%20Photos)| Informal team photo, formal team photo |
+| [`Vehicle Photos`](/Vehicle%20Photos) | [Bottom view](/Vehicle%20Photos/bottom_view.jpg), [front view](/Vehicle%20Photos/front_view.jpg), [left view](/Vehicle%20Photos/left_view.jpg), [rear view](/Vehicle%20Photos/rear_view.jpg), [right view](/Vehicle%20Photos/right_view.jpg), [top view](/Vehicle%20Photos/top_view.jpg) |
+| [`models`](/models) | Final base model, final camera base model, final camera holder model, expansion board diagram, final fan holder model, old and unused models (zipped) |
+| [`other`](/other) | Images used in documentation |
+| [`schemes`](/schemes) | [Schematic explanations](/scheme/README.md), [expansion board schematic](/schemes/Raspberry%20Pi%20Expansion%20Board%20Schematic.png), [Raspberry Pi schematic](/schemes/Raspberry%20Pi%20Schematic.png), [vehicle schematic](/schemes/Vehicle%20Schematic.png) |
+| [`src`](/src) | Obstacle challenge final, [open challenge final, HSV finder](/src/OpenChallengeFinal.py), [test files](/src/Tests) |
+| [`videos`](/videos) | Full video, open challenge, obstacle challenge final |
 
-</td><td>
+ <br><br>
  
 Section  | Content 
 --- | --- |
-[`Task`](#task) | 30 
-[`Engineering Materials`](#engineering-materials) | 301 
-[`Our Approach`](#our-approach) | 301 
-[`Assembly Instructions`](#assembly-instructions) | 301 
-
-</td></tr> </table>
+[`Task`](#task) | Introduces what problem/task of this competition
+[`Engineering Materials`](#engineering-materials) | Engineering materials used to complete the vehicle 
+[`Our Approach`](#our-approach) | Software and hardware approch to the challenge
+[`Assembly Instructions`](#assembly-instructions) | How to build the vehicle
 
 ## Task 
 ![plot](/other/images-used/task.jpg)
@@ -152,6 +147,9 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 <br>
 
 ## Assembly Instructions
+### Software
+<br><br>
+### Hardware
 **1. Disassembling the Chassis:**
  - Begin by unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
  - Next, unscrew the top shell of the vehicle. After the shell is removed, detach the components securing the servo and motor in place.
@@ -168,8 +166,7 @@ installation of the new motor and servo.
  - Make sure to clip the standoffs of the servo to fit into the chassis.
 
 **5. Wiring the Power System:**
- - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. To ensure proper power delivery to the motor and other components, follow the wiring provided in the README of the schemes folder or use this image:
-   ![plot](/other/images-used/assembly_power-configuration.png)
+ - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. To ensure proper power delivery to the motor and other components, follow the wiring provided in the [README](/schemes/README.md) of the schemes folder
 
 **6. 3D Printed Components Installation:**
  - Print one “base v3.stl” and one “camera holder v6.stl” using a 3D printer.
