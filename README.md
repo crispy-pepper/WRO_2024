@@ -31,7 +31,11 @@ Section  | Content
 Obstacle challenge field
 <br><br>
 ### Problem Statement
-Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
+The self-driving car challenge in this season is a Time Attack race: there will not be multiple cars at the same time on the track. Instead, one car per attempt will try to achieve the best time by driving several laps fully autonomously. The traffic signs indicate the side of the lane the vehicle has to follow.
+<br>
+In order to perform the race, the car must drive three laps. The vehicle is not allowed to move or knock down the traffic signs.
+<br><br>
+**GOAL: Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge.** <br>
 ### Open Challenge
 The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br><br>
  
