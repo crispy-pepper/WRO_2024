@@ -28,6 +28,13 @@ Section  | Content
 ## Task 
 ![plot](/other/images-used/task.jpg)
 Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge. <br>
+### Open Challenge
+The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br><br>
+ 
+### Obstacle Challenge
+The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured pillars. If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue or change directions to find the parking lot. The car must then back into the parking lot without touching the ends. The size of each side of the field remains constant, 1 metre for each side. <br><br>
+
+
 ## Engineering materials
 **photo of vehicle**
 ### Car Base
@@ -62,13 +69,23 @@ Build a self-driving, autonomous vehicle that completes 2 challenges: the open c
 
 ## Our Approach
 ### Software
-#### Open Challenge
-The open challenge is where the car must complete three full laps around the field. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br>
-Our approach to this challenge was to detect the walls, turn when one wall disappears, and then count the number of turns to know when to end. <br><br>
+**Open Challenge**: Our approach to this challenge was to detect the walls, turn when one wall disappears, and then count the number of turns to know when to end. <br><br>
  
-### Obstacle Challenge
-The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured pillars. If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue or change directions to find the parking lot. The car must then back into the parking lot without touching the ends. The size of each side of the field remains constant, 1 metre for each side. <br>
-Our approach to this challenge was to detect the pillars, adjust according to pillar colour, turn at the orange/blue lines, count the number of turns to know when the laps end, detect the parking lot, and back in using additional sensors. <br>
+**Obstacle Challenge**: Our approach to this challenge was to detect the pillars, adjust according to pillar colour, turn at the orange/blue lines, count the number of turns to know when the laps end, detect the parking lot, and back in using additional sensors. <br>
+
+### Obstacle Management
+**ss of cv2 window**
+Track Centering and Wall Following: To ensure that the vehicle stays centered on the track, we implemented a wall-following strategy using the camera. The camera captures the area of the wall diagonally ahead on both sides and analyzes this feed using four regions of interests, comparing the area of black to each other to determine if the vehicle is veering too far to one side.
+
+We used a Proportional-Integral-Derivative (PID) algorithm to adjust the vehicle's position for track centering and turning. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the direction accordingly. The use of PID control gives the car stable turning without oscillating and overcorrection, ensuring that the vehicle remains stable and centered on the track.
+
+When approaching a turn, the vehicle uses the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera's view, the vehicle initiates a turn. To prevent early stoppage or incorrect turn execution, the vehicle enters a "turn sequence" which continues the turning for a predetermined period. This approach circumvents issues with overturning and underturning.
+
+The camera scans for the colour of the pillars using the ROIs. Depending on the colour, the vehicle will turn left or right. This dynamic response is critical for maintaining the vehicle's path and avoiding penalties.
+
+If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts its direction to correct the mistake. This ensures that the vehicle completes the course without actually touching obstacles. It also reverses if it is too close to a wall.
+* add 3-point turn and parallel parking
+
 
 ### Hardware
 
@@ -112,20 +129,6 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 
 
 <br><br>
-
-#### Obstacle Management
-**ss of cv2 window**
-Track Centering and Wall Following: To ensure that the vehicle stays centered on the track, we implemented a wall-following strategy using the camera. The camera captures the area of the wall diagonally ahead on both sides and analyzes this feed using four regions of interests, comparing the area of black to each other to determine if the vehicle is veering too far to one side.
-
-We used a Proportional-Integral-Derivative (PID) algorithm to adjust the vehicle's position for track centering and turning. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the direction accordingly. The use of PID control gives the car stable turning without oscillating and overcorrection, ensuring that the vehicle remains stable and centered on the track.
-
-When approaching a turn, the vehicle uses the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera's view, the vehicle initiates a turn. To prevent early stoppage or incorrect turn execution, the vehicle enters a "turn sequence" which continues the turning for a predetermined period. This approach circumvents issues with overturning and underturning.
-
-The camera scans for the colour of the pillars using the ROIs. Depending on the colour, the vehicle will turn left or right. This dynamic response is critical for maintaining the vehicle's path and avoiding penalties.
-
-If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts its direction to correct the mistake. This ensures that the vehicle completes the course without actually touching obstacles. It also reverses if it is too close to a wall.
-* add 3-point turn and parallel parking
-
 
 ## Assembly Instructions
 1. Disassembling the Chassis:
