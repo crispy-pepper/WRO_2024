@@ -95,10 +95,11 @@ However, this did not always work because of the varying widths of each corner. 
 #### Pillar Maneuvering: Obstacle Challenge Only
 The camera scans for pillars using another ROI and a red and green mask. We would know the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. However, this posed many challenges with overturning, underturning, turning past before it got to the pillar, and not turning at all. We fixed this by adding a constant target value for both coloured pillars and adjusting according to the distance between the pillar's left x-value and the target line. The vehicle would constantly try to match the x-value up with the target line. This way, the vehicle would know to continue turning towards the pillar or to turn the other way to correct the overturning.
 <br>
+
 #### Backtracking: Obstacle Challenge Only
 Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust and continue forwards. This would continue until the vehicle could successfully make it past.
-
 <br>
+
 #### 3-Point Turn: Obstacle Challenge Only
 iseic
 <br>
