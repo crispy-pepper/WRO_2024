@@ -148,48 +148,48 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 <br>
 
 ## Assembly Instructions
-1. Disassembling the Chassis:
+**1. Disassembling the Chassis:**
  - Begin by unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
  - Next, unscrew the top shell of the vehicle. After the shell is removed, detach the components securing the servo and motor in place.
 
-2. Creating Space for New Components:
+**2. Creating Space for New Components:**
  - Remove the battery holder from the chassis, followed by the front partition of the servo holder. This step creates sufficient space for the 
 installation of the new motor and servo.
 
-3. Installing the New Motor:
+**3. Installing the New Motor:**
  - Replace the original motor with the Furitek Micro Komodo 1212 3450KV Brushless Motor, using the original motor compartment and holder.
 
-4. Installing the New Servo:
+**4. Installing the New Servo:**
  - Replace the original servo with the Hitec HS-5055MG Servo. Screw a long screw into the servo horn/arm so that it moves the steering mechanism. 
  - Make sure to clip the standoffs of the servo to fit into the chassis.
 
-5. Wiring the Power System:
+**5. Wiring the Power System:**
  - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. To ensure proper power delivery to the motor and other components, follow the wiring provided in the README of the schemes folder or use this image:
    ![plot](/other/images-used/assembly_power-configuration.png)
 
-6. 3D Printed Components Installation:
+**6. 3D Printed Components Installation:**
  - Print one “base v3.stl” and one “camera holder v6.stl” using a 3D printer.
  - Install the camera holder into the base by aligning it with the inset negatives on the base.
  - Mount the assembled base onto the poles that originally supported the vehicle’s cover, ensuring the camera holder is positioned over the rear wheels. Use the original pins from the car to securely clip the base in place.
 
-7. Installing the Camera:
+**7. Installing the Camera:**
  - Secure the camera into the holder using screws, aligning it with the holes in the camera holder. Ensure the camera is firmly fixed to prevent any movement during operation.
 
-8. Mounting the Battery:
+**8. Mounting the Battery:**
  - Place the battery into the  cutout within the camera holder's supports. Use tape, Velcro, or zip ties to secure the battery in place, ensuring it remains stable during vehicle operation.
 
-9. Installing the Raspberry Pi:
+**9. Installing the Raspberry Pi:**
  - Place the Raspberry Pi on top of the base, ensuring that the pins on the base align with the screw holes on the Raspberry Pi.
 
-10. Wiring the Vehicle:
+**10. Wiring the Vehicle:**
  - Wire the car together according to the provided schematic, ensuring all connections are secure and correctly aligned. Pay attention to wire management to prevent tangling or obstruction of moving parts or obstruction of the camera.
 
-11. Final Checks:
+**11. Final Checks:**
  - Ensure all components are secure and that there is no excess movement. Double-check all wiring connections for correctness and stability.
 
-12. Running the Code:
+**12. Running the Code:**
  - Once the assembly is complete, upload the control code to the Raspberry Pi. Check all systems are working by performing a series of tests that can be found in the tests folder located in the src folder.
-*explain how to upload control to the rasberry pi
+*explain how to upload control to the raspberry pi
 
 ## Content
 
