@@ -1,6 +1,6 @@
 # SJJ | Explorer Robotics | WRO - FIRST Robitics | Canada
 
-## Team Members <br>
+## Team Members 
 - Sunni Xue
 - Jayden Li
 - John Weng
@@ -17,7 +17,7 @@
 | [`src`](/src) | Obstacle challenge final, [open challenge final](/src/OpenChallengeFinal.py), HSV finder, [test files](/src/Tests) |
 | [`videos`](/videos) | Full video, open challenge, obstacle challenge final |
 
- <br><br>
+ 
  
 Section  | Content 
 --- | --- |
@@ -26,95 +26,101 @@ Section  | Content
 [`Our Approach`](#our-approach) | Software and hardware approch to the challenge
 [`Assembly Instructions`](#assembly-instructions) | How to build the vehicle
 
-<br><br><br>
+
 ## Task
 ![plot](/other/images-used/task.jpg)
 Obstacle challenge field
-<br><br>
+
 ### Problem Statement
 [The self-driving car challenge in this season is a Time Attack race: there will not be multiple cars at the same time on the track. Instead, one car per attempt will try to achieve the best time by driving several laps fully autonomously. The traffic signs indicate the side of the lane the vehicle has to follow.](https://www.wro2022.org/theme/future-engineers)
-<br>
+
 In order to perform the race, the car must drive three laps. The vehicle is not allowed to move or knock down the traffic signs.
-<br><br>
-**GOAL: Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge.** <br>
+
+**GOAL: Build a self-driving, autonomous vehicle that completes 2 challenges: the open challenge and the obstacle challenge.** 
 ### Open Challenge
-The open challenge is where the car must complete three full laps around the field without touching a wall. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. <br><br>
+The open challenge is where the car must complete three full laps around the field without touching a wall. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. 
  
 ### Obstacle Challenge
-The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured traffic signs(pillars). If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue in the same direction or change directions to find the parking lot. The car must then back into the parking lot without touching either of the ends. The size of each side of the field remains constant, 1 metre for each side. <br><br>
+The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured traffic signs(pillars). If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue in the same direction or change directions to find the parking lot. The car must then back into the parking lot without touching either of the ends. The size of each side of the field remains constant, 1 metre for each side. 
 
 
 ## Engineering materials
 **photo of vehicle**
 ### Car Base
-* [Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car](https://www.ebay.ca/itm/134622499234)<br>
-<img src="/other/images-used/engineeringmaterials_carisma.jpg" height="150"><br>
-* [Furitek Micro Komodo 1212 3450KV Brushless Motor](https://furitek.com/products/furitek-micro-komodo-1212-3456kv-brushless-motor-with-15t-steel-pinion-for-fury-wagon-fx118)<br>
-<img src="/other/images-used/engineeringmaterials_motor.jpg" height="150"><br>
-* [Furiteck Lizard Pro 30A/50A Brushless ESC](https://furitek.com/products/combo-of-furitek-lizard-pro-30a-50a-brushed-brushless-esc-for-axial-scx24-with-bluetooth)<br>
-<img src="/other/images-used/engineeringmaterials_ESC.jpg" height="150"><br>
-* [Hitec HS-5055MG Servo](https://ca.robotshop.com/products/hs-5055mg-metal-gear-micro-servo-motor?srsltid=AfmBOopv8Z7LoCVOEqe16w05ZV-R78dNmy7dappldIxZiQzCJroxcssFc2Y)<br>
-<img src="/other/images-used/engineeringmaterials_servo.jpg" height="150"><br>
-* [Gens Ace 2S1P 1300mAh 7.4V battery](https://www.adrenalinehobby.com/products/gens-ace-g-tech-1300mah-2s-7-4v-25c-lipo-deans-plug?_pos=1&_sid=dde29d30b&_ss=r)<br>
-<img src="/other/images-used/engineeringmaterials_battery.jpg" height="150"><br>
-* Rasberry PI 4 Model B)<br>
-<img src="/other/images-used/engineeringmaterials_pi.jpg" height="150"><br>
-* [Raspberry Pi 5 Expansion Board Model A(DC Port)](https://www.hiwonder.com/collections/expansion-board/products/expansion-board-for-raspberry-pi-5)<br>
-<img src="/other/images-used/engineeringmaterials_pihat1.jpg" height="150"><img src="/other/images-used/engineeringmaterials_pihat2.png" height="150"><br>
-* Mini Rocker Switch)<br>
-<img src="/other/images-used/engineeringmaterials_switch.jpg" height="150"><br>
-* 5V Mini Fan)<br>
-<img src="/other/images-used/engineeringmaterials_fan.jpg" height="150"><br>
+* [Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car](https://www.ebay.ca/itm/134622499234)
+<img src="/other/images-used/engineeringmaterials_carisma.jpg" height="150">
+* [Furitek Micro Komodo 1212 3450KV Brushless Motor](https://furitek.com/products/furitek-micro-komodo-1212-3456kv-brushless-motor-with-15t-steel-pinion-for-fury-wagon-fx118)
+<img src="/other/images-used/engineeringmaterials_motor.jpg" height="150">
+* [Furiteck Lizard Pro 30A/50A Brushless ESC](https://furitek.com/products/combo-of-furitek-lizard-pro-30a-50a-brushed-brushless-esc-for-axial-scx24-with-bluetooth)
+<img src="/other/images-used/engineeringmaterials_ESC.jpg" height="150">
+* [Hitec HS-5055MG Servo](https://ca.robotshop.com/products/hs-5055mg-metal-gear-micro-servo-motor?srsltid=AfmBOopv8Z7LoCVOEqe16w05ZV-R78dNmy7dappldIxZiQzCJroxcssFc2Y)
+<img src="/other/images-used/engineeringmaterials_servo.jpg" height="150">
+* [Gens Ace 2S1P 1300mAh 7.4V battery](https://www.adrenalinehobby.com/products/gens-ace-g-tech-1300mah-2s-7-4v-25c-lipo-deans-plug?_pos=1&_sid=dde29d30b&_ss=r)
+<img src="/other/images-used/engineeringmaterials_battery.jpg" height="150">
+* Rasberry PI 4 Model B)
+<img src="/other/images-used/engineeringmaterials_pi.jpg" height="150">
+* [Raspberry Pi 5 Expansion Board Model A(DC Port)](https://www.hiwonder.com/collections/expansion-board/products/expansion-board-for-raspberry-pi-5)
+<img src="/other/images-used/engineeringmaterials_pihat1.jpg" height="150"><img src="/other/images-used/engineeringmaterials_pihat2.png" height="150">
+* Mini Rocker Switch)
+<img src="/other/images-used/engineeringmaterials_switch.jpg" height="150">
+* 5V Mini Fan)
+<img src="/other/images-used/engineeringmaterials_fan.jpg" height="150">
 * [3d printed base](/models)
 ### Open Challenge
-* [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module))<br>
-<img src="/other/images-used/engineeringmaterials_camera.jpg" height="150"><br>
+* [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module))
+<img src="/other/images-used/engineeringmaterials_camera.jpg" height="150">
 ### Obstacle Challenge
 * [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module)
-* [BerryIMU V3 10DOF](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC))<br>
-<img src="/other/images-used/engineeringmaterials_gyro.jpg" height="150"><br>
-* Raspberry Pi ultrasonic sensor)<br>
-<img src="/other/images-used/engineeringmaterials_ultrasonic.jpg" height="150"><br><br>
+* [BerryIMU V3 10DOF](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC))
+<img src="/other/images-used/engineeringmaterials_gyro.jpg" height="150">
+* Raspberry Pi ultrasonic sensor)
+<img src="/other/images-used/engineeringmaterials_ultrasonic.jpg" height="150">
 ## Our Approach
 ### Software
-<br>
+
 **Open Challenge**: Our approach to this challenge was to detect the walls, turn when one wall disappears, and then count the number of turns to know when to end. 
-<br>
+
 **Obstacle Challenge**: Our approach to this challenge was to detect the pillars, adjust according to pillar colour, turn at the orange/blue lines, count the number of turns to know when the laps end, detect the parking lot, and back in using additional sensors. 
-<br>
+
 ### Obstacle Management
 **ss of cv2 window**
 
 ##### Wall Following/Track Centering
-<br>
+
 Our open and obstacle challenge used the same wall following algorithm that guaranteed the robot to remain in the center of the two walls when needed. To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. Using these captures, we applied four (left top, left bottom, right top, right bottom) unique ROIs (regions of interest) that captured the areas of the walls diagonally ahead on both sides. We then created a black threshold mask to calculate how much area of the ROIs was black. Using these areas, we could determine if the vehicle is veering too far to one side by calculating the difference between the two sides and adjust the robot accordingly. To physically implement this calculation, we used a Proportional-Derivative (PD) algorithm approach, deciding that a combining the two factors would be perfect for our goal of following the walls.
-<br>
+
+
+
 ```
 error = left_area - right_area
 turn (error)(proportional gain) + (change in error value over time)(derivative gain)
 ```
-<br>
+
+
 This algorithm calculates the precise angle the servo should turn by taking the difference between the two sides multiplied it by the proportional value (constant) and adding it to the derivative value (constant) multiplied by the difference between the current and last difference in the two sides. The use of PID control allows stable turning with less oscillating and overcorrection, ensuring that the vehicle remains centered on the track.
-<br>
+
 #### Open Challenge
-<br>
+
 ##### Turning
-<br>
+
 Our initial turning algorithm was simple in premise: when one of the walls was no longer detected, the robot would turn that direction. In practice, this algorithm performed inadequately because when turning into a narrow section, the robot would not turn at a great enough angle and therefore veer too close to the wall.
-<br>
+
+
 ```
 if left_area is none
 	turn sharp left until left_area is detected
 else if right_area is none
 	turn sharp right until right_area is detected
 ```
-<br>
+
+
 Realizing that waiting for the wall to be passed would not provide an adequate turn, our goal was to create a turn algorithm that could pre-emptively detect that a turn was needed. Our solution was to use the blue and orange lines on the mat to decide when to turn. Another small ROI was added to detect orange and blue contours. 
-<br>
+
 Depending on which of the colours was detected first, the algorithm would turn the correct direction accordingly. The turn would be ended after the opposite colour line was detected and the respective wall was detected again on the camera.
-<br>
+
 The same logic for if a wall was no longer detected from the first algorithm was also used in conjunction, creating an algorithm that would turn in a more optimized path. 
-<br>
+
+
 ```
 if orange line detected
 	turn sharp right until blue line detected
@@ -127,9 +133,11 @@ if left_area is none
 else if right_area is none
 	turn sharp right until right_area is detected
 ```
-<br>
+
+
 This algorithm performed much better, but had a flaw: the line would be detected and the turn would start, but once the orange line was detected again, the turn would end. Therefore, we created a solution that would allow for the wall to fully be passed before ending the turn. This solution was adding a short timer to the turn that would ensure that the turn was not ended early.
-<br>
+
+
 ```
 if orange line detected
 	turn sharp right until blue line detected
@@ -155,23 +163,27 @@ if left_area is none
 else if right_area is none
 	turn sharp right until right_area is detected
 ```
-<br>
+
+
 This algorithm was both reliable and efficient, allowing the robot to travel at high speeds with no risk of hitting the walls. 
-<br>
+
 #### Obstacle Challenge
-<br>
+
 ##### Turning
 Similar to how we centered the vehicle, we also used the area of black in the ROIs to decide when to turn. If one ROI's black area was less than a certain value, it would mean that the wall has disappeared and the servo would turn to the most extreme angle. The vehicle would keep turning until the wall appeared again. This naïve approach was straightforward but failed in many cases because of the pillar-avoidance requirement:
-<br>
+
+
 ```
 if left_area is none
 	turn sharp left until left_area is detected
 else if right_area is none
 	turn sharp right until right_area is detected
 ```
-<br>
+
+
 However, this did not always work because of the varying widths of each corner. To fix this, we added another trigger for the turning sequence: the lines on the mat. This algorithm was very similar to the line detection in the open challenge without the timed aspect later added to that algorithm. 
-<br>
+
+
 ```
 if orange line detected
 	turn sharp right until blue line detected
@@ -181,23 +193,27 @@ if orange line detected
 if blue line detected
 	turn sharp left until orange line detected
 	if left area is detected 
-		stop turning
+	stop turning
 ```
-<br>
+
+
 If a pillar was detected in the turn, the pillar-avoidance variables would be changed in order to enter the straight section while passing by the obstacle correctly. This would be achieved by making the y-axis proportional steering more sensitive. 
-<br>
+
 ##### Pillar Maneuvering: 
 The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar is detected.
-<br>
+
+
 ```
 if red_area greater than pillar_threshold
 	turn right
 else if green_area greater than pillar_threshold
 	turn left
 ```
-<br>
+
+
 However, this posed many challenges with overturning, underturning, turning past before it got to the pillar, and not turning at all. We fixed this by adding a constant target value for both coloured pillars and adjusting according to the distance between the pillar's left x-value and the target line. The vehicle would constantly try to match the x-value up with the target line. This way, the vehicle would know to continue turning towards the pillar or to turn the other way to correct the overturning. Additionally, we found that it would be beneficial for the robot to turn at a greater angle if the pillar is closer to avoid the pillar in urgent situations. Therefore, we added another factor into our turn degree: y-axis gain. This functionality would turn the servo motor at a greater angle based on the y-coordinate of the pillar, which is the straight distance forward from the robot. 
-<br>
+
+
 ```
 if red_area greater than pillar_threshold
 	error = target - red_pillar_x
@@ -206,21 +222,24 @@ if red_area greater than pillar_threshold
 	+ (y axis gain)(red_pillar_y)
 	
 ```
-<br>
+
+
 ##### Backtracking: 
 Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust and continue forwards. This would continue until the vehicle could successfully make it past.
-<br>
+
+
 ```
 if pillar_area greater than avoidable distance and pillar_x is not on the correct side:
 	reverse the robot
 ```
-<br>
+
+
 ##### 3-Point Turn
 jayden will do
-<br>
+
 ##### Parking
 jayden will do
-<br><br><br>
+
 
 ### Hardware
 
@@ -230,25 +249,25 @@ jayden will do
 * The vehicle [Chassis is a Carisma 80468 GT24RS 1/24](#engineering-materials) so the vehicle is small enough to fit in the parallel parking space vertically
 * The components are mounted on a 3d printed base sitting on top of the chassis, with the motor and servo being mounted directly into the chassis
 * The [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials) was chosen combined with a [Furiteck Lizard Pro 30A/50A Brushless ESC](#engineering-materials) because brushless motors are mechanically driven, which allows more precise speed controls, longer life and higher efficiency with less maintenance.
-* The servo was chosen because.. (use engineering principles: speed, torque, power etc) <br>
+* The servo was chosen because.. (use engineering principles: speed, torque, power etc) 
 <img src="/other/images-used/engineeringmaterials_motor.jpg" height="300"><img src="/other/images-used/engineeringmaterials_ESC.jpg" height="300">
-<img src="/other/images-used/engineeringmaterials_servo.jpg" height="300"><br>
+<img src="/other/images-used/engineeringmaterials_servo.jpg" height="300">
 
 
-In both the open and obstacle challenge, vehicle movement is essential for ensuring optimal performance. The vehicle is managed through a four-wheel drive configuration, with front-wheel steering. This configuration resembles everyday cars on the street, and allows for movement forwards and backwards, as well as turning in both directions. <br>
+In both the open and obstacle challenge, vehicle movement is essential for ensuring optimal performance. The vehicle is managed through a four-wheel drive configuration, with front-wheel steering. This configuration resembles everyday cars on the street, and allows for movement forwards and backwards, as well as turning in both directions. 
 
-For the propulsion of the vehicle, we choose the [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials) due to the high speeds that the motor can achieve, indicated by the 3450KV rating. High speeds allow rapid movements and give us headroom without needing to max out the motor while running. Brushless motors are known for providing consistent torque which allows the vehicle to move smoothly. Brushless motors are electrically driven, which allows more precise speed control, and have a longer lifespan with less maintenance, which is ideal for our vehicle. We paired the motor with a [Furiteck Lizard Pro 30A/50A Brushless ESC](#engineering-materials), which regulates the power delivered to the motor, allowing for smooth acceleration and deceleration and ensures the safety and consistency of the motor.<br>
+For the propulsion of the vehicle, we choose the [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials) due to the high speeds that the motor can achieve, indicated by the 3450KV rating. High speeds allow rapid movements and give us headroom without needing to max out the motor while running. Brushless motors are known for providing consistent torque which allows the vehicle to move smoothly. Brushless motors are electrically driven, which allows more precise speed control, and have a longer lifespan with less maintenance, which is ideal for our vehicle. We paired the motor with a [Furiteck Lizard Pro 30A/50A Brushless ESC](#engineering-materials), which regulates the power delivered to the motor, allowing for smooth acceleration and deceleration and ensures the safety and consistency of the motor.
 
-We chose the [Hitec HS-5055MG Servo](#engineering-materials) for our steering capabilities. It is perfect for small vehicles, with high torque at 1.2kg/cm at 4.8V or 1.5kg/cm at 6V. This allows the turning capabilities of the car to be consistent due to the strength of the servo and ensures the vehicle can turn quickly and accurately at low speeds or when stationary, which is essential for this competition. <br>
+We chose the [Hitec HS-5055MG Servo](#engineering-materials) for our steering capabilities. It is perfect for small vehicles, with high torque at 1.2kg/cm at 4.8V or 1.5kg/cm at 6V. This allows the turning capabilities of the car to be consistent due to the strength of the servo and ensures the vehicle can turn quickly and accurately at low speeds or when stationary, which is essential for this competition. 
 
-The vehicle is based on the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), which was selected due to its compact size, which allows the vehicle to parallel park vertically, making the job much easier. The small size also contributes to the overall agility of the vehicle, making it easier to maneuver in tight spaces. <br>
+The vehicle is based on the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), which was selected due to its compact size, which allows the vehicle to parallel park vertically, making the job much easier. The small size also contributes to the overall agility of the vehicle, making it easier to maneuver in tight spaces. 
 
 The motor and servo replace the original components in the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), with the servo needing modifications to the chassis of the car. The other components of the car are attached through a 3d printed base that is clipped in on top of the car. 
-(something something add the building/assembly instructions, CAD files and parts) <br>
+(something something add the building/assembly instructions, CAD files and parts) 
 
 #### Power Considerations
 * Sensors and power management
-* Reference schematic <br>
+* Reference schematic 
 <img src="/other/images-used/engineeringmaterials_battery.jpg" width="500">
 
 The power and sensor systems are critical to the vehicle's performance in navigating the challenges of the competition. For this project, the vehicle is powered by a [Gens Ace 2S1P 1300mAh 7.4V battery](#engineering-materials). This battery has a discharge rating of 45C, meaning it can provide up to 58.5 Amps of current, which is more than enough to meet the power requirement of the vehicle's components.
@@ -261,14 +280,14 @@ The vehicle's sensing capabilities include a [SainSmart Camera Module RPi3](#eng
 
 In the obstacle challenge, the camera detects the walls, the colour of the pillars, the parking space, and the lines on the course. The vehicle uses this information to change the direction left or right accordingly, ensuring it stays on course. The fish-eye lens enhances the vehicle’s ability to capture more of the field at closer distances, providing the system with more information to make timely decisions.
 
-(also if we use ultrasonic sensor or BerryIMU ill add it later)<br>
+(also if we use ultrasonic sensor or BerryIMU ill add it later)
 
 
-<br>
+
 
 ## Assembly Instructions
 ### Software
-<br><br>
+
 ### Hardware
 **1. Disassembling the Chassis:**
  - Begin by unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
