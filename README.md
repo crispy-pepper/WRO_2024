@@ -14,7 +14,7 @@
 | [`models`](/models) | Final base model, final camera base model, final camera holder model, expansion board diagram, final fan holder model, old and unused models (zipped) |
 | [`other`](/other) | [Images used in documentation](other/images-used) |
 | [`schemes`](/schemes) | [Schematic explanations](/scheme/README.md), [expansion board schematic](/schemes/Raspberry%20Pi%20Expansion%20Board%20Schematic.png), [Raspberry Pi schematic](/schemes/Raspberry%20Pi%20Schematic.png), [vehicle schematic](/schemes/Vehicle%20Schematic.png) |
-| [`src`](/src) | Obstacle challenge final, [open challenge final, HSV finder](/src/OpenChallengeFinal.py), [test files](/src/Tests) |
+| [`src`](/src) | Obstacle challenge final, [open challenge final](/src/OpenChallengeFinal.py), HSV finder, [test files](/src/Tests) |
 | [`videos`](/videos) | Full video, open challenge, obstacle challenge final |
 
  <br><br>
