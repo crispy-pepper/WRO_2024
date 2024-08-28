@@ -83,8 +83,8 @@ The obstacle challenge is where the car must complete three full laps around the
 **ss of cv2 window**
 #### Wall Following/Track Centering
 To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. Using these captures, we applied four(left top, left bottom, right top, right bottom) unique ROIs (regions of interest) that encapsulated the walls diagonally ahead on both sides. We then created a black threshold mask to calculate how much area of the ROIs was black. Using these areas, we could determine if the vehicle is veering too far to one side by calculating the difference between the two sides.
-<br>
-To physically center the vehicle we used a Proportional-Integral-Derivative (PID) algorithm approach, although we only used proportional and derivative.
+<br><br>
+To physically put this calculation into action, we used a Proportional-Integral-Derivative (PID) algorithm approach, although we only used proportional and derivative.
 This algorithm calculates the precise angle the servo should turn by taking the difference between the two sides multiplied it by the proportional value (constant) and adding it to the derivative value (constant) multiplied by the difference between the current and last difference in the two sides. The use of PID control allows stable turning with less oscillating and overcorrection, ensuring that the vehicle remains centered on the track.
 <br>
 #### Turning
