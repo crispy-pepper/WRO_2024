@@ -1,4 +1,4 @@
-#Electromechanical diagrams
+# Electromechanical diagrams
 ====
 
 Our vehicle's schematic can be separated into 3 main areas: the power area, [the Raspberry Pi](#engineering-materials), and the [Pi expansion board](#engineering-materials). <br><br>
