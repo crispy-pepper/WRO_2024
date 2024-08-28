@@ -75,17 +75,25 @@ The obstacle challenge is where the car must complete three full laps around the
 
 ### Obstacle Management
 **ss of cv2 window**
-Track Centering and Wall Following: To ensure that the vehicle stays centered on the track, we implemented a wall-following strategy using the camera. The camera captures the area of the wall diagonally ahead on both sides and analyzes this feed using four regions of interests, comparing the area of black to each other to determine if the vehicle is veering too far to one side.
+#### Track Centering and Wall Following
+To ensure that the vehicle stays centered on the track, we implemented a wall-following strategy using the camera. The camera captures the area of the wall diagonally ahead on both sides and analyzes this feed using four regions of interests, comparing the area of black to each other to determine if the vehicle is veering too far to one side.
 
 We used a Proportional-Integral-Derivative (PID) algorithm to adjust the vehicle's position for track centering and turning. This algorithm calculates the difference between the wall sizes detected on each side and adjusts the direction accordingly. The use of PID control gives the car stable turning without oscillating and overcorrection, ensuring that the vehicle remains stable and centered on the track.
-
+<br>
+#### Turning
 When approaching a turn, the vehicle uses the ROIs to detect changes in the size of the black walls. If one wall disappears from the camera's view, the vehicle initiates a turn. To prevent early stoppage or incorrect turn execution, the vehicle enters a "turn sequence" which continues the turning for a predetermined period. This approach circumvents issues with overturning and underturning.
-
+<br>
+#### Pillar Maneuvering
 The camera scans for the colour of the pillars using the ROIs. Depending on the colour, the vehicle will turn left or right. This dynamic response is critical for maintaining the vehicle's path and avoiding penalties.
 
 If the vehicle cannot pass a pillar on the correct side, it reverses and adjusts its direction to correct the mistake. This ensures that the vehicle completes the course without actually touching obstacles. It also reverses if it is too close to a wall.
-* add 3-point turn and parallel parking
-
+<br>
+#### Parallel Parking
+uydsc
+<br>
+#### 3-Point Turn
+iseic
+<br><br>
 
 ### Hardware
 
