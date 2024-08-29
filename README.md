@@ -314,7 +314,7 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
    - Launch RealVNC and create a new connection with server `192.168.149.1`
        - Username: pi
        - Password: raspberry
-   - 
+     
 **3. Auto-running the program**
   - Transfer OpenChallengeFinal.py/ObstacleChallengeFinal.py onto the Raspberry Pi and open command prompt
   - Open command prompt and run `sudo nano /etc/rc.local`
