@@ -14,7 +14,7 @@
 | [`models`](/models) | [Final base model](/models/base%20v3.stl), [final camera base model](/models/camera%20base.stl), [final camera holder model](/models/camera%20holder%20v5.stl), [expansion board diagram](/models/expansion_board_diagram.png), [final fan holder model](/models/fan%20holder%20v2.stl), [old and unused models (zipped)](/models/old) |
 | [`other`](/other) | [Images used in documentation](other/images-used) |
 | [`schemes`](/schemes) | [Schematic explanations](/scheme/README.md), [expansion board schematic](/schemes/Raspberry%20Pi%20Expansion%20Board%20Schematic.png), [Raspberry Pi schematic](/schemes/Raspberry%20Pi%20Schematic.png), [vehicle schematic](/schemes/Vehicle%20Schematic.png) |
-| [`src`](/src) | Obstacle challenge final, [open challenge final](/src/OpenChallengeFinal.py), HSV finder, [test files](/src/Tests), [HSV range finder](/src/HSV%20range.py) |
+| [`src`](/src) | Obstacle challenge final, [open challenge final](/src/OpenChallengeFinal.py), [HSV finder](/src/HSV%20range.py), [test files](/src/Tests) |
 | [`videos`](/videos) | Full video, open challenge, obstacle challenge final |
 
  
@@ -290,7 +290,7 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 **2. Turbo Pi**
  - Using Raspberry Pi Imager, copy the TurboPi operating system onto a microSD card
  - Insert into the Raspberry Pi
-
+<br><br>
 ### Hardware
 **1. Disassembling the Chassis:**
  - Begin by unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
