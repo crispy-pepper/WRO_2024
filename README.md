@@ -80,11 +80,11 @@ The obstacle challenge is where the car must complete three full laps around the
 ## Obstacle Management
 **ss of cv2 window**
 
-##### Wall Following/Track Centering
+##### Wall-Following/Track Centering
 
-Our open and obstacle challenge used the same wall following algorithm that guaranteed the robot to remain in the center of the two walls when needed. To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. 
+Our open and obstacle challenge used the same wall-following algorithm that guaranteed the robot to remain in the center of the two walls when needed. To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. 
 
-Using these captures, we applied four (left top, left bottom, right top, right bottom) unique ROIs (regions of interest) that captured the areas of the walls diagonally ahead on both sides. We then created a black threshold mask to calculate how much area of the ROIs was black. Using these areas, we could determine if the vehicle was veering too far to one side by calculating the difference between the two sides and adjusting the robot accordingly. To physically implement this calculation, we used a Proportional-Derivative (PD) algorithm approach, deciding that a combining the two factors would be perfect for our goal of following the walls.
+Using these captures, we applied four (left top, left bottom, right top, right bottom) unique ROIs (regions of interest) that captured the areas of the walls diagonally ahead on both sides. We then created a black threshold mask to calculate how much area of the ROIs was black. Using these areas, we could determine if the vehicle was veering too far to one side by calculating the difference between the two sides and adjusting the robot accordingly. To physically implement this calculation, we used a Proportional-Derivative (PD) algorithm approach, deciding that combining the two factors would be perfect for our goal of following the walls.
 
 
 ```py
@@ -131,7 +131,7 @@ else if right_area is none
 ```
 
 
-This algorithm performed much better but had a flaw: the line would be detected and the turn would start, but once the orange line was detected again, the turn would end. Therefore, we created a solution that would allow for the wall to fully be passed before ending the turn. This solution was adding a short timer to the turn that would ensure that the turn did not end early.
+This algorithm performed much better but had a flaw: the line would be detected and the turn would start, but once the orange line was detected again, the turn would end. Therefore, we implemented a solution that ensured that the wall was fully passed before ending the turn; adding a short timer to the turn ensured that the turn did not end early.
 
 
 ```py
@@ -161,7 +161,7 @@ else if right_area is none
 ```
 
 
-This algorithm was both reliable and efficient, allowing the robot to travel at high speeds with no risk of hitting the walls. 
+This algorithm was both reliable and efficient, allowing the robot to travel at high speeds at low risk of hitting the walls. 
 
 #### Obstacle Challenge
 
@@ -196,7 +196,7 @@ if blue line detected
 If a pillar was detected in the turn, the pillar-avoidance variables would be changed in order to enter the straight section while passing by the obstacle correctly. This would be achieved by making the y-axis proportional steering more sensitive. 
 
 ##### Pillar Maneuvering: 
-The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar is detected.
+The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar was detected.
 
 
 ```py
@@ -207,7 +207,7 @@ else if green_area greater than pillar_threshold
 ```
 
 
-However, this posed many challenges with overturning, underturning, turning past before it got to the pillar, and not turning at all. We fixed this by adding a constant target value for both coloured pillars and adjusting according to the distance between the pillar's left x-value and the target line. The vehicle would constantly try to match the x-value up with the target line. This way, the vehicle would know to continue turning towards the pillar or to turn the other way to correct the overturning. Additionally, we found that it would be beneficial for the robot to turn at a greater angle if the pillar is closer to avoid the pillar in urgent situations. Therefore, we added another factor to our turn degree: y-axis gain. This functionality would turn the servo motor at a greater angle based on the y-coordinate of the pillar, which is the straight distance forward from the robot. 
+However, this posed many challenges with overturning, underturning, turning past before it got to the pillar, and not turning at all. We fixed this by adding a constant target value for both coloured pillars and adjusting according to the distance between the pillar's average x-value ([left x + right x]/2) and the target line. The vehicle would constantly try to match the x-value with the target line. This way, the vehicle would know to continue turning towards the pillar or to turn the other way to correct the overturning. Additionally, we found that it would be beneficial for the robot to turn at a greater angle if the pillar is closer to avoid the pillar in urgent situations. Therefore, we added another factor to our turn degree: y-axis gain. This functionality would turn the servo motor at a greater angle based on the y-coordinate of the pillar, which is the straight distance forward from the robot. 
 
 
 ```py
@@ -215,7 +215,7 @@ if red_area greater than pillar_threshold
 	error = target - red_pillar_x
 	turn (error)(pillar proportional gain) 
 	+ (change in error value over time)(pillar derivative gain)
-	+ (y axis gain)(red_pillar_y)
+	+ (y-axis gain)(red_pillar_y)
 	
 ```
 
