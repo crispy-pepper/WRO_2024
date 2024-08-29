@@ -1,4 +1,4 @@
-# SJJ | Explorer Robotics | WRO - FIRST Robitics | Canada
+# SJJ | WRO - Future Engineers | Canada
 
 ## Team Members 
 - Sunni Xue
