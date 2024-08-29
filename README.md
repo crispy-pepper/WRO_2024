@@ -221,7 +221,7 @@ if red_area greater than pillar_threshold
 
 
 ##### Backtracking: 
-Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust and continue forwards. This would continue until the vehicle could successfully make it past.
+Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this, we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust, and continue forward. This would continue until the vehicle could successfully make it past.
 
 
 ```py
