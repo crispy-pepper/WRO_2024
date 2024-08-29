@@ -23,7 +23,7 @@ Section  | Content
 --- | --- |
 [`Task`](#task) | Introduces the problem/task of this competition
 [`Engineering Materials`](#engineering-materials) | Engineering materials used to complete the vehicle 
-[`Our Approach`](#our-approach) | Software and hardware approch to the challenge
+[`Obstacle Management`](#obstacle-management) | Obstacle Management
 [`Assembly Instructions`](#assembly-instructions) | How to build the vehicle
 
 
@@ -67,29 +67,24 @@ The obstacle challenge is where the car must complete three full laps around the
 <img src="/other/images-used/engineeringmaterials_fan.jpg" height="150">
 * [3D printed base](/models)
 * MicroSD card
-### Open Challenge
-* [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module))
-<img src="/other/images-used/engineeringmaterials_camera.jpg" height="150">
-### Obstacle Challenge
+### Sensors
+
 * [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module)
+<img src="/other/images-used/engineeringmaterials_camera.jpg" height="150">
 * [BerryIMU V3 10DOF](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC))
 <img src="/other/images-used/engineeringmaterials_gyro.jpg" height="150">
-* Raspberry Pi ultrasonic sensor)
+* Raspberry Pi ultrasonic sensor
 <img src="/other/images-used/engineeringmaterials_ultrasonic.jpg" height="150">
-## Our Approach
-### Software
 
-**Open Challenge**: Our approach to this challenge was to detect the walls, turn when one wall disappears, and then count the number of turns to know when to end. 
 
-**Obstacle Challenge**: Our approach to this challenge was to detect the pillars, adjust according to pillar colour, turn at the orange/blue lines, count the number of turns to know when the laps end, detect the parking lot, and back in using additional sensors. 
-
-### Obstacle Management
+## Obstacle Management
 **ss of cv2 window**
 
 ##### Wall Following/Track Centering
 
-Our open and obstacle challenge used the same wall following algorithm that guaranteed the robot to remain in the center of the two walls when needed. To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. Using these captures, we applied four (left top, left bottom, right top, right bottom) unique ROIs (regions of interest) that captured the areas of the walls diagonally ahead on both sides. We then created a black threshold mask to calculate how much area of the ROIs was black. Using these areas, we could determine if the vehicle is veering too far to one side by calculating the difference between the two sides and adjust the robot accordingly. To physically implement this calculation, we used a Proportional-Derivative (PD) algorithm approach, deciding that a combining the two factors would be perfect for our goal of following the walls.
+Our open and obstacle challenge used the same wall following algorithm that guaranteed the robot to remain in the center of the two walls when needed. To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. 
 
+Using these captures, we applied four (left top, left bottom, right top, right bottom) unique ROIs (regions of interest) that captured the areas of the walls diagonally ahead on both sides. We then created a black threshold mask to calculate how much area of the ROIs was black. Using these areas, we could determine if the vehicle is veering too far to one side by calculating the difference between the two sides and adjust the robot accordingly. To physically implement this calculation, we used a Proportional-Derivative (PD) algorithm approach, deciding that a combining the two factors would be perfect for our goal of following the walls.
 
 
 ```py
@@ -315,11 +310,11 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
        - Username: pi
        - Password: raspberry
    - 
-**3. Auto-running the program**
+**3. Auto-running the program on start**
   - Transfer OpenChallengeFinal.py/ObstacleChallengeFinal.py onto the Raspberry Pi and open command prompt
   - Open command prompt and run `sudo nano /etc/rc.local`
   - Add the line `sudo bash -c 'sudo python3 /home/pi/<<directory>>/<<filename.py>>' &` before `exit 0` and save and close
-  - Reboot the Raspberry Pi and the program should automatically run
+  - Reboot the Raspberry Pi and the program should automatically run on start
    
 <br><br>
 ### Hardware
