@@ -235,7 +235,24 @@ if pillar_area greater than avoidable distance and pillar_x is not on the correc
 
 
 ##### 3-Point Turn
-jayden will do
+
+The three point turn algorithm is required when the last pillar of the second lap is red. This signals that the robot must complete the final lap in the opposite direction. A three point turn is required to change the orientation of the robot. The algorithm is simple and effective. If the three point turn is needed, the robot will turn sharply lef
+
+```
+three point turn
+	turn sharp left 
+	go forward
+	if wall is directly in front of robot
+		turn sharp right
+		reverse the robot
+		end the three point turn
+	repeat
+		
+if last pillar is red
+	get to starting section
+	start three point turn
+
+```
 
 ##### Parking
 jayden will do

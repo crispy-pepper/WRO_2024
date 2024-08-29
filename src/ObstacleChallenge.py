@@ -13,16 +13,16 @@ from libcamera import controls
 # constant variables
 MID_SERVO = 82
 MAX_TURN_DEGREE = 39
-ROI_LEFT_BOT = [0, 300, 100, 340]
-ROI_RIGHT_BOT = [540, 300, 640, 340]
+ROI_LEFT_BOT = [0, 300, 100, 345]
+ROI_RIGHT_BOT = [540, 300, 640, 345]
 ROI_LEFT_TOP = [0, 270, 50, 300]
 ROI_RIGHT_TOP = [590, 270, 640, 300]
-ROI4 = [270, 370, 360, 400]
+ROI4 = [270, 330, 370, 360]
 ROI_MIDDLE = [0, 200, 640, 380]
 
 
-PD = 0.004
-PG = 0.004
+PD = 0.05
+PG = 0.0055
 RED_TARGET = 160
 GREEN_TARGET = 480
 WIDTH = 640
@@ -30,11 +30,11 @@ HEIGHT = 480
 POINTS = [(115, 200), (525, 200), (640, 370), (0, 370)]
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
 
-UPPER_BLACK_THRESHOLD = np.array([180, 255, 80])
+UPPER_BLACK_THRESHOLD = np.array([180, 255, 63])
 # UPPER_BLACK_THRESHOLD = np.array([180, 255, 20])
 LOWER_RED_THRESHOLD1 = np.array([0, 144, 161])
 UPPER_RED_THRESHOLD1 = np.array([1, 255, 255])
-LOWER_RED_THRESHOLD2 = np.array([168, 144, 118])
+LOWER_RED_THRESHOLD2 = np.array([155, 144, 107])
 UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
 # 196 for value in lighter conditions
 # LOWER_RED_THRESHOLD1 = np.array([0, 150, 110])
@@ -42,11 +42,11 @@ UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
 # LOWER_RED_THRESHOLD2 = np.array([150, 152, 40])
 # UPPER_RED_THRESHOLD2 = np.array([164, 225, 215])
 
-LOWER_GREEN_THRESHOLD = np.array([50, 40, 53])
-UPPER_GREEN_THRESHOLD = np.array([98, 255, 195])
+LOWER_GREEN_THRESHOLD = np.array([80, 40, 61])
+UPPER_GREEN_THRESHOLD = np.array([108, 255, 195])
 # LOWER_GREEN_THRESHOLD = np.array([43, 110, 60])
 # UPPER_GREEN_THRESHOLD = np.array([106, 245, 185])
-LOWER_ORANGE_THRESHOLD1 = np.array([170, 60, 150])
+LOWER_ORANGE_THRESHOLD1 = np.array([164, 130, 150])
 UPPER_ORANGE_THRESHOLD1 = np.array([180, 255, 255])
 LOWER_ORANGE_THRESHOLD2 = np.array([0, 60, 196])
 UPPER_ORANGE_THRESHOLD2 = np.array([20, 255, 255])
@@ -62,14 +62,15 @@ UPPER_BLUE_THRESHOLD = np.array([125, 255, 255])
 
 LOWER_MAGENTA_THRESHOLD = np.array([168, 175, 50])
 UPPER_MAGENTA_THRESHOLD = np.array([172, 255, 255])
-LINE_THRESHOLD = 35
-PILLAR_SIZE = 250
+LINE_THRESHOLD = 30
+PILLAR_SIZE = 400
 DC_STRAIGHT_SPEED = 1346
 DC_TURN_SPEED = 1346
 MAX_TURNS = 12
 ACTIONS_TO_STRAIGHT = 400
 
 # dynamic variables
+ready_for_reverse = False
 line_seen = False
 last_pillar = None
 last_target = None
@@ -83,6 +84,7 @@ last_difference = 0
 current_difference = 0
 servo_angle = 0
 lastLapTurnAround = False
+lastLapContinue = False
 prevPillar = ""
 prevError = 0
 turning_iter = 0
@@ -90,6 +92,7 @@ turnDir = None
 trackDir = None
 lastLapDone = False
 target = None
+threeLaps = False
 # camera setup
 picam2 = Picamera2()
 # picam2.set_controls({"Brightness" : 1.0})
@@ -122,9 +125,9 @@ time.sleep(2)
 print("---------------------------- running--------------------------")
 
 while True:
-    OBSTACLEPG = 0.0024
-    OBSTACLEPD = 0.0024
-    YAXISPG = 0.03
+    OBSTACLEPG = 0.002
+    OBSTACLEPD = 0.002
+    YAXISPG = 0.015
     num_pillars_g = 0
     num_pillars_r = 0
     # setup camera frame
@@ -291,7 +294,9 @@ while True:
             approx = cv2.approxPolyDP(i, 0.01 * cv2.arcLength(i, True), True)
             x, y, w, h = cv2.boundingRect(approx)
             temp_dist = math.dist([x + w // 2, y], [320, 480])
-            if temp_dist < 750:
+            # temp_dist = 480 - y
+
+            if temp_dist < 800:
                 image = cv2.line(im, (x, y), (x + w, y), (0, 255, 255), 1)
                 image = cv2.line(im, (x, y), ((x, h + y)), (0, 255, 255), 1)
                 image = cv2.line(im, (x + w, y), (x + w, y + h), (0, 255, 255), 1)
@@ -299,6 +304,7 @@ while True:
                 cv2.circle(im, (int(x + (w / 2)), y), 5, (255, 255, 0), 1, -1)
 
                 num_pillars_r += 1
+
                 if temp_dist < closest_pillar_dist:
                     closest_pillar_dist = temp_dist
                     direction = "red"
@@ -314,14 +320,15 @@ while True:
             approx = cv2.approxPolyDP(i, 0.01 * cv2.arcLength(i, True), True)
             x, y, w, h = cv2.boundingRect(approx)
             temp_dist = math.dist([x + w // 2, y], [320, 480])
-
-            if temp_dist < 750:
+            # temp_dist = 480 - y
+            if temp_dist < 800:
                 image = cv2.line(im, (x, y), (x + w, y), (0, 255, 255), 1)
                 image = cv2.line(im, (x, y), ((x, h + y)), (0, 255, 255), 1)
                 image = cv2.line(im, (x + w, y), (x + w, y + h), (0, 255, 255), 1)
                 image = cv2.line(im, (x, y + h), (x + w, y + h), (0, 255, 255), 1)
                 cv2.circle(im, (int(x + (w / 2)), y), 5, (255, 255, 0), 1, -1)
                 num_pillars_g += 1
+
                 if temp_dist < closest_pillar_dist:
                     closest_pillar_dist = temp_dist
                     direction = "green"
@@ -372,23 +379,72 @@ while True:
             area = cv2.contourArea(cnt)
             if area > 100:
                 cv2.drawContours(im, contours, i, (0, 255, 255), 1)"""
-
+    """
+    
     if lastLapTurnAround:
-        # point turn code
-        Board.setPWMServoPulse(6, 1650, 100)
-        Board.setPWMServoPulse(1, pwm(MID_SERVO + MAX_TURN_DEGREE), 1000)
-        time.sleep(0.5)
-        Board.setPWMServoPulse(6, 1350, 100)
-        Board.setPWMServoPulse(1, pwm(MID_SERVO - MAX_TURN_DEGREE), 1000)
-        time.sleep(0.5)
-        Board.setPWMServoPulse(6, 1650, 100)
-        Board.setPWMServoPulse(1, pwm(MID_SERVO + MAX_TURN_DEGREE), 1000)
-        time.sleep(0.5)
-        Board.setPWMServoPulse(6, 1350, 100)
-        Board.setPWMServoPulse(1, pwm(MID_SERVO - MAX_TURN_DEGREE), 1000)
-        time.sleep(0.5)
-        lastLapTurnAround = False
-        continue
+        if num_pillars_g + num_pillars_r == 0:
+
+            if not ready_for_reverse:
+                Board.setPWMServoPulse(1, pwm(MID_SERVO + MAX_TURN_DEGREE), 1000)
+                Board.setPWMServoPulse(6, 1340, 100)
+                time.sleep(2)
+                ready_for_reverse = True
+                continue
+            if ready_for_reverse:
+                Board.setPWMServoPulse(1, pwm(MID_SERVO + MAX_TURN_DEGREE), 1000)
+                Board.setPWMServoPulse(6, 1340, 100)
+
+                # stop turning once right in front of wall
+                if middle_area > 200:
+                    Board.setPWMServoPulse(6, 1500, 100)
+                    Board.setPWMServoPulse(1, pwm(MID_SERVO - MAX_TURN_DEGREE), 1000)
+                    Board.setPWMServoPulse(6, 1590, 100)
+                    time.sleep(2)
+                    Board.setPWMServoPulse(6, 1500, 100)
+                    time.sleep(0.1)
+                else:
+                    continue
+
+            if trackDir == "right":
+                trackDir = "left"
+            else:
+                trackDir = "right"
+            lastLapTurnAround = False
+            threeLaps = True
+    
+    
+    """
+    if lastLapTurnAround:
+        print("b")
+        if num_pillars_r == 0:
+            Board.setPWMServoPulse(1, pwm(MID_SERVO - MAX_TURN_DEGREE), 1000)
+            Board.setPWMServoPulse(6, 1340, 100)
+            print("a")
+            # stop turning once right in front of wall
+            if middle_area > 80:
+                Board.setPWMServoPulse(6, 1500, 100)
+                Board.setPWMServoPulse(1, pwm(MID_SERVO + MAX_TURN_DEGREE), 1000)
+                Board.setPWMServoPulse(6, 1590, 100)
+                time.sleep(2.5)
+                Board.setPWMServoPulse(6, 1500, 100)
+                time.sleep(0.1)
+
+                Board.setPWMServoPulse(1, pwm(MID_SERVO), 1000)
+                Board.setPWMServoPulse(6, 1340, 100)
+                time.sleep(1.5)
+
+                Board.setPWMServoPulse(6, 1500, 100)
+                time.sleep(0.1)
+
+            else:
+                continue
+
+            if trackDir == "right":
+                trackDir = "left"
+            else:
+                trackDir = "right"
+            lastLapTurnAround = False
+            threeLaps = True
 
     """
     if target != 'none':
@@ -421,6 +477,7 @@ while True:
             and line_seen
         ):
             turnDir = None
+            total_turn += 1
             print("done turning")
             line_seen = False
 
@@ -428,9 +485,8 @@ while True:
 
             # if the turn direction hasn't been changed yet change the turn direction to right
             if turnDir == None:
-                total_turn += 1
+                print("right")
                 turnDir = "right"
-                print(turnDir, total_turn)
 
     elif trackDir == "left":
         if turnDir == "left" and max_orange_area > LINE_THRESHOLD:
@@ -445,23 +501,42 @@ while True:
         ):
 
             turnDir = None
+            total_turn += 1
             print("done turning")
             line_seen = False
 
         elif max_blue_area > LINE_THRESHOLD:
             # if the turn direction hasn't been changed yet change the turn direction to left
             if turnDir == None:
-                total_turn += 1
+                print("left")
                 turnDir = "left"
-                print(turnDir, total_turn)
+    print(closest_pillar_area)
+    if turnDir == "left" and direction == "green":
+        servo_angle = MID_SERVO + MAX_TURN_DEGREE
+    elif turnDir == "right" and direction == "red":
+        servo_angle = MID_SERVO - MAX_TURN_DEGREE
 
-    if target != None:
+    elif (
+        target != None
+        and not (
+            left_area > 4500
+            and direction == "green"
+            and closest_pillar_area < 1500
+            and closest_pillar_x > 320
+        )
+        and not (
+            right_area > 4500
+            and direction == "red"
+            and closest_pillar_area < 1500
+            and closest_pillar_x < 320
+        )
+    ):
         last_difference = 0
 
         if direction == "green":
 
             if (
-                closest_pillar_area > 10000
+                closest_pillar_area > 9500
                 and (closest_pillar_x) < 440
                 and closest_pillar_dist < 800
             ):
@@ -473,11 +548,12 @@ while True:
                 Board.setPWMServoPulse(1, pw, 1000)
                 time.sleep(0.3)
                 Board.setPWMServoPulse(6, 1590, 100)
-                time.sleep(1.5)
+                time.sleep(1.2)
 
         elif direction == "red":
+
             if (
-                closest_pillar_area > 10000
+                closest_pillar_area > 9500
                 and (closest_pillar_x) > 300
                 and closest_pillar_dist < 800
             ):
@@ -489,9 +565,9 @@ while True:
                 time.sleep(0.3)
 
                 Board.setPWMServoPulse(6, 1590, 100)
-                time.sleep(1.5)
+                time.sleep(1.2)
 
-        if turnDir != None:
+        if turnDir != None and num_pillars_r >= 1:
             OBSTACLEPG = 0.03
             YAXISPG = 0.4
 
@@ -500,6 +576,7 @@ while True:
                 OBSTACLEPG = 0.0006
                 YAXISPG = 0.02
                 print("two greens pillars")
+            """
             elif direction == "green" and num_pillars_r >= 1:
                 OBSTACLEPG = 0.0006
                 YAXISPG = 0.02
@@ -508,8 +585,7 @@ while True:
                 OBSTACLEPG = 0.001
                 YAXISPG = 0.03
                 print("red-green turn case")
-            else:
-                pass
+            """
 
         dc_speed = DC_TURN_SPEED
         error = target - closest_pillar_x
@@ -546,6 +622,7 @@ while True:
             dc_speed = DC_TURN_SPEED
 
         else:
+
             # if the turn direction hasn't been changed yet ch
             turnDir = None
             dc_speed = DC_STRAIGHT_SPEED
@@ -567,21 +644,25 @@ while True:
             # print (MID_SERVO - (current_difference * PG + (current_difference-last_difference) * PD))
 
     if middle_area > 80:
-
-        servo_angle = MID_SERVO
-        time.sleep(0.3)
-
-        pw = pwm(servo_angle)
         Board.setPWMServoPulse(6, 1500, 100)
-        Board.setPWMServoPulse(1, pw, 1000)
-
+        Board.setPWMServoPulse(1, MID_SERVO, 1000)
+        time.sleep(0.3)
         Board.setPWMServoPulse(6, 1590, 100)
-        time.sleep(1)
+        time.sleep(1.5)
+        """
+        if prevPillar == "green":
+            
+        if prevPillar == "red":
+            servo_angle = MID_SERVO + MAX_TURN_DEGREE
+        
+        
+        """
 
-    if left_area > 4000:
-        angle = MID_SERVO - MAX_TURN_DEGREE
-    elif right_area > 4000:
-        angle = MID_SERVO + MAX_TURN_DEGREE
+    """
+    
+    elif right_area > 5000:
+        servo_angle = MID_SERVO + MAX_TURN_DEGREE
+    """
     """
     print("OBSTACLE PG: " + str((error) * MAX_TURN_DEGREE * OBSTACLEPG))
     print("OBSTACLE PD: " + str((error - prevError) * OBSTACLEPD))
@@ -594,8 +675,21 @@ while True:
     print("TOTAL ANGLE " + str(servo_angle))
     """
     #   #if the total turns has surpassed the amount required, increment the action counter by 1
-    if total_turn == MAX_TURNS:
-        action_counter += 1
+    if total_turn == 8 and not lastLapContinue and not threeLaps:
+        if num_pillars_r >= 1:
+            lastLapTurnAround = True
+
+        if num_pillars_g >= 1:
+
+            lastLapContinue = True
+
+        else:
+
+            if prevPillar == "green":
+                lastLapContinue = True
+            if prevPillar == "red":
+
+                lastLapTurnAround = True
 
     # set the last current_difference equal to the current current_difference for derivative steering
     last_difference = current_difference
@@ -609,7 +703,6 @@ while True:
         servo_angle = MID_SERVO + MAX_TURN_DEGREE
 
     # print ("turning " + str(servo_angle))
-
     # move the motors using the variables
     pw = pwm(servo_angle)
     Board.setPWMServoPulse(6, dc_speed, 100)
@@ -775,18 +868,10 @@ while True:
 
     # if the number of actions to the straight section has been met, stop the car
     if action_counter >= ACTIONS_TO_STRAIGHT:
-        if not lastLapDone:
-            if prevPillar == "green":
-                lastLapTurnAround = True
-                stop()
-                time.sleep(1)
-            action_counter = 0
-            total_turn = 0
-            MAX_TURNS = 4
 
-        else:
-            # parking lot thing sequence
-            pass
+        action_counter = 0
+        total_turn = 0
+        MAX_TURNS = 4
 
     if cv2.waitKey(1) == ord("q"):  #
         time.sleep(0.02)
