@@ -11,10 +11,11 @@
             "id": "7f2d8dc548df4cdd",
             "type": "leaf",
             "state": {
-              "type": "diff-view",
+              "type": "markdown",
               "state": {
                 "file": "README.md",
-                "staged": false
+                "mode": "source",
+                "source": false
               }
             }
           }
@@ -64,8 +65,7 @@
               "state": {}
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -85,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -101,6 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -122,7 +124,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "README.md"
+              }
             }
           },
           {
@@ -153,6 +157,13 @@
   },
   "active": "7f2d8dc548df4cdd",
   "lastOpenFiles": [
+    "src/Tests/openchallengearea.py",
+    "src/Tests/lineturn2.py",
+    "src/Tests/lineturn.py",
+    "src/Tests/jObb.py",
+    "src/Tests/bannn.py",
+    "src/Tests/3turn.py",
+    "src/HSVRange.py",
     "README.md",
     "schemes/Vehicle Schematic.png",
     "other/images-used/schematic_expansion.jpg",
