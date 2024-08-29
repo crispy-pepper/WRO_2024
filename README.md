@@ -232,9 +232,9 @@ if pillar_area greater than avoidable distance and pillar_x is not on the correc
 
 ##### 3-Point Turn
 
-The three point turn algorithm is required when the last pillar of the second lap is red. This signals that the robot must complete the final lap in the opposite direction. A three point turn is required to change the orientation of the robot. The algorithm is simple and effective. If the three point turn is needed, the robot will turn sharply lef
+The three point turn algorithm is required when the last pillar of the second lap is red. This signals that the robot must complete the final lap in the opposite direction. A three point turn is required to change the orientation of the robot. The algorithm is simple and effective. If the three point turn is needed, the robot will turn sharply left
 
-```
+```py
 three point turn
 	turn sharp left 
 	go forward
