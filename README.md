@@ -297,14 +297,14 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 ## Assembly Instructions
 ### Software
 **1. Raspberry Pi OS**
- - Download and install the official Raspberry Pi Imager from [https://www.raspberrypi.com/software/]
+ - Download and install the official Raspberry Pi Imager from https://www.raspberrypi.com/software/
 
 **2. Turbo Pi**
  - Using Raspberry Pi Imager, copy the TurboPi operating system onto a microSD card
  - Insert into the Raspberry Pi
    
 **3. Connecting to the Raspberry Pi**
-   - Download and install RealVNC from [https://www.realvnc.com/en/connect/download/viewer/]
+   - Download and install RealVNC from https://www.realvnc.com/en/connect/download/viewer/
    - Plug in the Raspberry and wait until wifi access point “HW-xxxxxx” shows up in your wifi list
    - Launch RealVNC and create a new connection with server `192.168.149.1`
        - Username: pi
