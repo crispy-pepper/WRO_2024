@@ -318,7 +318,7 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 **3. Auto-running the program**
   - Transfer OpenChallengeFinal.py/ObstacleChallengeFinal.py onto the Raspberry Pi and open command prompt
   - Open command prompt and run `sudo nano /etc/rc.local`
-  - Add the line `sudo bash -c 'sudo python3 /home/pi/<<directory>>/<<filename.py>>' &` before `exit 0` and save and close
+  - Add the line `sudo bash -c 'sudo python3 /home/pi/<<directory>>/<<filename.py>>' &` before the line `exit 0` and save and close
   - Reboot the Raspberry Pi and the program should automatically run
    
 <br><br>
