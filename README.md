@@ -232,7 +232,7 @@ if pillar_area greater than avoidable distance and pillar_x is not on the correc
 
 ##### 3-Point Turn
 
-The three-point turn algorithm is required when the last pillar of the second lap is red. This signals that the robot must complete the final lap in the opposite direction. A three-point turn is required to change the orientation of the robot. The algorithm is simple and effective. If the three point turn is needed, the robot will turn sharply left
+The three-point turn algorithm is required when the last pillar of the second lap is red. This signals that the robot must complete the final lap in the opposite direction. A three-point turn is required to change the orientation of the robot. The algorithm is simple and effective. If the three-point turn is needed, the robot will turn sharply left
 
 ```py
 three point turn
@@ -286,7 +286,7 @@ The power and sensor systems are critical to the vehicle's performance in naviga
 
 The battery serves as the power source for the vehicle, providing energy for all parts. The [Furitek Lizard Pro 30A/50A Brushless ESC](#engineering-materials) is connected to the battery to regulate the power delivered to the [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials). This ESC is required to ensure smooth acceleration and deceleration, protecting the motor from potential damage due to power surges.
 
-The Raspberry Pi, which acts as the vehicle's brain, has a power consumption of 1280mA under heavy stress, shown by studies. Given the battery's capabilities, this power draw is much less than what the battery can provide, allowing the Raspberry Pi to operate properly while managing all sensor inputs and processing.
+The Raspberry Pi, which acts as the vehicle's brain, has a power consumption of 1280mA under heavy stress (shown by studies). Given the battery's capabilities, this power draw is much less than what the battery can provide, allowing the Raspberry Pi to operate properly while managing all sensor inputs and processing.
 
 The vehicle's sensing capabilities include a [SainSmart Camera Module RPi3](#engineering-materials), which is used in both the open and obstacle challenges. The camera is equipped with a fish-eye lens, offering a wider field of view. This visual range enables the vehicle to detect obstacles, such as walls and pillars, and to more effectively process the surroundings. 
 
@@ -331,7 +331,7 @@ installation of the new motor and servo.
 
 **4. Installing the New Servo:**
  - Replace the original servo with the Hitec HS-5055MG Servo. Screw a long screw into the servo horn/arm so that it moves the steering mechanism. 
- - Make sure to clip the standoffs of the servo to fit into the chassis.
+ - Clip off the standoffs of the servo to fit the chassis if needed.
 
 **5. Wiring the Power System:**
  - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. To ensure proper power delivery to the motor and other components, follow the wiring provided in the [README](/schemes/README.md) of the schemes folder
