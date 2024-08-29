@@ -290,6 +290,20 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 **2. Turbo Pi**
  - Using Raspberry Pi Imager, copy the TurboPi operating system onto a microSD card
  - Insert into the Raspberry Pi
+   
+**3. Connecting to the Raspberry Pi**
+   - Download and install RealVNC from [https://www.realvnc.com/en/connect/download/viewer/]
+   - Plug in the Raspberry and wait until wifi access point “HW-xxxxxx” shows up in your wifi list
+   - Launch RealVNC and create a new connection with server `192.168.149.1`
+       - Username: pi
+       - Password: raspberry
+   - 
+**3. Auto-running the program**
+  - Transfer OpenChallengeFinal.py/ObstacleChallengeFinal.py onto the Raspberry Pi and open command prompt
+  - Open command prompt and run `sudo nano /etc/rc.local`
+  - Add the line `sudo bash -c 'sudo python3 /home/pi/<<directory>>/<<filename.py>>' &` before `exit 0` and save and close
+  - Reboot the Raspberry Pi and the program should automatically run
+   
 <br><br>
 ### Hardware
 **1. Disassembling the Chassis:**
