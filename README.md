@@ -290,7 +290,7 @@ In the obstacle challenge, the camera detects the walls, the colour of the pilla
 **2. Turbo Pi**
  - Using Raspberry Pi Imager, copy the TurboPi operating system onto a microSD card
  - Insert into the Raspberry Pi
-
+<br><br>
 ### Hardware
 **1. Disassembling the Chassis:**
  - Begin by unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
