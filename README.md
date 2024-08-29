@@ -65,7 +65,8 @@ The obstacle challenge is where the car must complete three full laps around the
 <img src="/other/images-used/engineeringmaterials_switch.jpg" height="150">
 * 5V Mini Fan)
 <img src="/other/images-used/engineeringmaterials_fan.jpg" height="150">
-* [3d printed base](/models)
+* [3D printed base](/models)
+* MicroSD card
 ### Open Challenge
 * [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module))
 <img src="/other/images-used/engineeringmaterials_camera.jpg" height="150">
@@ -279,13 +280,16 @@ The vehicle's sensing capabilities include a [SainSmart Camera Module RPi3](#eng
 
 In the obstacle challenge, the camera detects the walls, the colour of the pillars, the parking space, and the lines on the course. The vehicle uses this information to change the direction left or right accordingly, ensuring it stays on course. The fish-eye lens enhances the vehicle’s ability to capture more of the field at closer distances, providing the system with more information to make timely decisions.
 
-(also if we use ultrasonic sensor or BerryIMU ill add it later)
-
-
-
+<br><br><br>
 
 ## Assembly Instructions
 ### Software
+**1. Raspberry Pi OS**
+ - Download and install the official Raspberry Pi Imager from [https://www.raspberrypi.com/software/]
+
+**2. Turbo Pi**
+ - Using Raspberry Pi Imager, copy the TurboPi operating system onto a microSD card
+ - Insert into the Raspberry Pi
 
 ### Hardware
 **1. Disassembling the Chassis:**
@@ -328,7 +332,7 @@ installation of the new motor and servo.
 
 **12. Running the Code:**
  - Once the assembly is complete, upload the control code to the Raspberry Pi. Check all systems are working by performing a series of tests that can be found in the tests folder located in the src folder.
-*explain how to upload control to the raspberry pi
+
 
 ## Content
 
