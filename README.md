@@ -249,7 +249,7 @@ jayden will do
 * The vehicle [Chassis is a Carisma 80468 GT24RS 1/24](#engineering-materials) so the vehicle is small enough to fit in the parallel parking space vertically
 * The components are mounted on a 3d printed base sitting on top of the chassis, with the motor and servo being mounted directly into the chassis
 * The [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials) was chosen combined with a [Furiteck Lizard Pro 30A/50A Brushless ESC](#engineering-materials) because brushless motors are mechanically driven, which allows more precise speed controls, longer life and higher efficiency with less maintenance.
-* The servo was chosen because.. (use engineering principles: speed, torque, power etc) 
+* The servo was chosen because.. (use engineering principles: speed, torque, power etc) <br>
 <img src="/other/images-used/engineeringmaterials_motor.jpg" height="300"><img src="/other/images-used/engineeringmaterials_ESC.jpg" height="300">
 <img src="/other/images-used/engineeringmaterials_servo.jpg" height="300">
 
