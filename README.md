@@ -1,4 +1,4 @@
-# SJJ | Explorer Robotics | WRO - FIRST Robitics | Canada
+# SJJ | WRO - Future Engineers | Canada
 
 ## Team Members 
 - Sunni Xue
@@ -14,7 +14,7 @@
 | [`models`](/models) | [Final base model](/models/base%20v3.stl), [final camera base model](/models/camera%20base.stl), [final camera holder model](/models/camera%20holder%20v5.stl), [expansion board diagram](/models/expansion_board_diagram.png), [final fan holder model](/models/fan%20holder%20v2.stl), [old and unused models (zipped)](/models/old) |
 | [`other`](/other) | [Images used in documentation](other/images-used) |
 | [`schemes`](/schemes) | [Schematic explanations](/scheme/README.md), [expansion board schematic](/schemes/Raspberry%20Pi%20Expansion%20Board%20Schematic.png), [Raspberry Pi schematic](/schemes/Raspberry%20Pi%20Schematic.png), [vehicle schematic](/schemes/Vehicle%20Schematic.png) |
-| [`src`](/src) | Obstacle challenge final, [open challenge final](/src/OpenChallengeFinal.py), HSV finder, [test files](/src/Tests) |
+| [`src`](/src) | Obstacle challenge final, [open challenge final](/src/OpenChallengeFinal.py), [HSV finder](/src/HSV%20range.py), [test files](/src/Tests) |
 | [`videos`](/videos) | Full video, open challenge, obstacle challenge final |
 
  
@@ -65,7 +65,8 @@ The obstacle challenge is where the car must complete three full laps around the
 <img src="/other/images-used/engineeringmaterials_switch.jpg" height="150">
 * 5V Mini Fan)
 <img src="/other/images-used/engineeringmaterials_fan.jpg" height="150">
-* [3d printed base](/models)
+* [3D printed base](/models)
+* MicroSD card
 ### Open Challenge
 * [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module))
 <img src="/other/images-used/engineeringmaterials_camera.jpg" height="150">
@@ -91,7 +92,7 @@ Our open and obstacle challenge used the same wall following algorithm that guar
 
 
 
-```
+```py
 error = left_area - right_area
 turn (error)(proportional gain) + (change in error value over time)(derivative gain)
 ```
@@ -106,7 +107,7 @@ This algorithm calculates the precise angle the servo should turn by taking the 
 Our initial turning algorithm was simple in premise: when one of the walls was no longer detected, the robot would turn that direction. In practice, this algorithm performed inadequately because when turning into a narrow section, the robot would not turn at a great enough angle and therefore veer too close to the wall.
 
 
-```
+```py
 if left_area is none
 	turn sharp left until left_area is detected
 else if right_area is none
@@ -121,7 +122,7 @@ Depending on which of the colours was detected first, the algorithm would turn t
 The same logic for if a wall was no longer detected from the first algorithm was also used in conjunction, creating an algorithm that would turn in a more optimized path. 
 
 
-```
+```py
 if orange line detected
 	turn sharp right until blue line detected
 	
@@ -138,7 +139,7 @@ else if right_area is none
 This algorithm performed much better, but had a flaw: the line would be detected and the turn would start, but once the orange line was detected again, the turn would end. Therefore, we created a solution that would allow for the wall to fully be passed before ending the turn. This solution was adding a short timer to the turn that would ensure that the turn was not ended early.
 
 
-```
+```py
 if orange line detected
 	turn sharp right until blue line detected
 	
@@ -173,7 +174,7 @@ This algorithm was both reliable and efficient, allowing the robot to travel at 
 Similar to how we centered the vehicle, we also used the area of black in the ROIs to decide when to turn. If one ROI's black area was less than a certain value, it would mean that the wall has disappeared and the servo would turn to the most extreme angle. The vehicle would keep turning until the wall appeared again. This naïve approach was straightforward but failed in many cases because of the pillar-avoidance requirement:
 
 
-```
+```py
 if left_area is none
 	turn sharp left until left_area is detected
 else if right_area is none
@@ -184,7 +185,7 @@ else if right_area is none
 However, this did not always work because of the varying widths of each corner. To fix this, we added another trigger for the turning sequence: the lines on the mat. This algorithm was very similar to the line detection in the open challenge without the timed aspect later added to that algorithm. 
 
 
-```
+```py
 if orange line detected
 	turn sharp right until blue line detected
 	if right_area is detected
@@ -203,7 +204,7 @@ If a pillar was detected in the turn, the pillar-avoidance variables would be ch
 The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar is detected.
 
 
-```
+```py
 if red_area greater than pillar_threshold
 	turn right
 else if green_area greater than pillar_threshold
@@ -214,7 +215,7 @@ else if green_area greater than pillar_threshold
 However, this posed many challenges with overturning, underturning, turning past before it got to the pillar, and not turning at all. We fixed this by adding a constant target value for both coloured pillars and adjusting according to the distance between the pillar's left x-value and the target line. The vehicle would constantly try to match the x-value up with the target line. This way, the vehicle would know to continue turning towards the pillar or to turn the other way to correct the overturning. Additionally, we found that it would be beneficial for the robot to turn at a greater angle if the pillar is closer to avoid the pillar in urgent situations. Therefore, we added another factor into our turn degree: y-axis gain. This functionality would turn the servo motor at a greater angle based on the y-coordinate of the pillar, which is the straight distance forward from the robot. 
 
 
-```
+```py
 if red_area greater than pillar_threshold
 	error = target - red_pillar_x
 	turn (error)(pillar proportional gain) 
@@ -228,7 +229,7 @@ if red_area greater than pillar_threshold
 Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust and continue forwards. This would continue until the vehicle could successfully make it past.
 
 
-```
+```py
 if pillar_area greater than avoidable distance and pillar_x is not on the correct side:
 	reverse the robot
 ```
@@ -266,9 +267,8 @@ jayden will do
 * The vehicle [Chassis is a Carisma 80468 GT24RS 1/24](#engineering-materials) so the vehicle is small enough to fit in the parallel parking space vertically
 * The components are mounted on a 3d printed base sitting on top of the chassis, with the motor and servo being mounted directly into the chassis
 * The [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials) was chosen combined with a [Furiteck Lizard Pro 30A/50A Brushless ESC](#engineering-materials) because brushless motors are mechanically driven, which allows more precise speed controls, longer life and higher efficiency with less maintenance.
-* The servo was chosen because.. (use engineering principles: speed, torque, power etc) 
-<img src="/other/images-used/engineeringmaterials_motor.jpg" height="300"><img src="/other/images-used/engineeringmaterials_ESC.jpg" height="300">
-<img src="/other/images-used/engineeringmaterials_servo.jpg" height="300">
+* The servo was chosen because.. (use engineering principles: speed, torque, power etc) <br>
+<img src="/other/images-used/engineeringmaterials_motor.jpg" height="300"><img src="/other/images-used/engineeringmaterials_ESC.jpg" height="300"><img src="/other/images-used/engineeringmaterials_servo.jpg" height="300">
 
 
 In both the open and obstacle challenge, vehicle movement is essential for ensuring optimal performance. The vehicle is managed through a four-wheel drive configuration, with front-wheel steering. This configuration resembles everyday cars on the street, and allows for movement forwards and backwards, as well as turning in both directions. 
@@ -297,14 +297,31 @@ The vehicle's sensing capabilities include a [SainSmart Camera Module RPi3](#eng
 
 In the obstacle challenge, the camera detects the walls, the colour of the pillars, the parking space, and the lines on the course. The vehicle uses this information to change the direction left or right accordingly, ensuring it stays on course. The fish-eye lens enhances the vehicle’s ability to capture more of the field at closer distances, providing the system with more information to make timely decisions.
 
-(also if we use ultrasonic sensor or BerryIMU ill add it later)
-
-
-
+<br><br><br>
 
 ## Assembly Instructions
 ### Software
+**1. Raspberry Pi OS**
+ - Download and install the official Raspberry Pi Imager from [https://www.raspberrypi.com/software/]
 
+**2. Turbo Pi**
+ - Using Raspberry Pi Imager, copy the TurboPi operating system onto a microSD card
+ - Insert into the Raspberry Pi
+   
+**3. Connecting to the Raspberry Pi**
+   - Download and install RealVNC from [https://www.realvnc.com/en/connect/download/viewer/]
+   - Plug in the Raspberry and wait until wifi access point “HW-xxxxxx” shows up in your wifi list
+   - Launch RealVNC and create a new connection with server `192.168.149.1`
+       - Username: pi
+       - Password: raspberry
+   - 
+**3. Auto-running the program**
+  - Transfer OpenChallengeFinal.py/ObstacleChallengeFinal.py onto the Raspberry Pi and open command prompt
+  - Open command prompt and run `sudo nano /etc/rc.local`
+  - Add the line `sudo bash -c 'sudo python3 /home/pi/<<directory>>/<<filename.py>>' &` before `exit 0` and save and close
+  - Reboot the Raspberry Pi and the program should automatically run
+   
+<br><br>
 ### Hardware
 **1. Disassembling the Chassis:**
  - Begin by unscrewing the cover of the Carisma 80468 GT24RS 1/24 chassis. This includes removing the top pole that supports the rear of the cover.
@@ -346,7 +363,7 @@ installation of the new motor and servo.
 
 **12. Running the Code:**
  - Once the assembly is complete, upload the control code to the Raspberry Pi. Check all systems are working by performing a series of tests that can be found in the tests folder located in the src folder.
-*explain how to upload control to the raspberry pi
+
 
 ## Content
 
