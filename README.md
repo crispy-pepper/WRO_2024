@@ -260,7 +260,7 @@ jayden will do
 * Servo for steering
 * Motor for FWD (four-wheel drive)
 * The vehicle [Chassis is a Carisma 80468 GT24RS 1/24](#engineering-materials) so the vehicle is small enough to fit in the parallel parking space vertically
-* The components are mounted on a 3d printed base sitting on top of the chassis, with the motor and servo being mounted directly into the chassis
+* The components are mounted on a 3D printed base sitting on top of the chassis, with the motor and servo being mounted directly into the chassis
 * The [Furitek Micro Komodo 1212 3450KV Brushless Motor](#engineering-materials) was chosen combined with a [Furiteck Lizard Pro 30A/50A Brushless ESC](#engineering-materials) because brushless motors are mechanically driven, which allows more precise speed controls, longer life and higher efficiency with less maintenance.
 * The servo was chosen because.. (use engineering principles: speed, torque, power etc) <br>
 <img src="/other/images-used/engineeringmaterials_motor.jpg" height="300"><img src="/other/images-used/engineeringmaterials_ESC.jpg" height="300"><img src="/other/images-used/engineeringmaterials_servo.jpg" height="300">
@@ -274,7 +274,7 @@ We chose the [Hitec HS-5055MG Servo](#engineering-materials) for our steering ca
 
 The vehicle is based on the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), which was selected due to its compact size, which allows the vehicle to parallel park vertically, making the job much easier. The small size also contributes to the overall agility of the vehicle, making it easier to maneuver in tight spaces. 
 
-The motor and servo replace the original components in the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), with the servo needing modifications to the chassis of the car. The other components of the car are attached through a 3d printed base that is clipped in on top of the car. 
+The motor and servo replace the original components in the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), with the servo needing modifications to the chassis of the car. The other components of the car are attached through a 3D printed base that is clipped in on top of the car. 
 (something something add the building/assembly instructions, CAD files and parts) 
 
 #### Power Considerations
