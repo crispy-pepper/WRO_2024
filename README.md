@@ -91,7 +91,7 @@ Our open and obstacle challenge used the same wall following algorithm that guar
 
 
 
-```
+```py
 error = left_area - right_area
 turn (error)(proportional gain) + (change in error value over time)(derivative gain)
 ```
@@ -106,7 +106,7 @@ This algorithm calculates the precise angle the servo should turn by taking the 
 Our initial turning algorithm was simple in premise: when one of the walls was no longer detected, the robot would turn that direction. In practice, this algorithm performed inadequately because when turning into a narrow section, the robot would not turn at a great enough angle and therefore veer too close to the wall.
 
 
-```
+```py
 if left_area is none
 	turn sharp left until left_area is detected
 else if right_area is none
@@ -121,7 +121,7 @@ Depending on which of the colours was detected first, the algorithm would turn t
 The same logic for if a wall was no longer detected from the first algorithm was also used in conjunction, creating an algorithm that would turn in a more optimized path. 
 
 
-```
+```py
 if orange line detected
 	turn sharp right until blue line detected
 	
@@ -138,7 +138,7 @@ else if right_area is none
 This algorithm performed much better, but had a flaw: the line would be detected and the turn would start, but once the orange line was detected again, the turn would end. Therefore, we created a solution that would allow for the wall to fully be passed before ending the turn. This solution was adding a short timer to the turn that would ensure that the turn was not ended early.
 
 
-```
+```py
 if orange line detected
 	turn sharp right until blue line detected
 	
@@ -173,7 +173,7 @@ This algorithm was both reliable and efficient, allowing the robot to travel at 
 Similar to how we centered the vehicle, we also used the area of black in the ROIs to decide when to turn. If one ROI's black area was less than a certain value, it would mean that the wall has disappeared and the servo would turn to the most extreme angle. The vehicle would keep turning until the wall appeared again. This naïve approach was straightforward but failed in many cases because of the pillar-avoidance requirement:
 
 
-```
+```py
 if left_area is none
 	turn sharp left until left_area is detected
 else if right_area is none
@@ -184,7 +184,7 @@ else if right_area is none
 However, this did not always work because of the varying widths of each corner. To fix this, we added another trigger for the turning sequence: the lines on the mat. This algorithm was very similar to the line detection in the open challenge without the timed aspect later added to that algorithm. 
 
 
-```
+```py
 if orange line detected
 	turn sharp right until blue line detected
 	if right_area is detected
@@ -203,7 +203,7 @@ If a pillar was detected in the turn, the pillar-avoidance variables would be ch
 The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar is detected.
 
 
-```
+```py
 if red_area greater than pillar_threshold
 	turn right
 else if green_area greater than pillar_threshold
@@ -214,7 +214,7 @@ else if green_area greater than pillar_threshold
 However, this posed many challenges with overturning, underturning, turning past before it got to the pillar, and not turning at all. We fixed this by adding a constant target value for both coloured pillars and adjusting according to the distance between the pillar's left x-value and the target line. The vehicle would constantly try to match the x-value up with the target line. This way, the vehicle would know to continue turning towards the pillar or to turn the other way to correct the overturning. Additionally, we found that it would be beneficial for the robot to turn at a greater angle if the pillar is closer to avoid the pillar in urgent situations. Therefore, we added another factor into our turn degree: y-axis gain. This functionality would turn the servo motor at a greater angle based on the y-coordinate of the pillar, which is the straight distance forward from the robot. 
 
 
-```
+```py
 if red_area greater than pillar_threshold
 	error = target - red_pillar_x
 	turn (error)(pillar proportional gain) 
@@ -228,7 +228,7 @@ if red_area greater than pillar_threshold
 Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust and continue forwards. This would continue until the vehicle could successfully make it past.
 
 
-```
+```py
 if pillar_area greater than avoidable distance and pillar_x is not on the correct side:
 	reverse the robot
 ```
