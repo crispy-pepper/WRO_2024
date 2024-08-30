@@ -9,7 +9,7 @@
  
 | Folder  | Content| 
 | -- | -- |
-| [`Team Photos`](/Team%20Photos)| Informal team photo, formal team photo |
+| [`Team Photos`](/Team%20Photos)| Funny team photo, Official team photo |
 | [`Vehicle Photos`](/Vehicle%20Photos) | [Bottom view](/Vehicle%20Photos/bottom_view.jpg), [front view](/Vehicle%20Photos/front_view.jpg), [left view](/Vehicle%20Photos/left_view.jpg), [rear view](/Vehicle%20Photos/rear_view.jpg), [right view](/Vehicle%20Photos/right_view.jpg), [top view](/Vehicle%20Photos/top_view.jpg) |
 | [`models`](/models) | [Final base model](/models/base%20v3.stl), [final camera base model](/models/camera%20base.stl), [final camera holder model](/models/camera%20holder%20v5.stl), [expansion board diagram](/models/expansion_board_diagram.png), [final fan holder model](/models/fan%20holder%20v2.stl), [old and unused models (zipped)](/models/old) |
 | [`other`](/other) | [Images used in documentation](other/images-used) |
