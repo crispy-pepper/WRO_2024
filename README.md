@@ -80,15 +80,15 @@ The obstacle challenge is where the car must complete three full laps around the
 ## Obstacle Management
 **ss of cv2 window**
 
-### Libraries Used
-- math
-- sys
-- cv2
-- numpy
-- time
-- picamera2
-- HiwonderSDK.Board
-- libcamera
+**- Libraries Used**
+	- `math`
+	- `sys`
+	- `cv2`
+	- `numpy`
+	- `time`
+	- `picamera2`
+	- `HiwonderSDK.Board`
+	- `libcamera`
 
 #### Wall-Following/Track Centering
 
