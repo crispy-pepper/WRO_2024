@@ -80,7 +80,17 @@ The obstacle challenge is where the car must complete three full laps around the
 ## Obstacle Management
 **ss of cv2 window**
 
-##### Wall-Following/Track Centering
+### Libraries Used
+- math
+- sys
+- cv2
+- numpy
+- time
+- picamera2
+- HiwonderSDK.Board
+- libcamera
+
+#### Wall-Following/Track Centering
 
 Our open and obstacle challenge used the same wall-following algorithm that guaranteed the robot to remain in the center of the two walls when needed. To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. 
 
@@ -95,9 +105,9 @@ turn (error)(proportional gain) + (change in error value over time)(derivative g
 
 This algorithm calculates the precise angle the servo should turn by taking the difference between the two sides multiplied it by the proportional value (constant) and adding it to the derivative value (constant) multiplied by the difference between the current and last difference in the two sides. The use of PID control allows stable turning with less oscillating and overcorrection, ensuring that the vehicle remains centered on the track.
 
-#### Open Challenge
+### Open Challenge
 
-##### Turning
+#### Turning
 
 Our initial turning algorithm was simple in premise: when one of the walls was no longer detected, the robot would turn in that direction. In practice, this algorithm performed inadequately because when turning into a narrow section, the robot would not turn at a great enough angle and therefore veer too close to the wall.
 
@@ -163,9 +173,9 @@ else if right_area is none
 
 This algorithm was both reliable and efficient, allowing the robot to travel at high speeds at low risk of hitting the walls. 
 
-#### Obstacle Challenge
+### Obstacle Challenge
 
-##### Turning
+#### Turning
 Similar to how we centered the vehicle, we also used the area of black in the ROIs to decide when to turn. If one ROI's black area was less than a certain value, it would mean that the wall has disappeared and the servo would turn to the most extreme angle. The vehicle would keep turning until the wall appeared again. This naïve approach was straightforward but failed in many cases because of the pillar-avoidance requirement:
 
 
@@ -195,7 +205,7 @@ if blue line detected
 
 If a pillar was detected in the turn, the pillar-avoidance variables would be changed in order to enter the straight section while passing by the obstacle correctly. This would be achieved by making the y-axis proportional steering more sensitive. 
 
-##### Pillar Maneuvering: 
+#### Pillar Maneuvering: 
 The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar was detected.
 
 
@@ -220,7 +230,7 @@ if red_area greater than pillar_threshold
 ```
 
 
-##### Backtracking: 
+#### Backtracking: 
 Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this, we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust, and continue forward. This would continue until the vehicle could successfully make it past.
 
 
@@ -230,7 +240,7 @@ if pillar_area greater than avoidable distance and pillar_x is not on the correc
 ```
 
 
-##### 3-Point Turn
+#### 3-Point Turn
 
 The three-point turn algorithm is required when the last pillar of the second lap is red. This signals that the robot must complete the final lap in the opposite direction. A three-point turn is required to change the orientation of the robot. The algorithm is simple and effective. If the three-point turn is needed, the robot will turn sharply left
 
@@ -250,13 +260,10 @@ if last pillar is red
 
 ```
 
-##### Parking
+#### Parking
 jayden will do
 
-
-### Hardware
-
-#### Movement Considerations
+## Movement Considerations
 * Servo for steering
 * Motor for FWD (four-wheel drive)
 * The vehicle [Chassis is a Carisma 80468 GT24RS 1/24](#engineering-materials) so the vehicle is small enough to fit in the parallel parking space vertically
@@ -277,7 +284,7 @@ The vehicle is based on the [Charisma 80468 GT24RS 1/24 model](#engineering-mate
 The motor and servo replace the original components in the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), with the servo needing modifications to the chassis of the car. The other components of the car are attached through a 3D printed base that is clipped in on top of the car. 
 (something something add the building/assembly instructions, CAD files and parts) 
 
-#### Power Considerations
+## Power Considerations
 * Sensors and power management
 * Reference schematic 
 <img src="/other/images-used/engineeringmaterials_battery.jpg" width="500">
