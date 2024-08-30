@@ -81,7 +81,7 @@ The obstacle challenge is where the car must complete three full laps around the
 **ss of cv2 window**
 
 - **Libraries Used** - `math` - `sys` - `cv2` - `numpy` - `time` - `picamera2` - `HiwonderSDK.Board` - `libcamera`
-<br>
+
 #### Wall-Following/Track Centering
 
 Our open and obstacle challenge used the same wall-following algorithm that guaranteed the robot to remain in the center of the two walls when needed. To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. 
