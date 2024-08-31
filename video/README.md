@@ -5,4 +5,5 @@ This directory must contain the video.md file with a URL to YouTube (should be e
 That part of the video where driving demonstration exists must be at least 30 seconds in length.
 
 **OPEN CHALLENGE VIDEO**
+
 https://www.youtube.com/watch?v=l11nNBPFpW8
