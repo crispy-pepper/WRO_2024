@@ -15,7 +15,7 @@
 | [`other`](/other) | [Images used in documentation](other/images-used) |
 | [`schemes`](/schemes) | [Schematic explanations](/scheme/README.md), [expansion board schematic](/schemes/Raspberry%20Pi%20Expansion%20Board%20Schematic.png), [Raspberry Pi schematic](/schemes/Raspberry%20Pi%20Schematic.png), [vehicle schematic](/schemes/Vehicle%20Schematic.png) |
 | [`src`](/src) | Obstacle challenge final, [open challenge final](/src/OpenChallengeFinal.py), [HSV finder](/src/HSVRange.py), [test files](/src/Tests) |
-| [`videos`](/videos) | Full video, open challenge, obstacle challenge final |
+| [`videos`](/videos) | Open challenge, obstacle challenge final |
 
  
  
