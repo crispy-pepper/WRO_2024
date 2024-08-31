@@ -71,11 +71,6 @@ The obstacle challenge is where the car must complete three full laps around the
 
 * [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module)
 <img src="/other/images-used/engineeringmaterials_camera.jpg" height="150">
-* [BerryIMU V3 10DOF](https://www.amazon.com/BerryIMUv2-10DOF-Accelerometer-Gyroscope-Magnetometer-Barometric/dp/B072MN8ZRC))
-<img src="/other/images-used/engineeringmaterials_gyro.jpg" height="150">
-* Raspberry Pi ultrasonic sensor
-<img src="/other/images-used/engineeringmaterials_ultrasonic.jpg" height="150">
-
 
 ## Obstacle Management
 **ss of cv2 window**
