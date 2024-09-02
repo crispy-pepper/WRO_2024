@@ -3,8 +3,8 @@
 ## Team Members 
 - Sunni Xue
 - Jayden Li
-- John Weng
-  **add team photo here**
+- John Weng <br>
+![](/Team%20Photos/Official%20Team%20Photo.jpg)
 ## Content 📖📚
  
 | Folder  | Content| 
