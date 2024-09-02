@@ -370,7 +370,7 @@ installation of the new motor and servo.
  - Connect the Gens Ace 2S1P 1300mAh 7.4V battery cable to the Furiteck Lizard Pro 30A/50A Brushless ESC cable. To ensure proper power delivery to the motor and other components, follow the wiring provided in the [README](/schemes/README.md) of the schemes folder
 
 **6. 3D Printed Components Installation:**
- - Print one “base v3.stl” and one “camera holder v6.stl” using a 3D printer.
+ - Print a [base](/models/base%20v3.stl) and a [camera holder](/models/camera%20holder%20v6.stl) using a 3D printer.
  - Install the camera holder into the base by aligning it with the inset negatives on the base.
  - Mount the assembled base onto the poles that originally supported the vehicle’s cover, ensuring the camera holder is positioned over the rear wheels. Use the original pins from the car to securely clip the base in place.
 
