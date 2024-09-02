@@ -75,13 +75,11 @@ The obstacle challenge is where the car must complete three full laps around the
 ## Obstacle Management
 **ss of cv2 window**
 
-<<<<<<< Updated upstream
 - **Libraries Used** - `math` - `sys` - `cv2` - `numpy` - `time` - `picamera2` - `HiwonderSDK.Board` - `libcamera`
 
 #### Wall-Following/Track Centering
 =======
 ##### Wall Following/Track Centering
->>>>>>> Stashed changes
 
 Our open and obstacle challenge used the same wall following algorithm that guaranteed the robot to remain in the center of the two walls when needed. To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. 
 
@@ -196,13 +194,11 @@ if blue line detected
 
 If a pillar was detected in the turn, the pillar-avoidance variables would be changed in order to enter the straight section while passing by the obstacle correctly. This would be achieved by making the y-axis proportional steering more sensitive. 
 
-<<<<<<< Updated upstream
 #### Pillar Maneuvering: 
 The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar was detected.
 =======
 ##### Pillar Maneuvering: 
 The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar is detected.
->>>>>>> Stashed changes
 
 
 ```py
@@ -225,15 +221,11 @@ if red_area greater than pillar_threshold
 	
 ```
 
-
-<<<<<<< Updated upstream
 #### Backtracking: 
 Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this, we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust, and continue forward. This would continue until the vehicle could successfully make it past.
 =======
 ##### Backtracking: 
 Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust and continue forwards. This would continue until the vehicle could successfully make it past.
->>>>>>> Stashed changes
-
 
 ```py
 if pillar_area greater than avoidable distance and pillar_x is not on the correct side:
