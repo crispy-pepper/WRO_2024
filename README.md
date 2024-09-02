@@ -1,9 +1,9 @@
 # SJJ | WRO - Future Engineers | Canada
 
 ## Team Members 
-- Sunni Xue
-- Jayden Li
-- John Weng <br>
+- Sunni Xue (right)
+- Jayden Li (middle)
+- John Weng (left) <br>
 ![](/Team%20Photos/Official%20Team%20Photo.jpg)
 ## Content 📖📚
  
