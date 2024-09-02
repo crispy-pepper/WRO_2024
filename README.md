@@ -235,9 +235,9 @@ if pillar_area greater than avoidable distance and pillar_x is not on the correc
 
 #### 3-Point Turn
 
-The three point turn algorithm is required when the last pillar of the second lap is red. This signals that the robot must complete the final lap in the opposite direction. A three point turn is required to change the orientation of the robot. The algorithm is simple and effective. If the three point turn is needed, the robot will turn sharply right until a wall is seen. This allows for the robot to achieve the maximum angle from one turn. Once a wall is detected in front of the robot, the second phase of the turn will be activated and the servo will turn to a sharp left angle and reverse the robot. Finally, the robot turns at a sharp right angle and goes forward, ending in the opposite orientation from where it started. This allows the robot to complete the last lap in the appropriate direction.
+The three point turn algorithm is required when the last pillar of the second lap is red. This signals that the robot must complete the final lap in the opposite direction. A three point turn is required to change the orientation of the robot. The algorithm is simple and effective. If the three point turn is needed, the robot will turn sharply right until a wall is seen. This allows the robot to achieve the maximum angle from one turn. Once a wall is detected in front of the robot, the second phase of the turn will be activated and the servo will turn to a sharp left angle and reverse the robot. Finally, the robot turns at a sharp right angle and goes forward, ending in the opposite orientation from where it started. This allows the robot to complete the last lap in the appropriate direction.
 
-```
+```py
 three point turn
 	turn sharp right 
 	go forward
@@ -255,7 +255,41 @@ if last pillar is red
 ```
 
 #### Parking
-jayden will do
+After finishing the three laps, the vehicle must park find and stop inside the magenta parking lot. Rather than parallel parking, we decided to go head first directly turning into the allotted space. This was because when first reading the problem, we found that as long as the vehicle was fully inside the boundaries of the parking lot, the orientation did not matter to achieve full marks. This is also the main driving factor behind why we chose a small chassis (< 20 cm).
+
+The parking algorithm works by first circling the field on the outside of all pillars (as it does not need to abide by the traffic rules after the completion of the third lap) until it detects a large enough magenta contour to initiate the parking sequence. This condition is found by finding the largest magenta contour in the left and right ROIs and the y-coordinates of their bounding rectangles and comparing them to predetermined constants. If both the y-coordinate and size conditions are met, the vehicle is in the correct position to start parking. Depending on the size of the maximum left and right magenta contour, the side the parking lot is located on can be deduced. 
+
+```py
+if rightY/leftY is greater than a value and maxAreaRight/maxAreaLeft is greater than a value
+	if not currently parking on the left or right side:
+		initiate parking on the left/right side
+		go forwards slower
+                created new, bigger center ROI
+```
+
+The parking sequence works by directly turning into the parking lot forward and backing out in the same direction if needed; repeated until the area in front of the vehicle is larger than a value. It knows when to back out by checking if the center y-coordinate of the largest contour's bounding rectangle (centerY) is greater than a certain, meaning the vehicle will hit the wall if it continues forward.
+
+```py
+if currently parking on the left or right side
+	if centerY is greater than a value:
+		stop
+		turn the servo to the maximum in the correct direction
+		go backwards
+		stop
+
+	else
+		turn the servo to the maximum in the correct direction
+		go forwards
+```
+
+Once the area of the wall in front of the vehicle is large enough, it will continue straight forward to be sure the vehicle is fully in, stop, and exit the main loop.
+
+```py
+ if area in front is greater than a value:
+	turn servo straight
+	go forwards
+	stop and exit
+```
 
 ## Movement Considerations
 * Servo for steering
