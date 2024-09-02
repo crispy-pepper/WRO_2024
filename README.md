@@ -24,8 +24,8 @@ Section  | Content
 [`Task`](#task) | Introduces the problem/task of this competition
 [`Engineering Materials`](#engineering-materials) | Engineering materials used to complete the vehicle 
 [`Obstacle Management`](#obstacle-management) | Obstacle Management
-[`Movement Considerations`](#movement-considerations) | 
-[`Power Considerations`](#power-considerations) | 
+[`Movement Considerations`](#movement-considerations) | How and why we chose the specific moving parts used in the vehicle
+[`Power Considerations`](#power-considerations) | How and why we chose the battery used with the vehicle
 [`Assembly Instructions`](#assembly-instructions) | How to build the vehicle
 
 
