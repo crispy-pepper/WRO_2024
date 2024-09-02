@@ -47,7 +47,7 @@ The obstacle challenge is where the car must complete three full laps around the
 
 
 ## Engineering materials
-<img src="/Vechicle%20Photos/Left.jpg" width="500">
+<img src="/Vehicle%20Photos/Left.jpg" width="500">
 ### Car Base
 * [Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car](https://www.ebay.ca/itm/134622499234)
 <img src="/other/images-used/engineeringmaterials_carisma.jpg" height="150">
