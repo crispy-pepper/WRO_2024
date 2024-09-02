@@ -78,8 +78,6 @@ The obstacle challenge is where the car must complete three full laps around the
 - **Libraries Used** - `math` - `sys` - `cv2` - `numpy` - `time` - `picamera2` - `HiwonderSDK.Board` - `libcamera`
 
 #### Wall-Following/Track Centering
-=======
-##### Wall Following/Track Centering
 
 Our open and obstacle challenge used the same wall following algorithm that guaranteed the robot to remain in the center of the two walls when needed. To make sure that laps stayed consistent and the vehicle did not touch the walls, we had to implement some form of track centering. We did this using a [SainSmart Camera Module RPi3, 5MP, Fish-Eye](#engineering-materials). With the mounted camera, we were able to capture the surroundings of the vehicle frame by frame. 
 
@@ -97,7 +95,6 @@ This algorithm calculates the precise angle the servo should turn by taking the 
 ### Open Challenge
 
 #### Turning
-
 Our initial turning algorithm was simple in premise: when one of the walls was no longer detected, the robot would turn that direction. In practice, this algorithm performed inadequately because when turning into a narrow section, the robot would not turn at a great enough angle and therefore veer too close to the wall.
 
 
@@ -224,9 +221,6 @@ if red_area greater than pillar_threshold
 
 #### Backtracking: 
 Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this, we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust, and continue forward. This would continue until the vehicle could successfully make it past.
-=======
-##### Backtracking: 
-Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust and continue forwards. This would continue until the vehicle could successfully make it past.
 
 ```py
 if pillar_area greater than avoidable distance and pillar_x is not on the correct side:
