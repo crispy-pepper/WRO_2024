@@ -10,7 +10,7 @@
 | Folder  | Content| 
 | -- | -- |
 | [`Team Photos`](/Team%20Photos)| [Official team photo](/Team%20Photos/Official%20Team%20Photo.jpg), [funny team photo](/Team%20Photos/Funny%20Team%20Photo.jpg) |
-| [`Vehicle Photos`](/Vehicle%20Photos) | [Bottom view](/Vehicle%20Photos/bottom_view.jpg), [front view](/Vehicle%20Photos/front_view.jpg), [left view](/Vehicle%20Photos/left_view.jpg), [rear view](/Vehicle%20Photos/rear_view.jpg), [right view](/Vehicle%20Photos/right_view.jpg), [top view](/Vehicle%20Photos/top_view.jpg) |
+| [`Vehicle Photos`](/Vehicle%20Photos) | [Bottom view](/Vehicle%20Photos/Bottom.jpg), [front view](/Vehicle%20Photos/Front.jpg), [left view](/Vehicle%20Photos/Left.jpg), [rear view](/Vehicle%20Photos/Rear.jpg), [right view](/Vehicle%20Photos/Right.jpg), [top view](/Vehicle%20Photos/Top.jpg) |
 | [`models`](/models) | [Final base model](/models/base%20v3.stl), [final camera base model](/models/camera%20base.stl), [final camera holder model](/models/camera%20holder%20v5.stl), [expansion board diagram](/models/expansion_board_diagram.png), [final fan holder model](/models/fan%20holder%20v2.stl), [old and unused models (zipped)](/models/old) |
 | [`other`](/other) | [Images used in documentation](other/images-used) |
 | [`schemes`](/schemes) | [Schematic explanations](/scheme/README.md), [expansion board schematic](/schemes/Raspberry%20Pi%20Expansion%20Board%20Schematic.png), [Raspberry Pi schematic](/schemes/Raspberry%20Pi%20Schematic.png), [vehicle schematic](/schemes/Vehicle%20Schematic.png) |
