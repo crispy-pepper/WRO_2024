@@ -4,7 +4,7 @@
 - Sunni Xue (right)
 - Jayden Li (middle)
 - John Weng (left) <br>
-![](/Team%20Photos/Funny%20Team%20Photo.jpg)
+<img src="/Team%20Photos/Funny%20Team%20Photo.jpg" height="1000">
 ## Content 📖📚
  
 | Folder  | Content| 
