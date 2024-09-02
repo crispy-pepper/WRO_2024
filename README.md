@@ -24,6 +24,8 @@ Section  | Content
 [`Task`](#task) | Introduces the problem/task of this competition
 [`Engineering Materials`](#engineering-materials) | Engineering materials used to complete the vehicle 
 [`Obstacle Management`](#obstacle-management) | Obstacle Management
+[`Movement Considerations`](#movement-considerations) | 
+[`Power Considerations`](#power-considerations) | 
 [`Assembly Instructions`](#assembly-instructions) | How to build the vehicle
 
 
