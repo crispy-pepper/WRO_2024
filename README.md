@@ -41,7 +41,7 @@ In order to perform the race, the car must drive three laps. The vehicle is not 
 The open challenge is where the car must complete three full laps around the field without touching a wall. The size of each side of the field is determined by random chance of either 100 cm or 60 cm. The direction in which the car drives is also randomized. 
  
 ### Obstacle Challenge
-The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured traffic signs(pillars). If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue in the same direction or change directions to find the parking lot. The car must then back into the parking lot without touching either of the ends. The size of each side of the field remains constant, 1 metre for each side. 
+The obstacle challenge is where the car must complete three full laps around the field, avoiding different coloured traffic signs (pillars). If the pillar is red, traverse on the right side; if the pillar is green, traverse on the left. The direction in which the car drives is randomized. After the third lap, depending on the last pillar, the car must continue in the same direction or change directions to find the parking lot. The car must then back into the parking lot without touching either of the ends. The size of each side of the field remains constant, 1 metre for each side. 
 
 
 ## Engineering materials
