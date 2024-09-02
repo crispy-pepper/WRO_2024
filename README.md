@@ -194,11 +194,12 @@ if blue line detected
 
 If a pillar was detected in the turn, the pillar-avoidance variables would be changed in order to enter the straight section while passing by the obstacle correctly. This would be achieved by making the y-axis proportional steering more sensitive. 
 
-#### Pillar Maneuvering: 
+#### Pillar Maneuvering
+
 The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar was detected.
-=======
+
 ##### Pillar Maneuvering: 
-The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar is detected.
+The camera scans for pillars using another ROI that encapsulates the center of the camera view and a red and green colour mask. The algorithm would find the closest pillar by finding the largest contour. Depending on the colour of this contour, we could decide whether to go left or right. We started with a naïve approach of turning a constant amount left or right when the pillar was detected.
 
 
 ```py
@@ -255,9 +256,9 @@ if last pillar is red
 ```
 
 #### Parking
-After finishing the three laps, the vehicle must park find and stop inside the magenta parking lot. Rather than parallel parking, we decided to go head first directly turning into the allotted space. This was because when first reading the problem, we found that as long as the vehicle was fully inside the boundaries of the parking lot, the orientation did not matter to achieve full marks. This is also the main driving factor behind why we chose a small chassis (< 20 cm).
+After finishing the three laps, the vehicle must park find and stop inside the magenta parking lot. Rather than parallel parking, we decided to go head first, directly turning into the allotted space. This was because when first reading the problem, we found that as long as the vehicle was fully inside the boundaries of the parking lot, the orientation did not matter to achieve full marks. This is also the main driving factor behind why we chose a small chassis (< 20 cm because the width of the parking lot is 20 cm).
 
-The parking algorithm works by first circling the field on the outside of all pillars (as it does not need to abide by the traffic rules after the completion of the third lap) until it detects a large enough magenta contour to initiate the parking sequence. This condition is found by finding the largest magenta contour in the left and right ROIs and the y-coordinates of their bounding rectangles and comparing them to predetermined constants. If both the y-coordinate and size conditions are met, the vehicle is in the correct position to start parking. Depending on the size of the maximum left and right magenta contour, the side the parking lot is located on can be deduced. 
+The parking algorithm works by first circling the field on the outside of all pillars (as it does not need to abide by the traffic rules after the completion of the third lap) until it detects a large enough magenta contour to initiate the parking sequence. This condition is calculated by finding the largest magenta contour in the left and right ROIs and the y-coordinates of their bounding rectangles and comparing them to predetermined constants. If both the y-coordinate and size conditions are met, the vehicle is in the correct position to start parking. Depending on the size of the maximum left and right magenta contour, the side the parking lot is located on can be deduced. 
 
 ```py
 if rightY/leftY is greater than a value and maxAreaRight/maxAreaLeft is greater than a value
