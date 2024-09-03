@@ -7,8 +7,10 @@ This directory contains the video.md file with a URL to YouTube (should be eithe
 
 https://www.youtube.com/watch?v=l11nNBPFpW8
 
+(Added to video folder)
 
-
-**OBSTACLE CHALLENGE VIDEO***
+**OBSTACLE CHALLENGE VIDEO**
 
 https://www.youtube.com/watch?v=SUPA-X8QRmc
+
+(File is too large to add to video folder)
