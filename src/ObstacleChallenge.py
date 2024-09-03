@@ -8,24 +8,24 @@ import time
 sys.path.append("/home/pi/TurboPi/")
 from picamera2 import Picamera2
 import HiwonderSDK.Board as Board
+import libcamera
 from libcamera import controls
 
 
-# ROIs
+ROI_LEFT_BOT = [0, 290, 100, 345]
+ROI_RIGHT_BOT = [540, 290, 640, 345]
+ROI_LEFT_TOP = [0, 270, 50, 290]
+ROI_RIGHT_TOP = [590, 270, 640, 290]
+ROI4 = [285, 330, 355, 355]
+ROI_MIDDLE = [0, 200, 640, 420]
+ROI_PARKING_LEFT = [0, 225, 320, 345]
+ROI_PARKING_RIGHT = [320, 225, 640, 345]
 
-ROI_LEFT_BOT = [0, 300, 100, 345]
-ROI_RIGHT_BOT = [540, 300, 640, 345]
-ROI_LEFT_TOP = [0, 270, 50, 300]
-ROI_RIGHT_TOP = [590, 270, 640, 300]
-ROI4 = [280, 330, 360, 360]
-ROI_MIDDLE = [0, 200, 640, 400]
-ROI_PARKING_LEFT = [0, 225, 330, 345]
-ROI_PARKING_RIGHT = [330, 225, 640, 345]
 
 # proportion constants for the servo motor angle (PD steering) for the wall following algorithm
 
-PD = 0.05
-PG = 0.0055
+PD = 0.06
+PG = 0.0058
 
 # camera constants
 
@@ -36,46 +36,48 @@ POINTS = [(115, 200), (525, 200), (640, 370), (0, 370)]
 # colour thresholds
 
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
-UPPER_BLACK_THRESHOLD = np.array([180, 255, 73])
+UPPER_BLACK_THRESHOLD = np.array([180, 255, 50])
 
-LOWER_RED_THRESHOLD1 = np.array([0, 144, 161])
-UPPER_RED_THRESHOLD1 = np.array([5, 255, 255])
-LOWER_RED_THRESHOLD2 = np.array([175, 144, 107])
+LOWER_RED_THRESHOLD1 = np.array([5, 154, 80])
+UPPER_RED_THRESHOLD1 = np.array([12, 255, 255])
+LOWER_RED_THRESHOLD2 = np.array([180, 144, 107])
 UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
 
-LOWER_GREEN_THRESHOLD = np.array([60, 60, 55])
-UPPER_GREEN_THRESHOLD = np.array([104, 255, 195])
+LOWER_GREEN_THRESHOLD = np.array([45, 95, 50])
+UPPER_GREEN_THRESHOLD = np.array([80, 255, 195])
 
-LOWER_ORANGE_THRESHOLD1 = np.array([176, 100, 140])
+LOWER_ORANGE_THRESHOLD1 = np.array([180, 100, 100])
 UPPER_ORANGE_THRESHOLD1 = np.array([180, 255, 255])
-LOWER_ORANGE_THRESHOLD2 = np.array([0, 100, 140])
-UPPER_ORANGE_THRESHOLD2 = np.array([15, 255, 255])
+LOWER_ORANGE_THRESHOLD2 = np.array([15, 175, 110])
+UPPER_ORANGE_THRESHOLD2 = np.array([26, 255, 240])
 
-LOWER_BLUE_THRESHOLD = np.array([107, 50, 95])
-UPPER_BLUE_THRESHOLD = np.array([130, 255, 170])
+LOWER_BLUE_THRESHOLD = np.array([34, 0, 49])
+UPPER_BLUE_THRESHOLD = np.array([110, 100, 135])
 
-LOWER_MAGENTA_THRESHOLD = np.array([152, 130, 50])
-UPPER_MAGENTA_THRESHOLD = np.array([172, 255, 255])
+LOWER_MAGENTA_THRESHOLD1 = np.array([0, 100, 50])
+UPPER_MAGENTA_THRESHOLD1 = np.array([5, 215, 255])
 
+LOWER_MAGENTA_THRESHOLD2 = np.array([166, 110, 50])
+UPPER_MAGENTA_THRESHOLD2 = np.array([180, 255, 255])
 
-LINE_THRESHOLD = 40  # minimum contour size of orange or blue line
+LINE_THRESHOLD = 50  # minimum contour size of orange or blue line
 
 
 # pillar constants
 
 
-PILLAR_SIZE = 200
+PILLAR_SIZE = 300
 
 
 # motor constants
 
-DC_SPEED = 1346
-MID_SERVO = 82
+DC_SPEED = 1347
+MID_SERVO = 80
 MAX_TURN_DEGREE = 39
 
 
 ACTIONS_TO_STRAIGHT = (
-    200  # number of iterations to enter the straight section from the turning section
+    100  # number of iterations to enter the straight section from the turning section
 )
 
 # pillar avoidance algorithm variables
@@ -89,7 +91,7 @@ prevError = 0
 # variables used for last lap
 
 noRed = False
-need_space = True
+need_space = False
 tpt2red = False
 lastLapTurnAround = False
 lastLapContinue = False
@@ -102,8 +104,8 @@ trackDir = None
 line_seen = False
 turning_iter = 0
 threeLaps = False  # used to determine when the robot has completed 3 laps and can stop
-red_target = 120
-green_target = 520
+red_target = 110
+green_target = 530
 
 last_difference = 0  # used for derivative calculation for wall following
 current_difference = 0  # used for derivative calculation for wall following
@@ -112,19 +114,26 @@ servo_angle = 0
 
 
 # variables used for parking
+need_pause = True
 parkingR = False
 parkingL = False
-parking_algorithm = True
+parking_algorithm = False
 
 
 # camera setup
 picam2 = Picamera2()
 picam2.preview_configuration.main.size = (640, 480)
 picam2.preview_configuration.main.format = "RGB888"
-picam2.preview_configuration.controls.FrameRate = 25
+picam2.preview_configuration.controls.FrameRate = 30
 picam2.preview_configuration.align()
 picam2.configure("preview")
-picam2.set_controls({"Brightness": 0.05})
+picam2.set_controls(
+    {
+        "Brightness": 0.05,
+        "AwbMode": libcamera.controls.AwbModeEnum.Custom,
+        "ColourGains": (1.08, 1),
+    }
+)
 picam2.start()
 
 
@@ -151,27 +160,31 @@ def pwm(degree):
 
 
 def stop():
-    time.sleep(0.02)
+
     Board.setPWMServoPulse(6, 1500, 100)
     Board.setPWMServoPulse(1, pwm(MID_SERVO), 1000)
-    time.sleep(0.05)
     Board.setPWMServoPulse(6, 1500, 100)
+    cv2.destroyAllWindows()
+    sys.exit()
+    return 0
 
 
 Board.setPWMServoPulse(1, pwm(MID_SERVO), 1)  # turn servo to mid
 Board.setPWMServoPulse(6, 1500, 100)  # arm the esc motor
-time.sleep(2)
+time.sleep(1)
 print("---------------------------- running--------------------------")
 
 while True:
 
     # obstacle avoidance variables that are reset every iteration of the main loop
 
+    # ROIs
+
     OBSTACLEPG = 0.0017  # proportional gain for obstacle avoidance
 
-    OBSTACLEPD = 0.0015  # derivative gain for obstacle avoidance
+    OBSTACLEPD = 0.005  # derivative gain for obstacle avoidance
 
-    YAXISPG = 0.027  # y-axis steering that is proportional to the y-axis of the pillar
+    YAXISPG = 0.017  # y-axis steering that is proportional to the y-axis of the pillar
 
     num_pillars_g = 0  # tracks how many green pillars are currently detected
 
@@ -188,6 +201,10 @@ while True:
     closest_pillar_area = None  # tracks the area of the closest pillar
 
     closest_pillar_colour = None  # tracks the colour of the closest pillar
+
+    if parking_algorithm:
+        PILLAR_SIZE = 100
+        OBSTACLEPG = 0.0025
 
     # setup camera frame
     im = picam2.capture_array()
@@ -217,21 +234,13 @@ while True:
         cv2.inRange(img_hsv, LOWER_ORANGE_THRESHOLD2, UPPER_ORANGE_THRESHOLD2),
     )
 
-    img_thresh_magenta = cv2.inRange(
-        img_hsv, LOWER_MAGENTA_THRESHOLD, UPPER_MAGENTA_THRESHOLD
+    img_thresh_magenta = cv2.bitwise_or(
+        cv2.inRange(img_hsv, LOWER_MAGENTA_THRESHOLD1, UPPER_MAGENTA_THRESHOLD1),
+        cv2.inRange(img_hsv, LOWER_MAGENTA_THRESHOLD2, UPPER_MAGENTA_THRESHOLD2),
     )
+
     # --------------------------------------------------- Find Contours ---------------------------------------------------
 
-    contours_red, _ = cv2.findContours(
-        img_thresh_red[ROI_MIDDLE[1] : ROI_MIDDLE[3], ROI_MIDDLE[0] : ROI_MIDDLE[2]],
-        cv2.RETR_EXTERNAL,
-        cv2.CHAIN_APPROX_NONE,
-    )
-    contours_green, _ = cv2.findContours(
-        img_thresh_green[ROI_MIDDLE[1] : ROI_MIDDLE[3], ROI_MIDDLE[0] : ROI_MIDDLE[2]],
-        cv2.RETR_EXTERNAL,
-        cv2.CHAIN_APPROX_NONE,
-    )
     contours_blue, _ = cv2.findContours(
         img_thresh_blue[ROI4[1] : ROI4[3], ROI4[0] : ROI4[2]],
         cv2.RETR_EXTERNAL,
@@ -267,6 +276,48 @@ while True:
             ROI4[1] : ROI4[3],
             ROI4[0] : ROI4[2],
         ],
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_NONE,
+    )
+
+    middle_contours_magenta, _ = cv2.findContours(
+        img_thresh_magenta[
+            ROI_MIDDLE[1] : ROI_MIDDLE[3], ROI_MIDDLE[0] : ROI_MIDDLE[2]
+        ],
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_NONE,
+    )
+    maxArea = 0
+
+    for i in middle_contours_magenta:
+        area = cv2.contourArea(i)
+
+        if area > maxArea and area > PILLAR_SIZE:
+            maxArea = area
+
+            approx = cv2.approxPolyDP(i, 0.01 * cv2.arcLength(i, True), True)
+            x, y, w, h = cv2.boundingRect(approx)
+            x += ROI_MIDDLE[0]
+            y += ROI_MIDDLE[1]
+            image = cv2.line(im, (x, y), (x + w, y), (255, 255, 255), 1)
+            image = cv2.line(im, (x, y), ((x, h + y)), (255, 255, 255), 1)
+            image = cv2.line(im, (x + w, y), (x + w, y + h), (255, 255, 255), 1)
+            image = cv2.line(im, (x, y + h), (x + w, y + h), (255, 255, 255), 1)
+            cv2.circle(im, (int(x + (w / 2)), y), 5, (255, 255, 0), 1, -1)
+
+    for i in range((y - 10) if y >= 10 else (0), (y + h + 10) if y + h <= 470 else 480):
+        for j in range(
+            (x - 50) if x >= 50 else (0), (x + w + 50) if x + w <= 590 else 640
+        ):
+            img_thresh_red[i][j] = 0
+
+    contours_red, _ = cv2.findContours(
+        img_thresh_red[ROI_MIDDLE[1] : ROI_MIDDLE[3], ROI_MIDDLE[0] : ROI_MIDDLE[2]],
+        cv2.RETR_EXTERNAL,
+        cv2.CHAIN_APPROX_NONE,
+    )
+    contours_green, _ = cv2.findContours(
+        img_thresh_green[ROI_MIDDLE[1] : ROI_MIDDLE[3], ROI_MIDDLE[0] : ROI_MIDDLE[2]],
         cv2.RETR_EXTERNAL,
         cv2.CHAIN_APPROX_NONE,
     )
@@ -397,6 +448,12 @@ while True:
         cnt[:, :, 1] += ROI4[1]
 
         cv2.drawContours(im, contours_blue, i, (255, 255, 0), 1)
+    magenta_area_center = 0
+    for i in range(len(center_contours_magenta)):
+        cnt = center_contours_magenta[i]
+        magenta_area_center = max(cv2.contourArea(cnt), magenta_area_center)
+        cnt[:, :, 0] += ROI4[0]
+        cnt[:, :, 1] += ROI4[1]
 
     """
      for i in range(len(left_contours_magenta)):
@@ -414,11 +471,7 @@ while True:
         cnt[:, :, 1] += ROI_PARKING_RIGHT[1]
         cv2.drawContours(im, right_contours_magenta, i, (255, 0, 255), 1)
 
-    for i in range(len(center_contours_magenta)):
-        cnt = right_contours_magenta
-        magenta_area_center = max(cv2.contourArea(cnt), magenta_area_center)
-        cnt[:, :, 0] += ROI_PARKING_RIGHT[0]
-        cnt[:, :, 1] += ROI_PARKING_RIGHT[1]
+    
     
     
     
@@ -445,7 +498,7 @@ while True:
             temp_dist = math.dist([x + w // 2, y], [320, 480])
             # temp_dist = 480 - y
 
-            if temp_dist < 700:
+            if temp_dist < 500:
                 image = cv2.line(im, (x, y), (x + w, y), (0, 255, 255), 1)
                 image = cv2.line(im, (x, y), ((x, h + y)), (0, 255, 255), 1)
                 image = cv2.line(im, (x + w, y), (x + w, y + h), (0, 255, 255), 1)
@@ -455,8 +508,11 @@ while True:
                 num_pillars_r += 1
 
                 if temp_dist < closest_pillar_dist:
-                    if y + h > 440:
-                        # pillar is too close
+                    if y + h > 440 and x + (w // 2) > 240:
+                        # pillar has already been passed
+                        pass
+                    elif y + h < 200:
+
                         pass
                     else:
                         # set closest pillar variables
@@ -477,7 +533,7 @@ while True:
             x, y, w, h = cv2.boundingRect(approx)
             temp_dist = math.dist([x + w // 2, y], [320, 480])
             # temp_dist = 480 - y
-            if temp_dist < 700:
+            if temp_dist < 500:
                 image = cv2.line(im, (x, y), (x + w, y), (0, 255, 255), 1)
                 image = cv2.line(im, (x, y), ((x, h + y)), (0, 255, 255), 1)
                 image = cv2.line(im, (x + w, y), (x + w, y + h), (0, 255, 255), 1)
@@ -486,8 +542,11 @@ while True:
                 num_pillars_g += 1
 
                 if temp_dist < closest_pillar_dist:
-                    if y + h > 440:
+                    if y + h > 440 and x + (w // 2) > 400:
                         # pillar is too close
+                        pass
+                    elif y + h < 200:
+
                         pass
                     else:
                         # set closest pillar variables
@@ -519,7 +578,7 @@ while True:
                 cnt = conts[i][x]
                 area = cv2.contourArea(cnt)
 
-                if area > 100:
+                if area > 200:
 
                     # get width, height, and x and y coordinates by bounding rect
                     approx = cv2.approxPolyDP(
@@ -554,15 +613,14 @@ while True:
             
             """
 
-            if leftY >= 335 and maxAreaL > 300:
+            if leftY >= 540 and maxAreaL > 150:
                 if not parkingL and not parkingR:
                     Board.setPWMServoPulse(6, 1340, 100)
                     parkingL = True
 
-                ROI4 = [250, 250, 390, 320]
+                ROI4 = [250, 250, 390, 300]
 
             # conditions for initiating parking on the right side
-
             """
             if rightY >= 240 and maxAreaR > 100 and total_turn >= 12:
                 if not parkingL and not parkingR:
@@ -573,31 +631,29 @@ while True:
                 ROI4 = [250, 250, 390, 300]
             
             """
-            print(str(centerY) + " center y")
-            print(rightY)
-            if rightY >= 560 and maxAreaR > 320:
+            # print(str(centerY) + " center y")
+            # print(rightY)
+            if rightY >= 534 and maxAreaR > 150:
                 if not parkingL and not parkingR:
 
                     parkingR = True
                     Board.setPWMServoPulse(6, 1346, 100)
 
-                ROI4 = [250, 250, 390, 340]
+                ROI4 = [270, 390, 370, 420]
 
             if parkingR:
                 print("a")
                 # readjust if the parking lot is in front
-                if centerY > 310:
+                if centerY > 380:
                     print("trying to go back")
                     Board.setPWMServoPulse(6, 1500, 100)
-                    time.sleep(0.1)
 
                     Board.setPWMServoPulse(1, pwm(MID_SERVO + MAX_TURN_DEGREE), 1000)
+                    time.sleep(0.1)
 
-                    time.sleep(0.5)
+                    Board.setPWMServoPulse(6, 1580, 100)
 
-                    Board.setPWMServoPulse(6, 1595, 100)
-
-                    time.sleep(0.5)
+                    time.sleep(0.4)
                     Board.setPWMServoPulse(6, 1500, 100)
 
                 # turn right into parking lot
@@ -605,13 +661,9 @@ while True:
                     # if debug: LED1(255, 0, 255)
 
                     Board.setPWMServoPulse(1, pwm(MID_SERVO - MAX_TURN_DEGREE), 1000)
-                    time.sleep(1)
 
-                    Board.setPWMServoPulse(6, 1340, 100)
+                    Board.setPWMServoPulse(6, 1350, 100)
 
-            """
-            
-            
             elif parkingL:
 
                 if centerY > 315:
@@ -627,16 +679,14 @@ while True:
                 else:
                     # if debug: LED1(255, 0, 255)
 
-                    Board.setPWMServoPulse(6, 1346, 100)
+                    Board.setPWMServoPulse(6, 1350, 100)
                     Board.setPWMServoPulse(1, pwm(MID_SERVO + MAX_TURN_DEGREE), 1000)
-            
-            
-            """
 
             # if the area of the wall in front is above a limit stop as we are very close to the wall
-            if middle_area > 3500:
-                Board.setPWMServoPulse(1, pwm(MID_SERVO), 1000)
+            if middle_area > 1500:
                 print("stop")
+                Board.setPWMServoPulse(1, pwm(MID_SERVO), 1000)
+                Board.setPWMServoPulse(6, 1350, 100)
                 time.sleep(1)
                 stop()
                 break
@@ -645,7 +695,21 @@ while True:
 
     if lastLapTurnAround:
         print("waiting for red to not be detected")
+        ROI_TURN_STOP = [280, 380, 360, 410]
+        middle_contours_black, hierarchy = cv2.findContours(
+            img_thresh_black[
+                ROI_TURN_STOP[1] : ROI_TURN_STOP[3], ROI_TURN_STOP[0] : ROI_TURN_STOP[2]
+            ],
+            cv2.RETR_EXTERNAL,
+            cv2.CHAIN_APPROX_NONE,
+        )
+        middle_area = 0
+        for i in range(len(middle_contours_black)):
+            cnt = middle_contours_black[i]
 
+            area = cv2.contourArea(cnt)
+
+            middle_area = max(area, middle_area)
         if num_pillars_r == 0:
             noRed = True
 
@@ -670,7 +734,7 @@ while True:
                 Board.setPWMServoPulse(1, pwm(MID_SERVO + MAX_TURN_DEGREE), 1000)
                 time.sleep(0.5)
                 Board.setPWMServoPulse(6, 1580, 100)
-                time.sleep(3.5)
+                time.sleep(4)
                 Board.setPWMServoPulse(6, 1500, 100)
                 time.sleep(0.1)
                 Board.setPWMServoPulse(1, pwm(MID_SERVO - MAX_TURN_DEGREE), 1000)
@@ -685,8 +749,11 @@ while True:
             lastLapTurnAround = False
             threeLaps = True
 
+            if turnDir != None:
+                total_turn += 1
+                turnDir = None
+                print("h")
     # --------------------------------------------------- Turning Logic ---------------------------------------------------
-
     if trackDir == None:
         if max_blue_area > max_orange_area and max_blue_area > LINE_THRESHOLD:
             trackDir = "left"
@@ -701,7 +768,7 @@ while True:
             turnDir == "right"
             and max_blue_area < LINE_THRESHOLD
             and max_orange_area < LINE_THRESHOLD
-            and right_area > 50
+            and (right_area_bot > 50 if not parking_algorithm else right_area > 50)
             and line_seen
         ):
             turnDir = None
@@ -717,13 +784,14 @@ while True:
 
     elif trackDir == "left":
         if turnDir == "left" and max_orange_area > LINE_THRESHOLD:
+            print("sene")
             line_seen = True
 
         if (
             turnDir == "left"
             and max_orange_area < LINE_THRESHOLD
             and max_blue_area < LINE_THRESHOLD
-            and left_area > 50
+            and (left_area_bot > 50 if not parking_algorithm else left_area > 50)
             and line_seen
         ):
 
@@ -747,7 +815,7 @@ while True:
     if (
         target != None
         and not (
-            left_area > 5500
+            left_area > 5200
             and closest_pillar_colour == "green"
             and (closest_pillar_x >= green_target or closest_pillar_area < 2000)
         )
@@ -756,15 +824,18 @@ while True:
             and closest_pillar_colour == "red"
             and (closest_pillar_x <= red_target or closest_pillar_area < 2000)
         )
-        and not parking_algorithm
+        and not (parkingL or parkingR)
     ):
         last_difference = 0
-
-        if closest_pillar_colour == "green":
+        """
+        
+        if closest_pillar_colour == "green" or (
+            parking_algorithm and trackDir == "right"
+        ):
 
             if (
-                closest_pillar_area > 9500
-                and (closest_pillar_x) < 400
+                closest_pillar_area > 9000
+                and (closest_pillar_x) < (410 if not (parking_algorithm and trackDir == "right") else 340)
                 and closest_pillar_dist < 2000
             ):
                 servo_angle = MID_SERVO
@@ -774,14 +845,17 @@ while True:
                 Board.setPWMServoPulse(6, 1500, 100)
                 Board.setPWMServoPulse(1, pw, 1000)
                 time.sleep(0.3)
-                Board.setPWMServoPulse(6, 1590, 100)
-                time.sleep(1.2)
+                Board.setPWMServoPulse(6, 1580, 100)
+                time.sleep(1.5)
 
-        elif closest_pillar_colour == "red":
+        elif closest_pillar_colour == "red" or (
+            parking_algorithm and trackDir == "left"
+        ):
 
             if (
-                closest_pillar_area > 9500
-                and (closest_pillar_x) > 240
+                closest_pillar_area > 9000
+                and (closest_pillar_x)
+                > (230 if not (parking_algorithm and trackDir == "left") else 300)
                 and closest_pillar_dist < 2000
             ):
                 servo_angle = MID_SERVO
@@ -791,9 +865,61 @@ while True:
                 Board.setPWMServoPulse(1, pw, 1000)
                 time.sleep(0.3)
 
-                Board.setPWMServoPulse(6, 1590, 100)
-                time.sleep(1.2)
+                Board.setPWMServoPulse(6, 1580, 100)
+                time.sleep(1.5)
+        
+        
+        """
+        if closest_pillar_colour == "green" and not parking_algorithm:
 
+            if (
+                closest_pillar_area > 9700
+                and (closest_pillar_x) < 390
+                and closest_pillar_dist < 2000
+            ):
+                servo_angle = MID_SERVO
+
+                pw = pwm(servo_angle)
+
+                Board.setPWMServoPulse(6, 1500, 100)
+                Board.setPWMServoPulse(1, pw, 1000)
+                time.sleep(0.3)
+                Board.setPWMServoPulse(6, 1580, 100)
+                time.sleep(1.5)
+
+        elif closest_pillar_colour == "red" and not parking_algorithm:
+
+            if (
+                closest_pillar_area > 9700
+                and (closest_pillar_x) > 250
+                and closest_pillar_dist < 2000
+            ):
+                servo_angle = MID_SERVO
+
+                pw = pwm(servo_angle)
+                Board.setPWMServoPulse(6, 1500, 100)
+                Board.setPWMServoPulse(1, pw, 1000)
+                time.sleep(0.3)
+
+                Board.setPWMServoPulse(6, 1580, 100)
+                time.sleep(1.5)
+
+        elif (
+            parking_algorithm
+            and closest_pillar_area > 9700
+            and (closest_pillar_x) > 250
+            and closest_pillar_dist < 2000
+            and trackDir == "left"
+        ):
+            servo_angle = MID_SERVO
+
+            pw = pwm(servo_angle)
+            Board.setPWMServoPulse(6, 1500, 100)
+            Board.setPWMServoPulse(1, pw, 1000)
+            time.sleep(0.3)
+
+            Board.setPWMServoPulse(6, 1580, 100)
+            time.sleep(1.5)
         # if pillar is seen during a turn
         if turnDir != None and (num_pillars_r >= 1 or num_pillars_g >= 1):
 
@@ -801,21 +927,25 @@ while True:
             YAXISPG = 0.4
 
         # specific cases for two pillars at a turn
-        elif num_pillars_g + num_pillars_r >= 2:
-            if num_pillars_g >= 2:
-                OBSTACLEPG = 0.0006
-                YAXISPG = 0.02
-                print("two greens pillars")
-            """
-            elif closest_pillar_colour == "green" and num_pillars_r >= 1:
-                OBSTACLEPG = 0.0006
-                YAXISPG = 0.02
-                print("one green pillars")
-            elif closest_pillar_colour == "red" and num_pillars_g >= 1:
+        elif num_pillars_g + num_pillars_r >= 2 and not parking_algorithm:
+
+            if closest_pillar_colour == "red" and num_pillars_g >= 1:
                 OBSTACLEPG = 0.001
                 YAXISPG = 0.03
                 print("red-green turn case")
-            """
+
+            elif (
+                closest_pillar_colour == "red"
+                and num_pillars_r >= 2
+                and trackDir == "right"
+            ) or (
+                closest_pillar_colour == "green"
+                and num_pillars_g >= 2
+                and trackDir == "left"
+            ):
+                OBSTACLEPG = 0.0018
+                OBSTACLEPD = 0.08
+                print("inside turn")
 
         error = target - closest_pillar_x
 
@@ -824,37 +954,39 @@ while True:
             + ((((error) * MAX_TURN_DEGREE) * OBSTACLEPG))
             + (error - prevError) * OBSTACLEPD
         )
-        if turnDir == "right" and closest_pillar_colour == "red":
-            servo_angle = MID_SERVO - MAX_TURN_DEGREE
-        elif turnDir == "left" and closest_pillar_colour == "green":
-            servo_angle = MID_SERVO + MAX_TURN_DEGREE
-
-        if turnDir == "right" and servo_angle > MID_SERVO + 5:
-            servo_angle = MID_SERVO + 5
-        if turnDir == "left" and servo_angle < MID_SERVO - 5:
-            servo_angle = MID_SERVO - 5
 
         if error <= 0:
             servo_angle -= int(YAXISPG * (closest_pillar_y + h - 120))
         else:
             servo_angle += int(YAXISPG * (closest_pillar_y + h - 120))
+
+        if turnDir == "right" and closest_pillar_colour == "red":
+            servo_angle = MID_SERVO - MAX_TURN_DEGREE
+        elif turnDir == "left" and closest_pillar_colour == "green":
+            servo_angle = MID_SERVO + MAX_TURN_DEGREE
+
+        if turnDir == "right" and servo_angle > MID_SERVO + (MAX_TURN_DEGREE // 4):
+            servo_angle = MID_SERVO + (MAX_TURN_DEGREE // 4)
+        if turnDir == "left" and servo_angle < MID_SERVO - (MAX_TURN_DEGREE // 4):
+            servo_angle = MID_SERVO - (MAX_TURN_DEGREE // 4)
+
     # --------------------------------------------------- Wall Following ---------------------------------------------------
 
-    elif not parking_algorithm:
+    elif not (parkingL or parkingR):
 
-        if turnDir == "right":
+        if turnDir == "right" and not (left_area > 5200) and not (right_area > 5200):
             prevError = 0
             last_difference = 0
 
             servo_angle = MID_SERVO - MAX_TURN_DEGREE
 
-        elif turnDir == "left":
+        elif turnDir == "left" and not (right_area > 5200) and not (left_area > 5200):
             prevError = 0
             last_difference = 0
             servo_angle = MID_SERVO + MAX_TURN_DEGREE
 
         else:
-            turnDir = None
+
             error = 0
             current_difference = left_area - right_area
             if last_difference != 0 and left_area != 0 and right_area != 0:
@@ -865,26 +997,50 @@ while True:
             else:
                 servo_angle = MID_SERVO - (current_difference * PG)
 
-    if total_turn > 12:
-        if trackDir == "right":
-            green_target = 120
-            red_target = 120
+    if total_turn >= 12:
+
+        if action_counter >= ACTIONS_TO_STRAIGHT and need_pause:
+            # Board.setPWMServoPulse(6, 1500, 100)
+            # time.sleep(2)
+            need_pause = False
         else:
-            green_target = 520
-            red_target = 520
+            action_counter += 1
+
+        if trackDir == "right":
+            green_target = 480
+            red_target = 480
+        else:
+            green_target = 160
+            red_target = 160
 
         parking_algorithm = True
     # --------------------------------------------------- Checks if wall is too close ---------------------------------------------------
 
-    if middle_area > 80 and not parking_algorithm:
+    if (middle_area > 750 or magenta_area_center > 300) and not (parkingL or parkingR):
         Board.setPWMServoPulse(6, 1500, 100)
+
+        """
+        if closest_pillar_colour == None:
+            servo_angle = MID_SERVO
+        
+        elif closest_pillar_colour == "green" and trackDir == "right":
+            servo_angle = MID_SERVO - MAX_TURN_DEGREE
+        elif closest_pillar_colour == "red" and trackDir == "right":
+            servo_angle = MID_SERVO + MAX_TURN_DEGREE
+
+        elif closest_pillar_colour == "red" and trackDir == "left":
+            servo_angle = MID_SERVO - MAX_TURN_DEGREE
+        elif closest_pillar_colour == "green" and trackDir == "left":
+            servo_angle = MID_SERVO + MAX_TURN_DEGREE
+        """
         servo_angle = MID_SERVO
 
         pw = pwm(servo_angle)
         Board.setPWMServoPulse(1, pw, 1000)
         time.sleep(0.1)
-        Board.setPWMServoPulse(6, 1590, 100)
-        time.sleep(0.5)
+        Board.setPWMServoPulse(6, 1580, 100)
+        time.sleep(2)
+
     """
     
     print("OBSTACLE PG: " + str((error) * MAX_TURN_DEGREE * OBSTACLEPG))
