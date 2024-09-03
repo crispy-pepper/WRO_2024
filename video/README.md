@@ -6,3 +6,9 @@ This directory contains the video.md file with a URL to YouTube (should be eithe
 **OPEN CHALLENGE VIDEO**
 
 https://www.youtube.com/watch?v=l11nNBPFpW8
+
+
+
+**OBSTACLE CHALLENGE VIDEO***
+
+https://www.youtube.com/watch?v=SUPA-X8QRmc
