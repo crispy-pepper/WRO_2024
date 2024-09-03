@@ -1,16 +1,18 @@
 # libraries
 import math
 import sys
-import cv2
-import numpy as np
+import cv2  # for image processing
+import numpy as np  # for image manipulation
 import time
 
 sys.path.append("/home/pi/TurboPi/")
 from picamera2 import Picamera2
 import HiwonderSDK.Board as Board
-import libcamera
+import libcamera  # for adjusting camera settings
 from libcamera import controls
 
+
+# ROIs (region of interest)
 
 ROI_LEFT_BOT = [0, 290, 100, 345]
 ROI_RIGHT_BOT = [540, 290, 640, 345]
@@ -62,11 +64,7 @@ UPPER_MAGENTA_THRESHOLD2 = np.array([180, 255, 255])
 
 LINE_THRESHOLD = 50  # minimum contour size of orange or blue line
 
-
-# pillar constants
-
-
-PILLAR_SIZE = 300
+PILLAR_SIZE = 300  # pillar size constant
 
 
 # motor constants
@@ -75,42 +73,40 @@ DC_SPEED = 1347
 MID_SERVO = 80
 MAX_TURN_DEGREE = 39
 
-
 ACTIONS_TO_STRAIGHT = (
     100  # number of iterations to enter the straight section from the turning section
 )
 
+action_counter = 0  # counter to determine when the robot has entered the straight section from the turning section
+
 # pillar avoidance algorithm variables
 
-prevPillar = ""
+prevPillar = ""  # keeps track of previous pillar
 target = None
-last_target = None
-error = 0
-prevError = 0
-
-# variables used for last lap
-
-noRed = False
-need_space = False
-tpt2red = False
-lastLapTurnAround = False
-lastLapContinue = False
-
-# variables for turning algorithm
-
-total_turn = 0
-turnDir = None
-trackDir = None
-line_seen = False
-turning_iter = 0
-threeLaps = False  # used to determine when the robot has completed 3 laps and can stop
+pillar_error = 0
+prev_pillar_error = 0
 red_target = 110
 green_target = 530
 
+# variables used for last lap
+
+tpt_no_red = False  # keep track of whether there is a red pillar to decide when to initiate the three point turn
+tpt_two_red = False  # signal that there was two red pillars after the last turn
+need_space = False  # keep track of whether there is enough space to initiate the three point turn
+lastLapTurnAround = False  # if the last lap is the opposite direction
+lastLapContinue = False  # if the last lap is the same direction
+
+# variables for turning algorithm
+
+total_turn = 0  # incrementing variable for the total number of turns
+turnDir = None  # keeps track of the current turn direction
+trackDir = None  # keeps track of the current track direction
+line_seen = False  # keeps track of whether the line has been seen
+threeLaps = False  # used to determine when the robot has completed 3 laps and can stop
+
+# wall following variables
 last_difference = 0  # used for derivative calculation for wall following
 current_difference = 0  # used for derivative calculation for wall following
-action_counter = 0  # counter to determine when the robot has entered the straight section from the turning section
-servo_angle = 0
 
 
 # variables used for parking
@@ -119,6 +115,7 @@ parkingR = False
 parkingL = False
 parking_algorithm = False
 
+servo_angle = 0  # current servo angle
 
 # camera setup
 picam2 = Picamera2()
@@ -129,12 +126,13 @@ picam2.preview_configuration.align()
 picam2.configure("preview")
 picam2.set_controls(
     {
-        "Brightness": 0.05,
-        "AwbMode": libcamera.controls.AwbModeEnum.Custom,
+        "Brightness": 0.05,  # adjust brightness
+        "AwbMode": libcamera.controls.AwbModeEnum.Custom,  # adjust red and blue gains
         "ColourGains": (1.08, 1),
     }
 )
-picam2.start()
+
+picam2.start()  # start the camera
 
 
 def drawROI(ROI):  # draw the rectangular ROI on the image
@@ -208,11 +206,11 @@ Board.setPWMServoPulse(1, pwm(MID_SERVO), 1)  # turn servo to mid
 Board.setPWMServoPulse(6, 1500, 100)  # arm the esc motor
 time.sleep(1)
 
+
+# program main loop
 while True:
 
     # obstacle avoidance variables that are reset every iteration of the main loop
-
-    # ROIs
 
     OBSTACLEPG = 0.0017  # proportional gain for obstacle avoidance
 
@@ -1007,10 +1005,12 @@ while True:
             MID_SERVO
             + ((((error) * MAX_TURN_DEGREE) * OBSTACLEPG))
             + (error - prevError) * OBSTACLEPD
-        ) # calculate the servo angle using the error and obstacle avoidance variables
+        )  # calculate the servo angle using the error and obstacle avoidance variables
 
-        if error <= 0: # add or subtract a value depending on the y coordinate of the closest pillar 
-            #the closer the pillar is, the higher the y coordinate and the more the robot should turn to avoid it
+        if (
+            error <= 0
+        ):  # add or subtract a value depending on the y coordinate of the closest pillar
+            # the closer the pillar is, the higher the y coordinate and the more the robot should turn to avoid it
             servo_angle -= int(YAXISPG * (closest_pillar_y + h - 120))
         else:
             servo_angle += int(YAXISPG * (closest_pillar_y + h - 120))
@@ -1018,33 +1018,39 @@ while True:
         # avoid the robot turning too much to the opposite direction during a turn
         # this assures that the turn is completed
         # the robot will only turn a quarter of the max turn degree in the opposite direction
-        if turnDir == "right" and servo_angle > MID_SERVO + (MAX_TURN_DEGREE // 4): 
+        if turnDir == "right" and servo_angle > MID_SERVO + (MAX_TURN_DEGREE // 4):
             servo_angle = MID_SERVO + (MAX_TURN_DEGREE // 4)
         if turnDir == "left" and servo_angle < MID_SERVO - (MAX_TURN_DEGREE // 4):
             servo_angle = MID_SERVO - (MAX_TURN_DEGREE // 4)
 
     # --------------------------------------------------- Wall Following ---------------------------------------------------
 
-    elif not (parkingL or parkingR): # if no pillar is detected
+    elif not (parkingL or parkingR):  # if no pillar is detected
 
-        if turnDir == "right" and not (left_area > 5200) and not (right_area > 5200): # if one of the walls is too large, follow the walls instead to center the robot
+        if (
+            turnDir == "right" and not (left_area > 5200) and not (right_area > 5200)
+        ):  # if one of the walls is too large, follow the walls instead to center the robot
             # reset variables
             prevError = 0
             last_difference = 0
-            
-            servo_angle = MID_SERVO - MAX_TURN_DEGREE # set servo to sharp right
 
-        elif turnDir == "left" and not (right_area > 5200) and not (left_area > 5200): # if one of the walls is too large, follow the walls instead to center the robot
+            servo_angle = MID_SERVO - MAX_TURN_DEGREE  # set servo to sharp right
+
+        elif (
+            turnDir == "left" and not (right_area > 5200) and not (left_area > 5200)
+        ):  # if one of the walls is too large, follow the walls instead to center the robot
             # reset variables
 
             prevError = 0
             last_difference = 0
-            servo_angle = MID_SERVO + MAX_TURN_DEGREE # set servo to sharp left
+            servo_angle = MID_SERVO + MAX_TURN_DEGREE  # set servo to sharp left
 
         else:
 
             error = 0
-            current_difference = left_area - right_area # find difference between left and right areas of the wall
+            current_difference = (
+                left_area - right_area
+            )  # find difference between left and right areas of the wall
             if last_difference != 0 and left_area != 0 and right_area != 0:
                 servo_angle = MID_SERVO - (
                     current_difference * PG
@@ -1054,25 +1060,30 @@ while True:
             else:
                 servo_angle = MID_SERVO - (current_difference * PG)
 
-    if total_turn >= 12: # if the robot has achieved three laps
+    if total_turn >= 12:  # if the robot has achieved three laps
 
-        if action_counter >= ACTIONS_TO_STRAIGHT and need_pause:  # use an action incrementing variable to enter the straight section from the turning section
-            Board.setPWMServoPulse(6, 1500, 100) 
-            time.sleep(2) # pause for two seconds to signal that the three laps have been completed
+        if (
+            action_counter >= ACTIONS_TO_STRAIGHT and need_pause
+        ):  # use an action incrementing variable to enter the straight section from the turning section
+            Board.setPWMServoPulse(6, 1500, 100)
+            time.sleep(
+                2
+            )  # pause for two seconds to signal that the three laps have been completed
             need_pause = False
         else:
-            action_counter += 1 # increment the action incrementing variable
+            action_counter += 1  # increment the action incrementing variable
 
-        if trackDir == "right": # set the targets so that the robot stays on the outside of the pillars
+        if (
+            trackDir == "right"
+        ):  # set the targets so that the robot stays on the outside of the pillars
             green_target = 480
             red_target = 480
         else:
             green_target = 160
             red_target = 160
 
-        parking_algorithm = True # initiate the parking algorithm
-        
-        
+        parking_algorithm = True  # initiate the parking algorithm
+
     # --------------------------------------------------- Checks if wall is too close ---------------------------------------------------
 
     if (middle_area_black > 750 or magenta_area_center > 300) and not (
@@ -1088,34 +1099,39 @@ while True:
         time.sleep(2)
 
     #  ---------------------------------------------- Checks if the last lap is reached and the find the direction of the appropriate last lap-----------------------------------------------
-    
-    if total_turn >= 8 and not lastLapContinue and not threeLaps: 
+
+    if total_turn >= 8 and not lastLapContinue and not threeLaps:
         # check the last pillar
-        if num_pillars_r == 2: # if there is two red pillars after the turn, signal to the three point turn algorithm so it can wait until only one is detected
+        if (
+            num_pillars_r == 2
+        ):  # if there is two red pillars after the turn, signal to the three point turn algorithm so it can wait until only one is detected
             tpt2red = True
             lastLapTurnAround = True
-            
-        elif num_pillars_r == 1: # if there is one red pillar after the turn, enter the three point turn algorithm
+
+        elif (
+            num_pillars_r == 1
+        ):  # if there is one red pillar after the turn, enter the three point turn algorithm
             lastLapTurnAround = True
 
-        elif num_pillars_g >= 1: # if the last pillar is green, continue the last lap in the same direction
+        elif (
+            num_pillars_g >= 1
+        ):  # if the last pillar is green, continue the last lap in the same direction
             lastLapContinue = True
         else:
             # if no pillars are detected after the turn, use the previous pillar
             if prevPillar == "green":
                 lastLapContinue = True
-            
+
             if prevPillar == "red":
                 lastLapTurnAround = True
 
     # --------------------------------------------------- Set variables that will be used in the next iteration ---------------------------------------------------
     last_difference = current_difference
     prevError = error
-    last_target = target
 
     # --------------------------------------------------- Move the motors using the variables ---------------------------------------------------
     # make sure the servo does not overturn
-    if servo_angle < MID_SERVO - MAX_TURN_DEGREE: 
+    if servo_angle < MID_SERVO - MAX_TURN_DEGREE:
         servo_angle = MID_SERVO - MAX_TURN_DEGREE
 
     elif servo_angle > MID_SERVO + MAX_TURN_DEGREE:
@@ -1128,8 +1144,7 @@ while True:
         Board.setPWMServoPulse(1, pw, 1000)
 
     # --------------------------------------------------- Debugging Functionality ---------------------------------------------------
-    
-    
+
     # draw ROIs on display
     drawROI(ROI_LEFT_TOP)
     drawROI(ROI_RIGHT_TOP)
@@ -1139,13 +1154,11 @@ while True:
     drawROI(ROI_PARKING_LEFT)
     drawROI(ROI_PARKING_RIGHT)
     drawROI(ROI4)
-    
+
     # draw the target
     if target != None:
         image = cv2.line(im, (target, 0), (target, 520), (255, 255, 0), 1)
-        
-        
-        
+
     # display the camera
     cv2.imshow("Camera", im)
     if closest_pillar_colour == "red":
