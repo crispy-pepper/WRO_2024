@@ -5,4 +5,12 @@ This directory contains the video.md file with a URL to YouTube (should be eithe
 
 **OPEN CHALLENGE VIDEO**
 
-https://www.youtube.com/watch?v=l11nNBPFpW8
+[TEAM SJJ OPEN CHALLENGE](https://www.youtube.com/watch?v=l11nNBPFpW8)
+
+(Added to video folder)
+
+**OBSTACLE CHALLENGE VIDEO**
+
+[TEAM SJJ OBSTACLE CHALLENGE](https://www.youtube.com/watch?v=utsppooCnps)
+
+(File is too large to add to video folder)
