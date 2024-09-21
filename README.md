@@ -189,7 +189,7 @@ if orange line detected
 if blue line detected
 	turn sharp left until orange line detected
 	if left area is detected 
-	stop turning
+		stop turning
 ```
 
 
@@ -308,7 +308,7 @@ We chose the [Hitec HS-5055MG Servo](#engineering-materials) for our steering ca
 
 The vehicle is based on the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), which was selected due to its compact size, which allows the vehicle to parallel park vertically, making the job much easier. The small size also contributes to the overall agility of the vehicle, making it easier to maneuver in tight spaces. 
 
-The motor and servo replace the original components in the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), with the servo needing modifications to the chassis of the car. The other components of the car are attached through a 3d printed base that is clipped in on top of the car. <br><br>
+The motor and servo replace the original components in the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), with the servo needing modifications to the chassis of the car. The other components of the car are attached through a 3d printed base that is clipped in on top of the car. <br>
 
 However, our chassis still had one major problem; the max turning degree of the front-wheel steering was less than 30 degrees. This became a major issue later on as with such a large turning radius, the vehicle could not possibly move agilely in difficult pillar configurations. After WRO Canada, we switched out the front-wheel steering area for a different chassis’s front-wheel steering. This was because we found that through testing, a different front-wheel steering part paired with the same base chassis would result in a higher max turn degree.
 
