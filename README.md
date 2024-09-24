@@ -73,6 +73,7 @@ The obstacle challenge is where the car must complete three full laps around the
 <img src="/other/images-used/engineeringmaterials_pi.jpg" height="150">
 
 * [Raspberry Pi 5 Expansion Board Model A(DC Port)](https://www.hiwonder.com/collections/expansion-board/products/expansion-board-for-raspberry-pi-5)
+
 <img src="/other/images-used/engineeringmaterials_pihat1.jpg" height="150"><img src="/other/images-used/engineeringmaterials_pihat2.png" height="150">
 
 * Mini Rocker Switch
