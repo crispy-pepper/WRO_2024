@@ -55,7 +55,7 @@ The obstacle challenge is where the car must complete three full laps around the
 <img src="/other/images-used/engineeringmaterials_carisma.jpg" height="150">p
 
 * Carisma 2022 Ford PUMA Hybrid Rally 1 M-Sport 4WD 1/24 Scale RTR 1 87868 as steering system of the car
-<img src="/other/images-used/engineeringmaterials_otherbase.jpg" height="150">
+<img src="/other/images-used/engineeringmaterials_otherbase.png" height="150">
 
 * [Furitek Micro Komodo 1212 3450KV Brushless Motor](https://furitek.com/products/furitek-micro-komodo-1212-3456kv-brushless-motor-with-15t-steel-pinion-for-fury-wagon-fx118)
 <img src="/other/images-used/engineeringmaterials_motor.jpg" height="150">
