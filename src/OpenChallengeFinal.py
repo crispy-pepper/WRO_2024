@@ -4,7 +4,9 @@ import cv2  # for image processing
 import numpy as np  # for image manipulation
 import time
 
-sys.path.append("/home/pi/TurboPi/") # navigating to where the raspberry pi libraries are located
+sys.path.append(
+    "/home/pi/TurboPi/"
+)  # navigating to where the raspberry pi libraries are located
 from picamera2 import Picamera2
 import HiwonderSDK.Board as Board
 import RPi.GPIO as GPIO
@@ -13,7 +15,7 @@ import RPi.GPIO as GPIO
 # movement constants
 MID_SERVO = 82
 MAX_TURN_DEGREE = 40
-DC_SPEED = 1339
+DC_SPEED = 1334
 
 
 # proportion constants for the servo motor angle (PID steering)
@@ -31,12 +33,21 @@ ROI4 = [270, 340, 370, 380]
 
 
 # color threshold constants (in HSV)
-LOWER_BLUE = np.array([104, 65, 70])
-UPPER_BLUE = np.array([132, 205, 185])
-LOWER_ORANGE1 = np.array([155, 59, 70])
+# LOWER_BLUE = np.array([104, 65, 70])
+# UPPER_BLUE = np.array([132, 205, 185])
+# LOWER_ORANGE1 = np.array([155, 59, 70])
+# UPPER_ORANGE1 = np.array([180, 255, 255])
+# LOWER_ORANGE2 = np.array([0, 59, 70])
+# UPPER_ORANGE2 = np.array([8, 255, 255])
+
+LOWER_ORANGE1 = np.array([180, 100, 100])
 UPPER_ORANGE1 = np.array([180, 255, 255])
-LOWER_ORANGE2 = np.array([0, 59, 70])
-UPPER_ORANGE2 = np.array([8, 255, 255])
+LOWER_ORANGE2 = np.array([0, 80, 80])
+UPPER_ORANGE2 = np.array([20, 255, 255])
+
+LOWER_BLUE = np.array([101, 20, 30])
+UPPER_BLUE = np.array([125, 255, 255])
+
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
 UPPER_BLACK_THRESHOLD = np.array([180, 255, 80])
 
@@ -144,9 +155,9 @@ def stop():
     Sets servo and DC motor straight and closing the OpenCV window
 
     Parameters:
-    
+
     Returns:
-    
+
     """
 
     time.sleep(0.02)
@@ -171,7 +182,6 @@ while True:
         stop()
         break
 
-
     # setup camera frame
     im = picam2.capture_array()
     input = np.float32(POINTS)
@@ -179,14 +189,11 @@ while True:
         [(0, 0), (WIDTH - 1, 0), (WIDTH - 1, HEIGHT - 1), (0, HEIGHT - 1)]
     )
 
-
     # convert to hsv
     img_hsv = cv2.cvtColor(im, cv2.COLOR_BGR2HSV)
 
-
     # find black thresholds/mask and store them in a variable
     img_thresh = cv2.inRange(img_hsv, LOWER_BLACK_THRESHOLD, UPPER_BLACK_THRESHOLD)
-
 
     # find black contours in left and right regions
     left_contours_top, hierarchy = cv2.findContours(
@@ -218,14 +225,12 @@ while True:
         cv2.CHAIN_APPROX_NONE,
     )
 
-
     # define variables for left and right ROI contour areas
     left_area_top = 0
     left_area_bot = 0
 
     right_area_top = 0
     right_area_bot = 0
-
 
     # loop to find largest contours
     for i in range(len(left_contours_top)):
@@ -244,16 +249,13 @@ while True:
         cnt = right_contours_bot[i]
         area = cv2.contourArea(cnt)
         right_area_bot = max(area, right_area_bot)
-    
-    
+
     # combine areas on each side
     right_area = right_area_bot + right_area_top
     left_area = left_area_bot + left_area_top
 
-
     # find blue thresholds/mask and store them in a variable
     b_mask = cv2.inRange(img_hsv, LOWER_BLUE, UPPER_BLUE)
-
 
     # find blue contours to detect the lines on the mat
     contours_blue = cv2.findContours(
@@ -262,13 +264,11 @@ while True:
         cv2.CHAIN_APPROX_SIMPLE,
     )[-2]
 
-
     # find orange thresholds/mask and store them in a variable
     o_mask = cv2.bitwise_or(
         cv2.inRange(img_hsv, LOWER_ORANGE1, UPPER_ORANGE1),
         cv2.inRange(img_hsv, LOWER_ORANGE2, UPPER_ORANGE2),
     )
-
 
     # find orange contours to detect the lines on the mat
     contours_orange = cv2.findContours(
@@ -276,7 +276,6 @@ while True:
         cv2.RETR_EXTERNAL,
         cv2.CHAIN_APPROX_SIMPLE,
     )[-2]
-
 
     # iterate through the blue and orange contours and store the maximum area
     max_blue_area = 0
@@ -380,18 +379,15 @@ while True:
         turn_counter == MAX_TURNS and not done_turning
     ):  # if the total turns has surpassed the amount required, increment the action counter by 1
         action_counter += 1  # this is to ensure that the robot stops in the middle of the straight section
-    
-    
+
     # set the last current_difference equal to the current current_difference for derivative steering
     last_difference = current_difference
-
 
     # if the steering variable is higher than the max turn degree for the servo, set it to the max turn degree
     # move the motors using the variables
     pw = pwm(servo_angle)
     Board.setPWMServoPulse(6, DC_SPEED, 100)
     Board.setPWMServoPulse(1, pw, 1000)
-
 
     # draw the ROIs
     drawROI(ROI_LEFT_TOP)
@@ -400,13 +396,10 @@ while True:
     drawROI(ROI_RIGHT_BOT)
     drawROI(ROI4)
 
-
     # display the camera
-    cv2.imshow("Camera", im)
     if len(sys.argv) > 1 and sys.argv[1] == "Debug":
         cv2.imshow("Camera", im)
-    
-    
+
     # if the number of actions to the straight section has been met, stop the car
     if cv2.waitKey(1) == ord("q") or action_counter >= ACTIONS_TO_STRAIGHT:
         stop()
