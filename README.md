@@ -5,6 +5,7 @@
 - Jayden Li (middle)
 - John Weng (left) <br>
 <img src="/Team%20Photos/Funny%20Team%20Photo.jpg" height="1000">
+
 ## Content 📖📚
  
 | Folder  | Content| 
@@ -50,26 +51,40 @@ The obstacle challenge is where the car must complete three full laps around the
 <img src="/Vehicle%20Photos/Left.jpg" width="500">
 
 ### Car Base
-* [Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure, and steering system of the car](https://www.ebay.ca/itm/134622499234)
+* [Carisma 80468 GT24RS 1/24 4WD On-Road Brushless RTR Retro Rally Car as the structure](https://www.ebay.ca/itm/134622499234)
 <img src="/other/images-used/engineeringmaterials_carisma.jpg" height="150">
+
+* Carisma 2022 Ford PUMA Hybrid Rally 1 M-Sport 4WD 1/24 Scale RTR 1 87868 as steering system of the car
+<img src="/other/images-used/engineeringmaterials_otherbase.png" height="150">
+
 * [Furitek Micro Komodo 1212 3450KV Brushless Motor](https://furitek.com/products/furitek-micro-komodo-1212-3456kv-brushless-motor-with-15t-steel-pinion-for-fury-wagon-fx118)
 <img src="/other/images-used/engineeringmaterials_motor.jpg" height="150">
+
 * [Furiteck Lizard Pro 30A/50A Brushless ESC](https://furitek.com/products/combo-of-furitek-lizard-pro-30a-50a-brushed-brushless-esc-for-axial-scx24-with-bluetooth)
 <img src="/other/images-used/engineeringmaterials_ESC.jpg" height="150">
+
 * [Hitec HS-5055MG Servo](https://ca.robotshop.com/products/hs-5055mg-metal-gear-micro-servo-motor?srsltid=AfmBOopv8Z7LoCVOEqe16w05ZV-R78dNmy7dappldIxZiQzCJroxcssFc2Y)
 <img src="/other/images-used/engineeringmaterials_servo.jpg" height="150">
+
 * [Gens Ace 2S1P 1300mAh 7.4V battery](https://www.adrenalinehobby.com/products/gens-ace-g-tech-1300mah-2s-7-4v-25c-lipo-deans-plug?_pos=1&_sid=dde29d30b&_ss=r)
 <img src="/other/images-used/engineeringmaterials_battery.jpg" height="150">
-* Rasberry PI 4 Model B)
+
+* Rasberry PI 4 Model B
 <img src="/other/images-used/engineeringmaterials_pi.jpg" height="150">
+
 * [Raspberry Pi 5 Expansion Board Model A(DC Port)](https://www.hiwonder.com/collections/expansion-board/products/expansion-board-for-raspberry-pi-5)
+
 <img src="/other/images-used/engineeringmaterials_pihat1.jpg" height="150"><img src="/other/images-used/engineeringmaterials_pihat2.png" height="150">
-* Mini Rocker Switch)
+
+* Mini Rocker Switch
 <img src="/other/images-used/engineeringmaterials_switch.jpg" height="150">
-* 5V Mini Fan)
+
+* 5V Mini Fan
 <img src="/other/images-used/engineeringmaterials_fan.jpg" height="150">
+
 * [3D printed base](/models)
 * MicroSD card
+
 ### Sensors
 
 * [SainSmart Camera Module RPi3, 5MP, Fish-Eye](https://www.sainsmart.com/products/noir-wide-angle-fov160-5-megapixel-camera-module)
@@ -188,7 +203,7 @@ if orange line detected
 if blue line detected
 	turn sharp left until orange line detected
 	if left area is detected 
-	stop turning
+		stop turning
 ```
 
 
@@ -307,8 +322,10 @@ We chose the [Hitec HS-5055MG Servo](#engineering-materials) for our steering ca
 
 The vehicle is based on the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), which was selected due to its compact size, which allows the vehicle to parallel park vertically, making the job much easier. The small size also contributes to the overall agility of the vehicle, making it easier to maneuver in tight spaces. 
 
-The motor and servo replace the original components in the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), with the servo needing modifications to the chassis of the car. The other components of the car are attached through a 3d printed base that is clipped in on top of the car. 
-(something something add the building/assembly instructions, CAD files and parts) 
+The motor and servo replace the original components in the [Charisma 80468 GT24RS 1/24 model](#engineering-materials), with the servo needing modifications to the chassis of the car. The other components of the car are attached through a 3d printed base that is clipped in on top of the car. <br>
+
+However, our chassis still had one major problem; the max turning degree of the front-wheel steering was less than 30 degrees. This became a major issue later on as with such a large turning radius, the vehicle could not possibly move agilely in difficult pillar configurations. After WRO Canada, we switched out the front-wheel steering area for a different chassis’s front-wheel steering. This new steering piece came from the [Carisma 87868 Ford PUMA Hybrid Rally 1/14](#engineering-materials) This was because we found that through testing, a different front-wheel steering part paired with the same base chassis would result in a higher max turn degree.
+
 
 ## Power Considerations
 * Sensors and power management
