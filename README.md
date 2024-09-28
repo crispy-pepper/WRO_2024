@@ -191,7 +191,7 @@ else if right_area is none
 ```
 
 
-However, this did not always work because of the varying widths of each corner. To fix this, we added another trigger for the turning sequence: the lines on the mat. This algorithm was very similar to the line detection in the open challenge without the timed aspect later added to that algorithm. 
+However, this did not always work because pillars would make the robot move into unexpected areas. To fix this, we added another trigger for the turning sequence: the lines on the mat. This algorithm was very similar to the line detection in the open challenge without the timed aspect later added to that algorithm. 
 
 
 ```py
@@ -207,7 +207,7 @@ if blue line detected
 ```
 
 
-If a pillar was detected in the turn, the pillar-avoidance variables would be changed in order to enter the straight section while passing by the obstacle correctly. This would be achieved by making the y-axis proportional steering more sensitive. 
+If a pillar was detected in the turn, the turn would be ended when the pillar is on the correct side of the screen. For example, when turning left into a green pillar, the turn would be ended when the green pillar is on the right side of the screen. This ensures that the turn allows the robot to travel into the next straight section while passing pillars on the correct side. 
 
 #### Pillar Maneuvering
 
@@ -238,7 +238,7 @@ if red_area greater than pillar_threshold
 ```
 
 #### Backtracking: 
-Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this, we would check how big the current pillar/wall was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust, and continue forward. This would continue until the vehicle could successfully make it past.
+Because there was a limitation to how many degrees our vehicle could turn at a time, there was an issue of not turning enough in time. To solve this, we would check how big the current pillar was and calculate if the vehicle would make it past successfully (without touching or moving anything). If the vehicle could not, it would backtrack at the opposite angle, readjust, and continue forward. This would continue until the vehicle could successfully make it past.
 
 ```py
 if pillar_area greater than avoidable distance and pillar_x is not on the correct side:
