@@ -19,16 +19,16 @@ ROI_LEFT_BOT = [0, 290, 220, 420]
 ROI_RIGHT_BOT = [420, 290, 640, 420]
 ROI_LEFT_TOP = [0, 260, 50, 290]
 ROI_RIGHT_TOP = [590, 260, 640, 290]
-ROI4 = [120, 340, 520, 360]
+ROI4 = [120, 320, 520, 340]
 ROI_MIDDLE = [0, 210, 640, 420]
 ROI_PARKING_LEFT = [0, 225, 320, 445]
 ROI_PARKING_RIGHT = [320, 225, 640, 445]
-ROI_FRONT = [285, 290, 355, 330]
+ROI_FRONT = [285, 320, 355, 350]
 
 # proportion constants for the servo motor angle (PD steering) for the wall following algorithm
 
 PD = 0.03
-PG = 0.0025
+PG = 0.0017
 # camera constants
 
 WIDTH = 640
@@ -39,7 +39,7 @@ POINTS = [(115, 200), (525, 200), (640, 370), (0, 370)]
 
 
 LOWER_BLACK_THRESHOLD = np.array([0, 0, 0])
-UPPER_BLACK_THRESHOLD = np.array([180, 255, 40])
+UPPER_BLACK_THRESHOLD = np.array([180, 255, 57])
 """
 
 LOWER_RED_THRESHOLD1 = np.array([4, 134, 80])
@@ -66,32 +66,32 @@ UPPER_MAGENTA_THRESHOLD2 = np.array([180, 255, 255])
 
 """
 
-LOWER_RED_THRESHOLD1 = np.array([0, 154, 70])
-UPPER_RED_THRESHOLD1 = np.array([4, 255, 255])
-LOWER_RED_THRESHOLD2 = np.array([174, 180, 70])
+LOWER_RED_THRESHOLD1 = np.array([0, 154, 80])
+UPPER_RED_THRESHOLD1 = np.array([0, 255, 255])
+LOWER_RED_THRESHOLD2 = np.array([164, 180, 107])
 UPPER_RED_THRESHOLD2 = np.array([180, 255, 255])
 
-LOWER_GREEN_THRESHOLD = np.array([65, 85, 40])
+LOWER_GREEN_THRESHOLD = np.array([65, 85, 60])
 UPPER_GREEN_THRESHOLD = np.array([105, 255, 185])
 
 LOWER_ORANGE_THRESHOLD1 = np.array([180, 80, 80])
 UPPER_ORANGE_THRESHOLD1 = np.array([180, 255, 255])
-LOWER_ORANGE_THRESHOLD2 = np.array([8, 80, 100])
+LOWER_ORANGE_THRESHOLD2 = np.array([0, 80, 100])
 UPPER_ORANGE_THRESHOLD2 = np.array([20, 255, 255])
 
-LOWER_BLUE_THRESHOLD = np.array([108, 45, 42])
-UPPER_BLUE_THRESHOLD = np.array([130, 250, 120])
+LOWER_BLUE_THRESHOLD = np.array([110, 30, 40])
+UPPER_BLUE_THRESHOLD = np.array([130, 250, 140])
 
 LOWER_MAGENTA_THRESHOLD1 = np.array([0, 100, 50])
 UPPER_MAGENTA_THRESHOLD1 = np.array([0, 215, 255])
 
-LOWER_MAGENTA_THRESHOLD2 = np.array([150, 150, 70])
-UPPER_MAGENTA_THRESHOLD2 = np.array([172, 255, 255])
+LOWER_MAGENTA_THRESHOLD2 = np.array([150, 150, 100])
+UPPER_MAGENTA_THRESHOLD2 = np.array([161, 255, 255])
 
 
-LINE_THRESHOLD = 120  # minimum contour size of orange or blue line
+LINE_THRESHOLD = 80  # minimum contour size of orange or blue line
 
-PILLAR_SIZE = 320  # pillar size constant
+PILLAR_SIZE = 350  # pillar size constant
 
 
 # motor constants
@@ -101,10 +101,10 @@ MID_SERVO = 82
 MAX_TURN_DEGREE = 42
 
 ACTIONS_TO_STRAIGHT = (
-    20  # number of iterations to enter the straight section from the turning section
+    140  # number of iterations to enter the straight section from the turning section
 )
 
-action_counter = 0  # counter to determine when the robot has entered the straight section from the turning section
+action_counter = 50  # counter to determine when the robot has entered the straight section from the turning section
 
 # pillar avoidance algorithm variables
 
@@ -120,9 +120,7 @@ green_target = 530
 
 tpt_no_red = False  # keep track of whether there is a red pillar to decide when to initiate the three point turn
 tpt_two_red = False  # signal that there was two red pillars after the last turn
-need_space = (
-    True  # keep track of whether there is enough space to initiate the three point turn
-)
+need_space = False  # keep track of whether there is enough space to initiate the three point turn
 lastLapTurnAround = False  # if the last lap is the opposite direction
 lastLapContinue = False  # if the last lap is the same direction
 
@@ -269,9 +267,9 @@ while True:
 
     # obstacle avoidance variables that are reset every iteration of the main loop
 
-    OBSTACLEPG = 0.0018  # proportional gain for obstacle avoidance
+    OBSTACLEPG = 0.0015  # proportional gain for obstacle avoidance
 
-    OBSTACLEPD = 0.0018  # derivative gain for obstacle avoidance
+    OBSTACLEPD = 0.03  # derivative gain for obstacle avoidance
 
     YAXISPG = 0.004  # y-axis steering that is proportional to the y-axis of the pillar
 
@@ -309,11 +307,9 @@ while True:
     # --------------------------------------------------- Set The Image Thresholds ---------------------------------------------------
     # these variables store integers: either 0 (color not detected in the pixel) or 255 (color detected in the pixel)
 
-    img_thresh_black = cv2.bitwise_or(
-        cv2.inRange(img_hsv, LOWER_MAGENTA_THRESHOLD2, UPPER_MAGENTA_THRESHOLD2),
-        cv2.inRange(img_hsv, LOWER_BLACK_THRESHOLD, UPPER_BLACK_THRESHOLD),
+    img_thresh_black = cv2.inRange(
+        img_hsv, LOWER_BLACK_THRESHOLD, UPPER_BLACK_THRESHOLD
     )
-
     img_thresh_green = cv2.inRange(
         img_hsv, LOWER_GREEN_THRESHOLD, UPPER_GREEN_THRESHOLD
     )
@@ -354,8 +350,8 @@ while True:
 
     center_contours_magenta, _ = cv2.findContours(
         img_thresh_magenta[
-            ROI_FRONT[1] : ROI_FRONT[3],
-            ROI_FRONT[0] : ROI_FRONT[2],
+            ROI4[1] : ROI4[3],
+            ROI4[0] : ROI4[2],
         ],
         cv2.RETR_EXTERNAL,
         cv2.CHAIN_APPROX_NONE,
@@ -528,8 +524,8 @@ while True:
     for i in range(len(center_contours_magenta)):
         cnt = center_contours_magenta[i]
         magenta_area_center = max(cv2.contourArea(cnt), magenta_area_center)
-        cnt[:, :, 0] += ROI_FRONT[0]
-        cnt[:, :, 1] += ROI_FRONT[1]
+        cnt[:, :, 0] += ROI4[0]
+        cnt[:, :, 1] += ROI4[1]
 
     for c in contours_coloured:
         cont = c[0]
@@ -577,7 +573,6 @@ while True:
                         y + h > 330 and x + (w // 2) < red_target
                     ):  # using the y coordinate and x coordinate to determine if the pillar has already been passed
                         # pillar has already been passed
-                        prevPillar = "red"
                         pass  # do not set as the closest pillar
                     elif (
                         y + h < 225
@@ -627,7 +622,6 @@ while True:
                         y + h > 330 and x + (w // 2) > green_target
                     ):  # using the y coordinate and x coordinate to determine if the pillar has already been passed
                         # pillar has already been passed
-                        prevPillar = "green"
                         pass  # do not set as the closest pillar
                     elif (
                         y + h < 225
@@ -646,9 +640,10 @@ while True:
     if closest_pillar_colour == None:
         target = None
     elif closest_pillar_colour == "red":
+        prevPillar = "red"
         target = red_target
-
     elif closest_pillar_colour == "green":
+        prevPillar = "green"
         target = green_target
 
     # --------------------------------------------------- Parking Algorithm ---------------------------------------------------
@@ -658,7 +653,7 @@ while True:
         parking_info = [
             [0, 0, ROI_PARKING_LEFT],
             [0, 0, ROI_PARKING_RIGHT],
-            [0, 0, ROI_FRONT],
+            [0, 0, ROI4],
         ]
 
         magenta_contours = [
@@ -706,32 +701,32 @@ while True:
             magenta_center_y = parking_info[2][1]
 
             # if the magenta contour y coordinate is low enough on the captured image and the area is greater than 150, initiate parking
-            if magenta_y_left >= 535 and magenta_area_left > 750:
+            if magenta_y_left >= 580 and magenta_area_left > 750:
                 if not parkingL and not parkingR:
 
                     parkingL = True
                     Board.setPWMServoPulse(6, 1346, 100)
 
-                ROI_FRONT = [
+                ROI4 = [
                     270,
                     390,
                     370,
-                    450,
-                ]  # modify the existing front ROI to become a center ROI for detecting magenta contours
+                    430,
+                ]  # modify the existing line-detecting ROI to become a center ROI for detecting magenta contours
 
             # if the magenta contour y coordinate is low enough on the captured image and the area is greater than 150, initiate parking
-            if magenta_y_right >= 535 and magenta_area_right > 750:
+            if magenta_y_right >= 555 and magenta_area_right > 750:
                 if not parkingL and not parkingR:
 
                     parkingR = True
                     Board.setPWMServoPulse(6, 1346, 100)
 
-                ROI_FRONT = [
+                ROI4 = [
                     270,
                     390,
                     370,
-                    450,
-                ]  # modify the existing front ROI to become a center ROI for detecting magenta contours
+                    430,
+                ]  # modify the existing line-detecting ROI to become a center ROI for detecting magenta contours
 
             if parkingR:
 
@@ -778,7 +773,7 @@ while True:
                     Board.setPWMServoPulse(6, 1350, 100)
 
             # if the black contour area of the wall in front is above a limit stop the robot
-            if middle_area_black > 3000:
+            if middle_area_black > 1500:
                 print("stop")
                 Board.setPWMServoPulse(1, pwm(MID_SERVO), 1000)
                 Board.setPWMServoPulse(6, 1350, 100)
@@ -791,7 +786,7 @@ while True:
     # --------------------------------------------------- Three Point Turn ---------------------------------------------------
 
     if lastLapTurnAround:
-        action_counter = 0
+
         ROI_TURN_STOP = [
             280,
             380,
@@ -824,42 +819,44 @@ while True:
         ):  # no red or two red pillars were detected and now one has no longer been detected so begin the turn
 
             if (
-                action_counter < ACTIONS_TO_STRAIGHT
+                need_space
             ):  # the robot needs space to avoid hitting the pillar it has just passed
-                action_counter += 1
-                pass
-            else:
+                Board.setPWMServoPulse(1, pwm(MID_SERVO), 1000)
+                Board.setPWMServoPulse(6, 1340, 100)
+                time.sleep(0.2)
+                need_space = False
 
+            else:
                 Board.setPWMServoPulse(1, pwm(MID_SERVO - MAX_TURN_DEGREE), 1000)
                 Board.setPWMServoPulse(6, 1340, 100)
                 # turn sharp right and go forward
-                if (
-                    middle_area_black > 80
-                    or (trackDir == "right" and orange_line_area > LINE_THRESHOLD)
-                    or (trackDir == "left" and blue_line_area > LINE_THRESHOLD)
-                    or (magenta_area_center) > 50
-                    # if a wall or the first line that signals the entrance into the first turn section is detected, reverse the robot and turn
-                ):
+            if (
+                middle_area_black > 80
+                or (trackDir == "right" and orange_line_area > LINE_THRESHOLD)
+                or (trackDir == "left" and blue_line_area > LINE_THRESHOLD)
+                or (magenta_area_center) > 50
+                # if a wall or the first line that signals the entrance into the first turn section is detected, reverse the robot and turn
+            ):
 
-                    # reverse the robot with the servo turned sharp left
-                    Board.setPWMServoPulse(6, 1500, 100)
-                    Board.setPWMServoPulse(1, pwm(MID_SERVO + MAX_TURN_DEGREE), 1000)
-                    time.sleep(0.5)
-                    Board.setPWMServoPulse(6, 1580, 100)
-                    time.sleep(4)
+                # reverse the robot with the servo turned sharp left
+                Board.setPWMServoPulse(6, 1500, 100)
+                Board.setPWMServoPulse(1, pwm(MID_SERVO + MAX_TURN_DEGREE), 1000)
+                time.sleep(0.5)
+                Board.setPWMServoPulse(6, 1580, 100)
+                time.sleep(4)
 
-                    # stop
+                # stop
 
-                    Board.setPWMServoPulse(6, 1500, 100)
-                    time.sleep(0.1)
+                Board.setPWMServoPulse(6, 1500, 100)
+                time.sleep(0.1)
 
-                    # go forward
+                # go forward and turn sharp right
 
-                    Board.setPWMServoPulse(1, pwm(MID_SERVO - MAX_TURN_DEGREE), 1000)
-                    Board.setPWMServoPulse(6, 1340, 100)
-                    time.sleep(0.8)
-                else:
-                    continue  # if no wall is detected, keep going forward and sharp right
+                Board.setPWMServoPulse(1, pwm(MID_SERVO - MAX_TURN_DEGREE), 1000)
+                Board.setPWMServoPulse(6, 1340, 100)
+                time.sleep(1.4)
+            else:
+                continue  # if no wall is detected, keep going forward and sharp right
 
             # three point turn completed
 
@@ -897,10 +894,10 @@ while True:
             line_seen = True  # set the line seen variable to true to indicate that a line has been seen and the turn can be completed if both walls are seen
 
         if turnDir == "right" and (
-            (closest_pillar_colour == None and right_area > 100 and line_seen)
+            (closest_pillar_colour == None and right_area > 100)
             or (closest_pillar_colour == "red" and closest_pillar_x < 320)
             or (closest_pillar_colour == "green" and closest_pillar_x > 320)
-        ):
+        ) and line_seen:
             # turn completed
             turnDir = None  # reset the turn direction
             total_turn += 1  # increment the total number of turns
@@ -913,7 +910,6 @@ while True:
         ):  # if the orange line is detected, start the turn
 
             if turnDir == None:
-                prevPillar = None
                 print("right")
                 turnDir = "right"
 
@@ -923,10 +919,10 @@ while True:
         ):  # if the robot is turning left and the orange line is detected
             line_seen = True  # set the line seen variable to true to indicate that a line has been seen and the turn can be completed if both walls are seen
         if turnDir == "left" and (
-            (closest_pillar_colour == None and left_area > 100 and line_seen)
+            (closest_pillar_colour == None and left_area > 100)
             or (closest_pillar_colour == "red" and closest_pillar_x < 480)
             or (closest_pillar_colour == "green" and closest_pillar_x > 320)
-        ):
+        )and line_seen:
             # turn completed
             turnDir = None  # reset the turn direction
             total_turn += 1  # increment the total number of turns
@@ -940,7 +936,6 @@ while True:
 
             if turnDir == None:
                 print("left")
-                prevPillar = None
                 turnDir = "left"
     """
     if (
@@ -971,8 +966,6 @@ while True:
             and (closest_pillar_colour == "red" or prevPillar == "red")
         )
         and not (parkingL or parkingR)  # not in the process of parking
-        and not turnDir == "left"
-        and not turnDir == "right"
     ):
         last_difference = 0
 
@@ -1074,13 +1067,6 @@ while True:
         else:
             servo_angle += int(YAXISPG * (closest_pillar_y + h - 120))
 
-        # avoid the robot turning too much to the opposite direction during a turn
-        # this assures that the turn is completed
-        # the robot will only turn a quarter of the max turn degree in the opposite direction
-
-    # --------------------------------------------------- Wall Following ---------------------------------------------------
-    else:
-        print("hell")
         if (
             turnDir == "right"
         ):  # if one of the walls is too large, follow the walls instead to center the robot
@@ -1098,13 +1084,40 @@ while True:
             prev_pillar_error = 0
             last_difference = 0
             servo_angle = MID_SERVO + MAX_TURN_DEGREE  # set servo to sharp left
-        elif not (parkingL or parkingR):  # if no pillar is detected
+
+        # avoid the robot turning too much to the opposite direction during a turn
+        # this assures that the turn is completed
+        # the robot will only turn a quarter of the max turn degree in the opposite direction
+
+    # --------------------------------------------------- Wall Following ---------------------------------------------------
+
+    elif not (parkingL or parkingR):  # if no pillar is detected
+
+        if (
+            turnDir == "right" and not ()
+        ):  # if one of the walls is too large, follow the walls instead to center the robot
+            # reset variables
+            prev_pillar_error = 0
+            last_difference = 0
+
+            servo_angle = MID_SERVO - MAX_TURN_DEGREE  # set servo to sharp right
+
+        elif (
+            turnDir == "left" and not ()
+        ):  # if one of the walls is too large, follow the walls instead to center the robot
+            # reset variables
+
+            prev_pillar_error = 0
+            last_difference = 0
+            servo_angle = MID_SERVO + MAX_TURN_DEGREE  # set servo to sharp left
+
+        else:
 
             error = 0
             current_difference = (
                 left_area - right_area
             )  # find difference between left and right areas of the wall
-            if last_difference != 0:
+            if last_difference != 0 and left_area != 0 and right_area != 0:
                 servo_angle = MID_SERVO - (
                     current_difference * PG
                     + (current_difference - last_difference) * PD
@@ -1113,7 +1126,7 @@ while True:
             else:
                 servo_angle = MID_SERVO - (current_difference * PG)
 
-    if total_turn >= 0:  # if the robot has achieved three laps
+    if total_turn >= 12:  # if the robot has achieved three laps
 
         if (
             action_counter >= ACTIONS_TO_STRAIGHT and need_pause
@@ -1138,19 +1151,18 @@ while True:
         parking_algorithm = True  # initiate the parking algorithm
 
     # --------------------------------------------------- Checks if wall is too close ---------------------------------------------------
-    if front_area_black > 1000:
 
-        if closest_pillar_colour == None and prevPillar == "green":
-            servo_angle = MID_SERVO - MAX_TURN_DEGREE
-        elif closest_pillar_colour == None and prevPillar == "red":
-            servo_angle = MID_SERVO + MAX_TURN_DEGREE
-
-    if (magenta_area_center > 300) and not (parkingL or parkingR):
+    if (front_area_black > 100 or magenta_area_center > 300) and not (
+        parkingL or parkingR
+    ):
         # if magenta or black areas get too large, it means that the robot is too close to the wall and needs to reverse
-        if trackDir == "right":
-            servo_angle = MID_SERVO - MAX_TURN_DEGREE
-        elif trackDir == "left":
-            servo_angle = MID_SERVO + MAX_TURN_DEGREE
+        Board.setPWMServoPulse(6, 1500, 100)
+        servo_angle = MID_SERVO
+        pw = pwm(servo_angle)
+        Board.setPWMServoPulse(1, pw, 1000)
+        time.sleep(0.1)
+        Board.setPWMServoPulse(6, 1580, 100)
+        time.sleep(2)
 
     #  ---------------------------------------------- Checks if the last lap is reached and the find the direction of the appropriate last lap-----------------------------------------------
 
